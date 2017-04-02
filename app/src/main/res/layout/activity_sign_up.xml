@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_sign_up"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="30dp"
+    tools:context="example.com.map.example.com.furtherstudy.SignUpActivity">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Username:"/>
+        <EditText
+            android:id="@+id/signupusername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Please input your username"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password:"/>
+        <EditText
+            android:id="@+id/signuppassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Please input your Password:"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="40sp"
+            android:layout_height="wrap_content"
+            android:text="Email:"/>
+
+        <EditText
+            android:id="@+id/signupemail"
+            android:layout_width="250sp"
+            android:layout_height="wrap_content"
+            android:hint="Please input your Email:"/>
+        <Button
+            android:id="@+id/sendverifycode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send verify code"
+            android:textAllCaps="false"/>
+
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/verifycode"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:textSize="13sp"
+        android:hint="Please input verify code which have been sent to your email here."/>
+    <Button
+        android:id="@+id/signupbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+    />
+</LinearLayout>
