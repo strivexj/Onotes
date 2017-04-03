@@ -197,7 +197,7 @@ public class ChooseAreaFragment extends Fragment{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String weatherId = cityList.get(position).getCityEn();
+                String weatherId = cityList.get(position).getId();
                 if (getActivity() instanceof WeatherMainActivity) {
                     Intent intent = new Intent(getActivity(), WeatherActivity.class);
                     intent.putExtra("weather_id", weatherId);

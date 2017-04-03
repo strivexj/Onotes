@@ -18,7 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.example.onotes.R;
 import com.example.onotes.gson.Forecast;
 import com.example.onotes.gson.Weather;
@@ -85,7 +85,8 @@ public class WeatherActivity extends AppCompatActivity {
             showWeatherInfo(weather);
         } else {
             // 无缓存时去服务器查询天气
-            weatherId = getIntent().getStringExtra("weather_id");
+           // weatherId = getIntent().getStringExtra("weather_id");
+            weatherId="CN101270101";
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }
@@ -103,7 +104,7 @@ public class WeatherActivity extends AppCompatActivity {
         });
         String bingPic = prefs.getString("bing_pic", null);
         if (bingPic != null) {
-           // Glide.with(this).load(bingPic).into(bingPicImg);
+            Glide.with(this).load(bingPic).into(bingPicImg);
         } else {
             loadBingPic();
         }
@@ -134,6 +135,7 @@ public class WeatherActivity extends AppCompatActivity {
      */
     public void requestWeather(final String weatherId) {
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
+
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -186,7 +188,7 @@ public class WeatherActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //Glide.with(WeatherActivity.this).load(bingPic).into(bingPicImg);
+                        Glide.with(WeatherActivity.this).load(bingPic).into(bingPicImg);
                     }
                 });
             }

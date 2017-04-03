@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.weatheractivity.WeatherActivity;
 import com.example.onotes.weatheractivity.WeatherMainActivity;
 
 import java.util.List;
@@ -100,11 +101,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     editor.apply();
                                 }
                                 CircularAnim.fullActivity(LoginActivity.this,sign_in_button)
-                                        .colorOrImageRes(R.color.colorPrimary)
+                                        .colorOrImageRes(R.color.accent)
                                         .go(new CircularAnim.OnAnimationEndListener() {
                                             @Override
                                             public void onAnimationEnd() {
-                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                startActivity(new Intent(LoginActivity.this, WeatherActivity.class));
                                             }
                                         });
                                 /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
