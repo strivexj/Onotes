@@ -86,7 +86,9 @@ public class City {
     public String getLat() {
         return lat;
     }
-
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
 
     public String getLon() {
         return lon;

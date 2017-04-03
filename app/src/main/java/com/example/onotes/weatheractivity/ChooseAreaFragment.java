@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,7 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.onotes.R;
 import com.example.onotes.bean.City;
+import com.example.onotes.datebase.CityDbHelper;
+import com.example.onotes.utils.HttpUtil;
+import com.example.onotes.utils.Utility;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,34 +37,144 @@ import okhttp3.Response;
  * Created by cwj on 2017/3/9 13:52
  */
 public class ChooseAreaFragment extends Fragment{
-    public static final int LEVEL_PROVINCE=0;
     public static final int LEVEL_CITY=1;
-    public static final int LEVEL_COUNTY=2;
     private ProgressDialog progressDialog;
     private TextView titleText;
     private Button backButton;
     private ListView listView;
     private ArrayAdapter<String>adapter;
     private List<String>dataList=new ArrayList<>();
-
+    private City selectedCity;
 
     /**
      * city list
      */
     private List<City>cityList;
+/**
+ * id : CN101010100
+ * cityEn : beijing
+ * cityZh : 北京
+ * provinceEn : beijing
+ * provinceZh : 北京
+ * leaderEn : beijing
+ * leaderZh : 北京
+ * lat : 39.904989
+ * lon : 116.405285
+ */
+    /**
+     * query all cities in the selected province,and prior to query from database,otherwise query from server
+     */
+    private void queryCities(){
 
+        //titleText.setText(selectedProvince.getProvinceName());
+        backButton.setVisibility(View.VISIBLE);
+        CityDbHelper cityDbHelper=new CityDbHelper(getActivity());
+        SQLiteDatabase db=cityDbHelper.getWritableDatabase();
+        Cursor cursor=db.query("City",null,null,null,null,null,null);
+        if(cursor.moveToFirst()){
+            do{
+                City city=new City();
+                city.setId(cursor.getString(cursor.getColumnIndex("cityid")));
+                city.setCityEn(cursor.getString(cursor.getColumnIndex("CityEn")));
+                city.setCityZh(cursor.getString(cursor.getColumnIndex("setCityZh")));
+                city.setProvinceEn(cursor.getString(cursor.getColumnIndex("provinceEn")));
+                city.setProvinceZh(cursor.getString(cursor.getColumnIndex("provinceZh")));
+                city.setLeaderEn(cursor.getString(cursor.getColumnIndex("leaderEn")));
+                city.setLeaderZh(cursor.getString(cursor.getColumnIndex("leaderZh")));
+                city.setLat(cursor.getString(cursor.getColumnIndex("lat")));
+                city.setLon(cursor.getString(cursor.getColumnIndex("lon")));
+                cityList.add(city);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        if(cityList.size()>0){
+            Log.d("cwj","b");
+            dataList.clear();
+            for(City city : cityList){
+                dataList.add(city.getCityEn());
+                adapter.notifyDataSetChanged();
+                listView.setSelection(0);
+                //currentLevel=LEVEL_CITY;
+            }
+        }else{
+            Log.d("cwj","a");
+            //int provinceCode=selectedProvince.getProvinceCode();
+            //String address="http://guolin.tech/api/china/"+provinceCode;
+            String address="https://cdn.heweather.com/china-city-list.json";
+            queryFromServer(address,"city");
 
+        }
+    }
+    /**
+     * according to the address and type poured in,query data from server
+     */
+   // @TargetApi(23)
+    private  void queryFromServer(String address,final String type){
+        showProgressDialog();
+        HttpUtil.sendOkHttpRequest(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //return main thread to handle logic through runOnUiThread()
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        Toast.makeText(getActivity().getApplicationContext(),"loading failed",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText=response.body().string();
+                boolean result=false;
+                /*if("province".equals(type)){
+                    result= Utility.handleProvinceResponse(responseText);
+                }else if("city".equals(type)){
+
+                }else if("county".equals(type)){
+                    result=Utility.handleCountyResponse(responseText,selectedCity.getId());
+                }*/
+                 result=Utility.handleCityResponse(responseText,getActivity());
+                if(result){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            closeProgressDialog();
+                           /* if("province".equals(type)){
+                                queryProvinces();
+                            }else if("city".equals(type)){*/
+                                queryCities();
+                           /* }else if("county".equals(type)){
+                                queryCounties();
+                            }*/
+                        }
+                    });
+                }
+            }
+
+        });
+    }
+    /**
+     * show progress dialog
+     */
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Loading...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
 
     /**
-     * selected City
+     * close progress dialog
      */
-    private City selectedCity;
-
-    /**
-     * current level
-     */
-    private int currentLevel;
-
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
     @TargetApi(23)
     @Nullable
     @Override
@@ -81,179 +197,27 @@ public class ChooseAreaFragment extends Fragment{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (currentLevel == LEVEL_PROVINCE) {
-                    selectedProvince = provinceList.get(position);
-                    queryCities();
-                } else if (currentLevel == LEVEL_CITY) {
-                    selectedCity = cityList.get(position);
-                    queryCounties();
-                } else if (currentLevel == LEVEL_COUNTY) {
-                    String weatherId = countyList.get(position).getWeatherId();
-                    if (getActivity() instanceof WeatherMainActivity) {
-                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                        intent.putExtra("weather_id", weatherId);
-                        startActivity(intent);
-                        getActivity().finish();
-                    } else if (getActivity() instanceof WeatherActivity) {
-                        WeatherActivity activity = (WeatherActivity) getActivity();
-                        activity.drawerLayout.closeDrawers();
-                        activity.swipeRefresh.setRefreshing(true);
-                        activity.requestWeather(weatherId);
-                    }
+                String weatherId = cityList.get(position).getCityEn();
+                if (getActivity() instanceof WeatherMainActivity) {
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
+                } else if (getActivity() instanceof WeatherActivity) {
+                    WeatherActivity activity = (WeatherActivity) getActivity();
+                    activity.drawerLayout.closeDrawers();
+                    activity.swipeRefresh.setRefreshing(true);
+                    activity.requestWeather(weatherId);
                 }
+
             }
         });
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentLevel == LEVEL_COUNTY) {
-                    queryCities();
-                } else if (currentLevel == LEVEL_CITY) {
-                    queryProvinces();
-                }
+                Toast.makeText(getActivity(), "嘿嘿", Toast.LENGTH_SHORT).show();
             }
         });
-        queryProvinces();
     }
-    /**
-     * query all provinces ,and prior to query from database,otherwise,query from server
-     */
-    private  void queryProvinces(){
-        titleText.setText("中国");
-        backButton.setVisibility(View.GONE);
-        provinceList= DataSupport.findAll(Province.class);
-        if(provinceList.size()>0){
-            dataList.clear();
-            for(Province province : provinceList){
-                dataList.add(province.getProvinceName());
-            }
-            adapter.notifyDataSetChanged();
-            listView.setSelection(0);
-            currentLevel=LEVEL_PROVINCE;
-        }else{
-            String address="http://guolin.tech/api/china";
-            //String address="https://free-api.heweather.com/v5/weather?";
-            queryFromServer(address,"province");
-
-        }
-    }
-    /**
-     * query all cities in the selected province,and prior to query from database,otherwise query from server
-     */
-    private void queryCities(){
-
-        titleText.setText(selectedProvince.getProvinceName());
-        backButton.setVisibility(View.VISIBLE);
-             cityList=DataSupport.where("provinceId = ?", String.valueOf(selectedProvince.getId())).find((City.class));
-
-        if(cityList.size()>0){
-            Log.d("cwj","b");
-            dataList.clear();
-            for(City city : cityList){
-                dataList.add(city.getCityName());
-                adapter.notifyDataSetChanged();
-                listView.setSelection(0);
-                currentLevel=LEVEL_CITY;
-            }
-        }else{
-            Log.d("cwj","a");
-            int provinceCode=selectedProvince.getProvinceCode();
-            String address="http://guolin.tech/api/china/"+provinceCode;
-            queryFromServer(address,"city");
-        }
-    }
-        /**
-         * query all counties in the selected city,and prior to query from database,otherwise query from server
-         */
-    private void queryCounties(){
-        titleText.setText((selectedCity.getCityName()));
-        backButton.setVisibility(View.VISIBLE);
-            countyList = DataSupport.where("cityid= ? ", String.valueOf(selectedCity.getId())).find(County.class);
-        if(countyList.size()>0){
-            dataList.clear();
-            for(County county : countyList){
-                dataList.add(county.getCountyName());
-            }
-            adapter.notifyDataSetChanged();
-            listView.setSelection(0);
-            currentLevel=LEVEL_COUNTY;
-        }else{
-            int provinceCode=selectedProvince.getProvinceCode();
-            int cityCode=selectedCity.getCityCode();
-            String address="http://guolin.tech/api/china/"+provinceCode+"/"+cityCode;
-            queryFromServer(address,"county");
-
-        }
-
-    }
-    /**
-     * according to the address and type poured in,query data from server
-     */
-    @TargetApi(23)
-    private  void queryFromServer(String address,final String type){
-        showProgressDialog();
-        HttpUtil.sendOkHttpRequest(address, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //return main thread to handle logic through runOnUiThread()
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        closeProgressDialog();
-                        Toast.makeText(getActivity().getApplicationContext(),"loading failed",Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseText=response.body().string();
-                boolean result=false;
-                if("province".equals(type)){
-                    result= Utility.handleProvinceResponse(responseText);
-                }else if("city".equals(type)){
-                    result=Utility.handleCityResponse(responseText,selectedProvince.getId());
-                }else if("county".equals(type)){
-                    result=Utility.handleCountyResponse(responseText,selectedCity.getId());
-                }
-                if(result){
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            closeProgressDialog();
-                            if("province".equals(type)){
-                                queryProvinces();
-                            }else if("city".equals(type)){
-                                queryCities();
-                            }else if("county".equals(type)){
-                                queryCounties();
-                            }
-                        }
-                    });
-                }
-            }
-
-        });
-    }
-
-    /**
-     * show progress dialog
-     */
-    private  void showProgressDialog(){
-        if(progressDialog==null){
-            progressDialog=new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
-    }
-    /**
-     * close progress dialog
-     */
-    private void closeProgressDialog(){
-        if(progressDialog!=null){
-            progressDialog.dismiss();
-        }
-    }
-
 }

@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.weatheractivity.WeatherMainActivity;
+
 import java.util.List;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;

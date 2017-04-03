@@ -22,7 +22,8 @@ public class CityDbHelper extends SQLiteOpenHelper {
      * lat : 39.904989
      * lon : 116.405285
      */
-
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "City.db";
     private static final String SQL_CREATE_ENTRIES =
                     "create table City (" + "id integer primary key autoincrement,"
                     + "cityid text," + "cityEn text," +
@@ -33,15 +34,10 @@ public class CityDbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + "City";
 
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "City.db";
 
-    public CityDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
 
-    public CityDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
-        super(context, name, factory, version, errorHandler);
+    public CityDbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
