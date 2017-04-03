@@ -44,20 +44,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="40sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email:"/>
 
         <EditText
             android:id="@+id/signupemail"
-            android:layout_width="250sp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:hint="Please input your Email:"/>
         <Button
             android:id="@+id/sendverifycode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Send verify code"
+            android:textSize="10sp"
             android:textAllCaps="false"/>
 
 

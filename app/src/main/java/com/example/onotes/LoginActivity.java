@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
 import java.util.List;
 import cn.bmob.v3.Bmob;
@@ -95,8 +97,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     editor.putString("password", "");
                                     editor.apply();
                                 }
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
+                                CircularAnim.fullActivity(LoginActivity.this,sign_in_button)
+                                        .colorOrImageRes(R.color.colorPrimary)
+                                        .go(new CircularAnim.OnAnimationEndListener() {
+                                            @Override
+                                            public void onAnimationEnd() {
+                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                            }
+                                        });
+                                /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);*/
                             }
 
                             else{

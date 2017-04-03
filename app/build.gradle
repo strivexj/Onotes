@@ -30,4 +30,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile 'cn.bmob.android:bmob-sdk:3.5.0'
+
+    //第三方material design 控件库
+    compile 'com.github.rey5137:material:1.2.4'
+    //fabmenu
+    compile 'com.github.clans:fab:1.6.4'
 }

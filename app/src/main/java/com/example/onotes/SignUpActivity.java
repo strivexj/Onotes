@@ -30,7 +30,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         initView();
-        //signupemail.setText("1003214597@qq.com");
     }
 
     private void initView() {
@@ -52,7 +51,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.sendverifycode:
                 verfiycode=100000+(int)(Math.random()*800000);
                 String message="Your verify code is:"+verfiycode;
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 SendMail sm = new SendMail(this, signupemail.getText().toString(), message);
                 sm.execute();
 
