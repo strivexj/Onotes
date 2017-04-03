@@ -28,12 +28,12 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
     private String subject;
     private String message;
 
-    private String myEmail="** ";
-    private String myPassword="**";
+    private String myEmail="***";
+    private String myPassword="***";
     //Progressdialog to show while sending email
     private ProgressDialog progressDialog;
 
-    //Class Constructor
+    //Class Constructorw
     public SendMail(Context context, String email, String message){
         //Initializing variables
         this.context = context;
