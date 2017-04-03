@@ -34,18 +34,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
         </activity>
         <activity android:name=".weatheractivity.WeatherActivity">
-
         </activity>
         <activity android:name=".weatheractivity.WeatherMainActivity">
-
         </activity>
         <activity android:name=".SignUpActivity">
         </activity>
         <activity android:name=".MainActivity">
-
+        </activity>
+        <activity android:name=".ForgetPasswordActivity">
         </activity>
     </application>
 

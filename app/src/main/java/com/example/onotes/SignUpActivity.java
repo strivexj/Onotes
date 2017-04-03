@@ -1,6 +1,7 @@
 package com.example.onotes;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -106,6 +107,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                      public void done(String s, BmobException e) {
                          if (e == null) {
                              Toast.makeText(SignUpActivity.this, "succeed", Toast.LENGTH_SHORT).show();
+
+                             SharedPreferences.Editor editor = getSharedPreferences("account", MODE_PRIVATE).edit();
+                             editor.putString("username", signupusername.getText().toString());
+                             editor.putString("password", signuppassword.getText().toString());
+                             editor.apply();
+
                              CircularAnim.fullActivity(SignUpActivity.this,signupbutton)
                                      .colorOrImageRes(R.color.accent)
                                      .go(new CircularAnim.OnAnimationEndListener() {

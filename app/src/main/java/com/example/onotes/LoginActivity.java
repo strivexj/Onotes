@@ -29,6 +29,47 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    @Override
+    protected void onPause() {
+        Log.d("cwja","onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("cwja","onresume");
+        SharedPreferences pref=getSharedPreferences("account",MODE_PRIVATE);
+        String susername=pref.getString("username","");
+        String spassword=pref.getString("password","");
+        if(!TextUtils.isEmpty(susername))username.setText(susername);
+        if(!TextUtils.isEmpty(spassword))password.setText(spassword);
+        if(pref.getBoolean("checkbox",false))rememeberpassword.setChecked(true);
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d("cwja","ondestroy");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d("cwja","onstart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("cwja","onstop");
+        super.onStop();
+    }
+
+    @Override
+    public void finish() {
+        Log.d("cwja","onsfinish");
+        super.finish();
+    }
 
     private ProgressBar login_progress;
     private AutoCompleteTextView username;
@@ -44,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d("cwja","oncreate");
         Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
         initView();
 
@@ -86,7 +128,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(LoginActivity.this, "Sign in succeed", Toast.LENGTH_SHORT).show();
                                 Log.d("cwj", "Sign in succeed");
                                 SharedPreferences.Editor editor = getSharedPreferences("account", MODE_PRIVATE).edit();
-                                editor.putString("username", password.getText().toString());
+                                editor.putString("username", username.getText().toString());
                                 if (rememeberpassword.isChecked()) {
                                     Log.d("cwj","2");
 
@@ -126,26 +168,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             break;
             case R.id.signup:
-                Intent intent=new Intent(LoginActivity.this,SignUpActivity.class);
-                startActivity(intent);
+                CircularAnim.fullActivity(LoginActivity.this,signup)
+                        .colorOrImageRes(R.color.accent)
+                        .go(new CircularAnim.OnAnimationEndListener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                            }
+                        });
+               /* Intent intent=new Intent(LoginActivity.this,SignUpActivity.class);
+                startActivity(intent);*/
                 break;
             case R.id.forgetpassword:
-
+                CircularAnim.fullActivity(LoginActivity.this,forgetpassword)
+                        .colorOrImageRes(R.color.accent)
+                        .go(new CircularAnim.OnAnimationEndListener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class));
+                            }
+                        });
+                //Intent intent=new Intent(LoginActivity.this,ForgetPasswordActivity.class);
+               // startActivity(intent);
                 break;
 
         }
     }
 
-    private void submit() {
-        // validate
-        String passwordString = password.getText().toString().trim();
-        if (TextUtils.isEmpty(passwordString)) {
-            Toast.makeText(this, "passwordString不能为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        // TODO validate success, do something
-
-
-    }
 }
