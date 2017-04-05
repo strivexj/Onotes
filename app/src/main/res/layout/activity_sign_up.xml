@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
 
             android:text="Username:"/>
-        <EditText
+        <com.example.onotes.view.EditTextWithDel
             android:id="@+id/signupusername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Password:"/>
-        <EditText
+        <com.example.onotes.view.EditTextWithDel
             android:id="@+id/signuppassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:text="Email:"/>
 
-        <EditText
+        <com.example.onotes.view.EditTextWithDel
             android:id="@+id/signupemail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
 
     </LinearLayout>
 
-    <EditText
+    <com.example.onotes.view.EditTextWithDel
         android:id="@+id/verifycode"
         android:layout_width="match_parent"
         android:layout_height="50sp"

@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/primary">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary_dark"
         android:fitsSystemWindows="true">
-        <TextView
+        <!--
+        <android.support.v7.widget.SearchView
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/searchView"
+            app:queryHint="Search Cities here~!"
+            android:layout_gravity="end"/>-->
+        <EditText
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

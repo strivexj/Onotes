@@ -28,8 +28,8 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
     private String subject;
     private String message;
 
-    private String myEmail="**";
-    private String myPassword="**";
+    private String myEmail="strivexj@gmail.com";
+    private String myPassword="strivexj";
     //Progressdialog to show while sending email
     private ProgressDialog progressDialog;
 
@@ -85,7 +85,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
             MimeMessage mm = new MimeMessage(session);
 
             //Setting sender address
-            mm.setFrom(new InternetAddress("aaaaa"));
+            mm.setFrom(new InternetAddress("Onotes"));
             //Adding receiver
             mm.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             //Adding subject

@@ -11,6 +11,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,8 +52,9 @@ import static android.content.Context.MODE_PRIVATE;
 public class ChooseAreaFragment extends Fragment{
     public static final int LEVEL_CITY=1;
     private ProgressDialog progressDialog;
-    private TextView titleText;
+    private EditText searchText;
     private Button backButton;
+    private SearchView mSearchView;
     private ListView listView;
     private ArrayAdapter<String>adapter;
     private List<String>dataList=new ArrayList<>();
@@ -102,7 +107,7 @@ public class ChooseAreaFragment extends Fragment{
         CityDbHelper cityDbHelper = new CityDbHelper(getActivity());
         SQLiteDatabase db = cityDbHelper.getWritableDatabase();
         Log.d("db", "search");
-        Cursor cursor = db.query("City", null, null, null, null, null, null);
+        Cursor cursor = db.query("City", null, null, null, null, null, "CityEn");
         int j = 1;
         if (cursor.moveToFirst()) {
             do {
@@ -195,9 +200,35 @@ public class ChooseAreaFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.choose_area,container,false);
         Log.d("db","oncreateview");
-        titleText=(TextView)view.findViewById(R.id.title_text);
+        searchText=(EditText)view.findViewById(R.id.title_text);
         backButton=(Button)view.findViewById(R.id.back_button);
         listView=(ListView)view.findViewById(R.id.list_view);
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("search",""+cityList.size());
+                for(int i=0;i<cityList.size();i++){
+                    if(searchText.getText().toString().equals(cityList.get(i).getCityZh())){
+                        dataList.clear();
+                        dataList.add(cityList.get(i).getCityZh());
+                        adapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+        });
+        //mSearchView=(SearchView)view.findViewById(R.id.searchView);
+
         //queryCities();
         Log.d("db","fragment");
         adapter=new ArrayAdapter<>(getActivity().getApplication(),android.R.layout.simple_list_item_1,dataList);
@@ -209,12 +240,26 @@ public class ChooseAreaFragment extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d("db","onActivityCreated");
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("db","onActivityCreated");
+                String weatherId="";
+            if(dataList.size()==1)
+            {
+                for(int i=0;i<cityList.size();i++) {
+                    if (dataList.get(position).equals(cityList.get(i).getCityZh())) {
+                        weatherId = cityList.get(i).getId();
+                        break;
+                    }
+                }
+            }
+                else{
+                weatherId = cityList.get(position).getId();
+            }
 
-                String weatherId = cityList.get(position).getId();
+               // String weatherId = cityList.get(position).getId();
                 if (getActivity() instanceof WeatherMainActivity) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), WeatherActivity.class);
                     intent.putExtra("weather_id", weatherId);
@@ -266,6 +311,7 @@ public class ChooseAreaFragment extends Fragment{
 
     @Override
     public void onDestroyView() {
+
         Log.d("db","onDestroyView");
         super.onDestroyView();
     }
