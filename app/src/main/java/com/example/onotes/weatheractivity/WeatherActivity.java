@@ -72,6 +72,7 @@ public class WeatherActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+
         setContentView(R.layout.activity_weather);
         initview();
 
@@ -85,8 +86,8 @@ public class WeatherActivity extends AppCompatActivity {
             showWeatherInfo(weather);
         } else {
             // 无缓存时去服务器查询天气
-           // weatherId = getIntent().getStringExtra("weather_id");
-            weatherId="CN101270101";
+            weatherId = getIntent().getStringExtra("weather_id");
+           // weatherId="CN101270101";
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }

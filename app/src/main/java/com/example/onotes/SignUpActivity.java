@@ -55,15 +55,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.sendverifycode:
                 verfiycode=100000+(int)(Math.random()*800000);
-                String message="Your verify code is:"+verfiycode;
+                String message="Hi "+signupusername.getText().toString()+": \n  Weclome to sign up Onotes application. Here is your verify code : "+verfiycode
+                                +"\n  If it is not your sign up action, please ignore it. \n  Please don't reply to this email. Thank you!";
                 //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 SendMail sm = new SendMail(this, signupemail.getText().toString(), message);
                 sm.execute();
                 break;
             case R.id.signupbutton:
-                isexist();
+               // isexist();
                 register();
-
                 break;
         }
     }

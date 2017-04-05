@@ -62,17 +62,19 @@ public class Utility {
                 for(int i=0;i<allCitys.length();i++){
                     JSONObject cityObject=allCitys.getJSONObject(i);
                     ContentValues values=new ContentValues();
-                    values.put("id",cityObject.getString("id"));
+                    values.put("cityid",cityObject.getString("id"));
                     values.put("cityEn",cityObject.getString("cityEn"));
                     values.put("cityZh",cityObject.getString("cityZh"));
                     values.put("provinceEn",cityObject.getString("provinceEn"));
                     values.put("provinceZh",cityObject.getString("provinceZh"));
                     values.put("leaderEn",cityObject.getString("leaderEn"));
+                    values.put("leaderZh",cityObject.getString("leaderZh"));
                     values.put("lat",cityObject.getString("lat"));
                     values.put("lon",cityObject.getString("lon"));
                     db.insert("City",null,values);
+                    Log.d("cwj","add a city");
                 }
-                Log.d("cwj","add all city");
+                db.close();
                 return true;
             }catch (JSONException e){
                 e.printStackTrace();

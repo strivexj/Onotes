@@ -1,10 +1,11 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <fragment
         android:id="@+id/choose_area_fragment"
         android:name="com.example.onotes.weatheractivity.ChooseAreaFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:layout="@layout/choose_area"/>
 </FrameLayout>

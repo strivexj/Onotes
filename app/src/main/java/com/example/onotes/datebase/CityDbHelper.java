@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -29,7 +30,8 @@ public class CityDbHelper extends SQLiteOpenHelper {
                     + "cityid text," + "cityEn text," +
                     "cityZh text,"+ "provinceEn text,"+
                             "provinceZh text,"+"leaderEn text,"
-            +"leaderZh text,"+"lat real,"+"lon real)";
+            +"leaderZh text,"+"lat text,"+"lon text)";
+
     private Context mContext;
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + "City";
@@ -43,7 +45,8 @@ public class CityDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
-        Toast.makeText(mContext, "Created succeeded", Toast.LENGTH_SHORT).show();
+        Log.d("db","Created succeeded");
+        //Toast.makeText(mContext, "Created succeeded", Toast.LENGTH_SHORT).show();
     }
 
     @Override

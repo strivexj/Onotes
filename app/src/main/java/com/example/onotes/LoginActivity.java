@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .go(new CircularAnim.OnAnimationEndListener() {
                                             @Override
                                             public void onAnimationEnd() {
-                                                startActivity(new Intent(LoginActivity.this, WeatherActivity.class));
+                                                startActivity(new Intent(LoginActivity.this, WeatherMainActivity.class));
                                             }
                                         });
                                 /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
