@@ -5,12 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
 import com.example.onotes.utils.InputUtil;
-import com.example.onotes.weatheractivity.WeatherActivity;
 import com.example.onotes.weatheractivity.WeatherMainActivity;
 
 import java.util.List;
@@ -34,8 +31,11 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+
     @Override
     protected void onPause() {
+        if(issignin)
+        finish();
         Log.d("cwja","onPause");
         super.onPause();
     }
@@ -44,10 +44,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onResume() {
         Log.d("cwja","onresume");
         SharedPreferences pref=getSharedPreferences("account",MODE_PRIVATE);
-        String susername=pref.getString("username","");
-        String spassword=pref.getString("password","");
-        if(!TextUtils.isEmpty(susername))username.setText(susername);
-        if(!TextUtils.isEmpty(spassword))password.setText(spassword);
+       final String susername=pref.getString("username","");
+       final String spassword=pref.getString("password","");
+        //if(!TextUtils.isEmpty(susername))username.setText(susername);
+       // if(!TextUtils.isEmpty(spassword))password.setText(spassword);
+        if(!TextUtils.isEmpty(susername)){
+            username.setText(susername);
+            password.requestFocus();
+        };
+        //Search from stackoverflow
+        //You may have to use et.post( new Runnable({... et.setSel... to get in the queue.
+        // This is because android waits to do some layout stuff until a better time by posting so if you try to
+        // setSelection before the system is finished it will undo your work.
+        // – MinceMan Dec 7 '13 at 18:16
+        if(!TextUtils.isEmpty(spassword)){
+            password.setText(spassword);
+            password.post(new Runnable() {
+                @Override
+                public void run() {
+                    password.setSelection(spassword.length());
+                }
+            });
+
+            Log.d("aa","sd");
+            //password.setSelection(password.getSelectionEnd());
+        }
         if(pref.getBoolean("checkbox",false))rememeberpassword.setChecked(true);
         super.onResume();
     }
@@ -85,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private LinearLayout email_login_form;
     private ScrollView login_form;
     private CheckBox rememeberpassword;
+    private boolean issignin=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +127,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         forgetpassword = (TextView) findViewById(R.id.forgetpassword);
         rememeberpassword=(CheckBox) findViewById(R.id.rememeberpassword);
 
-
         username.setFilters(new InputFilter[]{InputUtil.filterspace()});
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
 
@@ -122,14 +143,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         SharedPreferences pref=getSharedPreferences("account",MODE_PRIVATE);
         String susername=pref.getString("username","");
-        String spassword=pref.getString("password","");
+       final String spassword=pref.getString("password","");
 
-        if(!TextUtils.isEmpty(susername))username.setText(susername);
-        if(!TextUtils.isEmpty(spassword))password.setText(spassword);
+        if(!TextUtils.isEmpty(susername)){
+            username.setText(susername);
+            password.requestFocus();
+        };
+        //Search from stackoverflow
+        //You may have to use et.post( new Runnable({... et.setSel... to get in the queue.
+        // This is because android waits to do some layout stuff until a better time by posting so if you try to
+        // setSelection before the system is finished it will undo your work.
+        // – MinceMan Dec 7 '13 at 18:16
+        if(!TextUtils.isEmpty(spassword)){
+            password.setText(spassword);
+            password.post(new Runnable() {
+                @Override
+                public void run() {
+                    password.setSelection(spassword.length());
+                }
+            });
+
+            Log.d("aa","sd");
+            //password.setSelection(password.getSelectionEnd());
+        }
         if(pref.getBoolean("checkbox",false))rememeberpassword.setChecked(true);
         signup.setOnClickListener(this);
         sign_in_button.setOnClickListener(this);
         forgetpassword.setOnClickListener(this);
+        //if(!TextUtils.isEmpty(username.getText().toString()))
+
+
     }
 
     @Override
@@ -170,8 +213,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 startActivity(new Intent(LoginActivity.this, WeatherMainActivity.class));
                                             }
                                         });
-                                /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);*/
+                                issignin=true;
+
                             }
 
                             else{

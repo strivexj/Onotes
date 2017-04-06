@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.onotes.LoginActivity;
 import com.example.onotes.R;
 import com.example.onotes.datebase.CityDbHelper;
 
