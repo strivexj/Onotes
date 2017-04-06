@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.utils.InputUtil;
 import com.example.onotes.weatheractivity.WeatherActivity;
 import com.example.onotes.weatheractivity.WeatherMainActivity;
 
@@ -98,8 +103,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         sign_in_button = (Button) findViewById(R.id.sign_in_button);
         signup = (TextView) findViewById(R.id.signup);
         forgetpassword = (TextView) findViewById(R.id.forgetpassword);
-        email_login_form = (LinearLayout) findViewById(R.id.email_login_form);
         rememeberpassword=(CheckBox) findViewById(R.id.rememeberpassword);
+
+
+        username.setFilters(new InputFilter[]{InputUtil.filterspace()});
+        password.setFilters(new InputFilter[]{InputUtil.filterspace()});
+
+        password.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                   sign_in_button.callOnClick();
+                }
+                return false;
+            }
+        });
+
+
         SharedPreferences pref=getSharedPreferences("account",MODE_PRIVATE);
         String susername=pref.getString("username","");
         String spassword=pref.getString("password","");

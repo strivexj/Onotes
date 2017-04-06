@@ -108,7 +108,7 @@ public class ChooseAreaFragment extends Fragment{
         SQLiteDatabase db = cityDbHelper.getWritableDatabase();
         Log.d("db", "search");
         Cursor cursor = db.query("City", null, null, null, null, null, "CityEn");
-        int j = 1;
+        int j = 0;
         if (cursor.moveToFirst()) {
             do {
                 City city = new City();
@@ -132,12 +132,15 @@ public class ChooseAreaFragment extends Fragment{
                 city.setLon(lon);
                 cityList.add(city);
                 Log.d("db", "find a city  " + j);
+                dataList.add(cityList.get(j).getCityZh());
+                adapter.notifyDataSetChanged();
                 j++;
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
 
-        if (cityList.size() > 0) {
+       /* if (cityList.size() > 0) {
             dataList.clear();
             for (int i = 0; i < cityList.size(); i++) {
                 // for(City city : cityList){
@@ -147,7 +150,7 @@ public class ChooseAreaFragment extends Fragment{
                 Log.d("db", "list add a city");
                 //currentLevel=LEVEL_CITY;
             }
-        }
+        }*/
     }
     /**
      * according to the address and type poured in,query data from server

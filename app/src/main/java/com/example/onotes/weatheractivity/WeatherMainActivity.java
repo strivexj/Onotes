@@ -27,6 +27,7 @@ public class WeatherMainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
     }
 
 

@@ -77,8 +77,9 @@ public class WeatherActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_weather);
         initview();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         showWeatherInfo();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -101,6 +102,7 @@ public class WeatherActivity extends AppCompatActivity {
         } else {
             loadBingPic();
         }
+        Log.d("xj","oncreat");
     }
 
     private void showWeatherInfo() {
@@ -257,6 +259,7 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        swipeRefresh.setRefreshing(false);
         //Intent intent = new Intent(this, AutoUpdateService.class);
        // startService(intent);
     }

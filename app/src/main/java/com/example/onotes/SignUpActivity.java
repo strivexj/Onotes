@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.utils.InputUtil;
 import com.example.onotes.weatheractivity.WeatherActivity;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -45,7 +47,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         verifycode = (EditText) findViewById(R.id.verifycode);
         signupbutton = (Button) findViewById(R.id.signupbutton);
 
-        //signupemail.setText("1003214597@qq.com");
+        signupusername.setFilters(new InputFilter[]{InputUtil.filterspace()});
+        signupemail.setFilters(new InputFilter[]{InputUtil.filterspace()});
+        signuppassword.setFilters(new InputFilter[]{InputUtil.filterspace()});
+        verifycode.setFilters(new InputFilter[]{InputUtil.filterspace()});
+
         sendverifycode.setOnClickListener(this);
         signupbutton.setOnClickListener(this);
     }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.utils.InputUtil;
 import com.example.onotes.weatheractivity.WeatherActivity;
 
 import java.util.List;
@@ -43,13 +45,14 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
         forgetpasswordemail = (EditText) findViewById(R.id.forgetpasswordemail);
         forgetverifycode = (EditText) findViewById(R.id.forgetverifycode);
         forgetbutton = (Button) findViewById(R.id.forgetbutton);
-
-        forgetbutton.setOnClickListener(this);
-
         forgetsendcodebutton = (Button) findViewById(R.id.forgetsendcodebutton);
-        forgetsendcodebutton.setOnClickListener(this);
         resetpassword = (EditText) findViewById(R.id.resetpassword);
 
+        forgetbutton.setOnClickListener(this);
+        forgetsendcodebutton.setOnClickListener(this);
+        forgetverifycode.setFilters(new InputFilter[]{InputUtil.filterspace()});
+        forgetpasswordemail.setFilters(new InputFilter[]{InputUtil.filterspace()});
+        resetpassword.setFilters(new InputFilter[]{InputUtil.filterspace()});
         //forgetpasswordemail.setText("1003214597@qq.com");
     }
 
