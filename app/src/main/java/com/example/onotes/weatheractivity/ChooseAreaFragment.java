@@ -259,17 +259,20 @@ public class ChooseAreaFragment extends Fragment{
                 weatherId = cityList.get(position).getId();
             }
 
-               // String weatherId = cityList.get(position).getId();
+               // String weatherId = cityList.get(poclsition).getId();
                 if (getActivity() instanceof WeatherMainActivity) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), WeatherActivity.class);
                     intent.putExtra("weather_id", weatherId);
                     startActivity(intent);
                     getActivity().finish();
+                    Log.d("refresh","start ");
                 } else if (getActivity() instanceof WeatherActivity) {
                     WeatherActivity activity = (WeatherActivity) getActivity();
                     activity.drawerLayout.closeDrawers();
                     activity.swipeRefresh.setRefreshing(true);
+                    Log.d("refresh","instanceof ");
                     activity.requestWeather(weatherId);
+
                 }
             }
         });
