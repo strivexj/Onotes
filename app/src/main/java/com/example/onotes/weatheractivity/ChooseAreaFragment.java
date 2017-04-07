@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
@@ -261,10 +262,14 @@ public class ChooseAreaFragment extends Fragment{
                 else{
                 weatherId = cityList.get(position).getId();
             }
-
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                editor.putString("weatherid", weatherId);
+                editor.apply();
                // String weatherId = cityList.get(poclsition).getId();
                 if (getActivity() instanceof WeatherMainActivity) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), WeatherActivity.class);
+
+
                     intent.putExtra("weather_id", weatherId);
                     startActivity(intent);
                     getActivity().finish();

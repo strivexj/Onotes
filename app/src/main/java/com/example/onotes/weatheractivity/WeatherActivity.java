@@ -86,8 +86,16 @@ public class WeatherActivity extends AppCompatActivity {
                 //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                // String weatherId2 = prefs.getString("weather", null);
                 //requestWeather(weatherId);
-                showWeatherInfo();
-                Log.d("refresh","3  "+weatherId);
+                //showWeatherInfo();
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
+                String id = prefs.getString("weatherid", null);
+             //   Log.d("refresh","2  "+weatherId);
+                // weatherId="CN101270101";
+               // weatherLayout.setVisibility(View.INVISIBLE);
+                requestWeather(weatherId);
+
+                Log.d("refresh","3  "+id);
             }
         });
         navButton.setOnClickListener(new View.OnClickListener() {
@@ -165,6 +173,7 @@ public class WeatherActivity extends AppCompatActivity {
                         //Toast.makeText(WeatherActivity.this, "succeed", Toast.LENGTH_SHORT).show();
                         if (weather != null && "ok".equals(weather.status)) {
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                          //  SharedPreferences.Editor editor = getSharedPreferences("Weather", MODE_PRIVATE).edit();
                             editor.putString("weather", responseText);
                             editor.apply();
                             weatherId=weather.basic.weatherId;
