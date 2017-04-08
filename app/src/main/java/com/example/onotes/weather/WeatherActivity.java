@@ -21,11 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.gson.Forecast;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.WeatherUtil;
+import com.example.onotes.view.SideBar;
 
 import java.io.IOException;
 
@@ -67,6 +69,8 @@ public class WeatherActivity extends AppCompatActivity {
     private ImageView bingPicImg;
 
     private String weatherId;
+    private SideBar mSideBar;
+    private TextView dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +85,11 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weather);
         initview();
         showWeatherInfo();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences prefs = App.getContext().getSharedPreferences("weather",MODE_PRIVATE);
 
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(WeatherActivity.this);
                 String id = prefs.getString("weatherid", null);
 
                 requestWeather(id);
@@ -110,8 +112,9 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void showWeatherInfo() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String weatherString = prefs.getString("weather", null);
+
+        SharedPreferences prefs = App.getContext().getSharedPreferences("weather",MODE_PRIVATE);
+        String weatherString = prefs.getString("weatherresponseText", null);
         if (weatherString != null) {
 
             // 有缓存时直接解析天气数据
@@ -146,6 +149,16 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navButton = (Button) findViewById(R.id.nav_button);
+        mSideBar=(SideBar)findViewById(R.id.sidebar);
+        dialog = (TextView) findViewById(R.id.dialog);
+        mSideBar.setTextView(dialog);
+        mSideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
+            @Override
+            public void onTouchingLetterChanged(String s) {
+               // dialog.setVisibility(View.VISIBLE);
+               //dialog.setText(s);
+            }
+        });
     }
 
     /**
@@ -164,8 +177,8 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
-                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
-                            editor.putString("weather", responseText);
+                           SharedPreferences.Editor editor= App.getContext().getSharedPreferences("weather",MODE_PRIVATE).edit();
+                            editor.putString("weatherresponseText", responseText);
                             editor.apply();
                             weatherId = weather.basic.weatherId;
                             Log.d("refresh", "" + weatherId);
@@ -205,7 +218,7 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String bingPic = response.body().string();
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                SharedPreferences.Editor editor = App.getContext().getSharedPreferences("weather",MODE_PRIVATE).edit();
                 editor.putString("bing_pic", bingPic);
                 editor.apply();
                 runOnUiThread(new Runnable() {
@@ -262,9 +275,5 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setRefreshing(false);
 
     }
-
-
-
-
 }
 

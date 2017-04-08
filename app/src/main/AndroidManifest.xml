@@ -25,8 +25,8 @@
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="cwj"
-        android:supportsRtl="true"
         android:launchMode="singleTask"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".login.LoginActivity"
@@ -38,7 +38,6 @@
             </intent-filter>
         </activity>
 
-
         <!-- 注册SDKActivity -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
@@ -46,16 +45,17 @@
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data android:scheme="tencent***"/> <!-- 开放平台获取的APPID -->
             </intent-filter>
         </activity>
-        <activity android:name="com.tencent.connect.common.AssistActivity"
-                  android:screenOrientation="portrait"
-                  android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
-
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:name=".weather.WeatherActivity">
         </activity>
         <activity android:name=".weather.WeatherMainActivity">
@@ -65,8 +65,9 @@
         <activity android:name=".login.ForgetPasswordActivity">
         </activity>
         <activity android:name=".view.EditTextActivity">
-
         </activity>
+
+        <service android:name=".service.CityDownloadSerivce"/>
     </application>
 
 </manifest>

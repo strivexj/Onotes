@@ -1,12 +1,16 @@
 package com.example.onotes.utils;
 
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.onotes.bean.City;
+
+import com.example.onotes.App;
+
 import com.example.onotes.datebase.CityDbHelper;
 import com.example.onotes.gson.Weather;
 import com.google.gson.Gson;
@@ -14,6 +18,15 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * Created by 10032 on 2017/3/9.
@@ -75,6 +88,13 @@ public class WeatherUtil {
                     Log.d("cwj","add a city");
                 }
                 db.close();
+
+                SharedPreferences.Editor editor=context.getSharedPreferences("weather",MODE_PRIVATE).edit();
+                editor.putBoolean("cityadded",true);
+                editor.apply();
+
+
+
                 return true;
             }catch (JSONException e){
                 e.printStackTrace();
@@ -82,4 +102,34 @@ public class WeatherUtil {
         }
         return false;
     }
+    /*
+     * according to the address and type poured in,query data from server
+     */
+    public static void queryFromServer(String address) {
+        Log.d("db", "queryFromServer");
+        // showProgressDialog();
+
+        HttpUtil.sendOkHttpRequest(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //return main thread to handle logic through runOnUiThread()
+               /* activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // closeProgressDialog();
+                        //Toast.makeText(activity, "loading failed", Toast.LENGTH_SHORT).show();
+                    }
+                });*/
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseText = response.body().string();
+                boolean result;
+                result = WeatherUtil.handleCityResponse(responseText, App.getContext());
+                LogUtil.d("cwj","queryFromServer succeed");
+            }
+        });
+    }
+
 }

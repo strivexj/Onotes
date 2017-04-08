@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,14 +25,20 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.example.onotes.App;
 import com.example.onotes.R;
+import com.example.onotes.adapter.WeatherAdapter;
 import com.example.onotes.bean.City;
 import com.example.onotes.datebase.CityDbHelper;
 import com.example.onotes.utils.HttpUtil;
+import com.example.onotes.utils.PinyinUtils;
 import com.example.onotes.utils.WeatherUtil;
+import com.example.onotes.view.PinyinComparator;
+import com.example.onotes.view.SideBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.Call;
@@ -39,6 +46,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.onotes.R.id.dialog;
 
 /**
  * Created by cwj on 2017/3/9 13:52
@@ -49,7 +57,11 @@ public class ChooseAreaFragment extends Fragment {
     private Button backButton;
     private SearchView mSearchView;
     private ListView listView;
-    private ArrayAdapter<String> adapter;
+    private WeatherAdapter adapter;
+
+    private SideBar sideBar;
+
+   //1. private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
 
 
@@ -70,34 +82,6 @@ public class ChooseAreaFragment extends Fragment {
  * lat : 39.904989
  * lon : 116.405285
  */
-    /**
-     * query all cities in the selected province,and prior to query from database,otherwise query from server
-     */
-    public void queryCities() {
-        Log.d("db", "querycities");
-
-        backButton.setVisibility(View.GONE);
-
-        final String address = "https://cdn.heweather.com/china-city-list.json";
-        SharedPreferences pref = getActivity().getSharedPreferences("account", MODE_PRIVATE);
-        boolean isfirst = pref.getBoolean("isfirst", true);
-        if (isfirst) {
-
-            dataList.add("Loading cities,Please wait for a while~");
-            adapter.notifyDataSetChanged();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    queryFromServer(address);
-                }
-            }).start();
-            SharedPreferences.Editor editor = getActivity().getSharedPreferences("account", MODE_PRIVATE).edit();
-            editor.putBoolean("isfirst", false);
-            editor.apply();
-        }
-        search();
-
-    }
 
     private void search() {
         dataList.clear();
@@ -127,10 +111,11 @@ public class ChooseAreaFragment extends Fragment {
                 city.setLeaderZh(leaderZh);
                 city.setLat(lat);
                 city.setLon(lon);
+                city.setSortLetters(CityEn.charAt(0)+"");
                 cityList.add(city);
                 Log.d("db", "find a city  " + j);
                 dataList.add(cityList.get(j).getCityZh());
-                adapter.notifyDataSetChanged();
+                //5.adapter.notifyDataSetChanged();
                 j++;
             } while (cursor.moveToNext());
         }
@@ -138,43 +123,6 @@ public class ChooseAreaFragment extends Fragment {
         db.close();
     }
 
-    /*
-     * according to the address and type poured in,query data from server
-     */
-    private void queryFromServer(String address) {
-        Log.d("db", "queryFromServer");
-       // showProgressDialog();
-        HttpUtil.sendOkHttpRequest(address, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //return main thread to handle logic through runOnUiThread()
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                       // closeProgressDialog();
-                        Toast.makeText(getActivity(), "loading failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String responseText = response.body().string();
-                 boolean result;
-                        result = WeatherUtil.handleCityResponse(responseText, getActivity());
-                if (result) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                          //  closeProgressDialog();
-                            queryCities();
-                        }
-                    });
-                }
-            }
-
-        });
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -210,7 +158,7 @@ public class ChooseAreaFragment extends Fragment {
                     if (searchText.getText().toString().equals(cityList.get(i).getCityZh())) {
                         dataList.clear();
                         dataList.add(cityList.get(i).getCityZh());
-                        adapter.notifyDataSetChanged();
+                        //6.wadapter.notifyDataSetChanged();
                         break;
                     }
                 }
@@ -218,8 +166,11 @@ public class ChooseAreaFragment extends Fragment {
         });
         //mSearchView=(SearchView)view.findViewById(R.id.searchView);
 
-        adapter = new ArrayAdapter<>(getActivity().getApplication(), android.R.layout.simple_list_item_1, dataList);
-        listView.setAdapter(adapter);
+       //2. adapter = new ArrayAdapter<>(getActivity().getApplication(), android.R.layout.simple_list_item_1, dataList);
+
+        //3.listView.setAdapter(adapter);
+
+
         return view;
     }
 
@@ -244,7 +195,7 @@ public class ChooseAreaFragment extends Fragment {
                     weatherId = cityList.get(position).getId();
                 }
 
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                SharedPreferences.Editor editor = App.getContext().getSharedPreferences("weather",MODE_PRIVATE).edit();
                 editor.putString("weatherid", weatherId);
                 editor.apply();
                 if (getActivity() instanceof WeatherMainActivity) {
@@ -264,15 +215,11 @@ public class ChooseAreaFragment extends Fragment {
             }
         });
 
-        /*backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "嘿嘿", Toast.LENGTH_SHORT).show();
-            }
-        });*/
-        queryCities();
-    }
 
+        search();
+        adapter = new WeatherAdapter(getActivity().getApplication(), cityList);
+        listView.setAdapter(adapter);
+    }
 
     @Override
     public void onStart() {
@@ -332,32 +279,3 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
 }
-/*   city.setId(cursor.getString(cursor.getColumnIndex("cityid")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("cityZh")));
-
-                city.setCityEn(cursor.getString(cursor.getColumnIndex("CityEn")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("cityEn")));
-
-                city.setCityZh(cursor.getString(cursor.getColumnIndex("CityZh")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("cityZh")));
-
-
-                city.setProvinceEn(cursor.getString(cursor.getColumnIndex("provinceEn")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("provinceEn")));
-
-
-                city.setProvinceZh(cursor.getString(cursor.getColumnIndex("provinceZh")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("provinceZh")));
-
-                city.setLeaderEn(cursor.getString(cursor.getColumnIndex("leaderEn")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("leaderEn")));
-
-
-                city.setLeaderZh(cursor.getString(cursor.getColumnIndex("leaderZh")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("leaderZh")));
-
-                city.setLat(cursor.getString(cursor.getColumnIndex("lat")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("lat")));
-
-                city.setLon(cursor.getString(cursor.getColumnIndex("lon")));
-                Log.d("db",cursor.getString(cursor.getColumnIndex("lon")));*/

@@ -22,9 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.service.CityDownloadSerivce;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.view.EditTextActivity;
@@ -84,9 +86,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         initView();
 
+
+        SharedPreferences preferences= App.getContext().getSharedPreferences("weather",MODE_PRIVATE);
+        if(!preferences.getBoolean("cityadded",false)){
+            Intent intentService=new Intent(this, CityDownloadSerivce.class);
+            startService(intentService);
+        }
+
+
+
+
     }
 
     private void initView() {
+        Log.d("cwj","oasfdds");
         backgroud=(ImageView)findViewById(R.id.backgroud) ;
         username = (AutoCompleteTextView) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
@@ -113,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
        // Glide.with(this).load(R.drawable.backgroud).into(backgroud);
-        SharedPreferences pref = getSharedPreferences("account", MODE_PRIVATE);
+        SharedPreferences pref = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
         String susername = pref.getString("username", "");
         final String spassword = pref.getString("password", "");
 
@@ -166,7 +179,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (password.getText().toString().equals(person.getPassword())) {
                                 Toast.makeText(LoginActivity.this, "Sign in succeeded", Toast.LENGTH_SHORT).show();
                                 Log.d("cwj", "Sign in succeed");
-                                SharedPreferences.Editor editor = getSharedPreferences("account", MODE_PRIVATE).edit();
+                                SharedPreferences.Editor editor = App.getContext().getSharedPreferences("account", MODE_PRIVATE).edit();
                                 editor.putString("username", username.getText().toString());
                                 if (rememeberpassword.isChecked()) {
 
@@ -360,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         Log.d("cwja", "onresume");
-        SharedPreferences pref = getSharedPreferences("account", MODE_PRIVATE);
+        SharedPreferences pref = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
         final String susername = pref.getString("username", "");
         final String spassword = pref.getString("password", "");
         //if(!TextUtils.isEmpty(susername))username.setText(susername);

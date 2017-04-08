@@ -15,6 +15,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.onotes.R;
+import com.example.onotes.utils.KeyboardUtil;
 import com.example.onotes.weather.WeatherMainActivity;
 
 public class EditTextActivity extends AppCompatActivity {
@@ -22,7 +23,8 @@ public class EditTextActivity extends AppCompatActivity {
     private SeekBar linespacing;
     private SeekBar textsize;
     private EditText edittext;
-
+    private NavigationView navigationView;
+    private SideBar mSideBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +33,7 @@ public class EditTextActivity extends AppCompatActivity {
         linespacing.setMax(1000);
         textsize.setMax(100);
 
+        KeyboardUtil.hideSoftInput(this);
 
     }
 
@@ -39,7 +42,10 @@ public class EditTextActivity extends AppCompatActivity {
         linespacing = (SeekBar) findViewById(R.id.linespacing);
         textsize = (SeekBar) findViewById(R.id.textsize);
         edittext = (EditText) findViewById(R.id.edittext);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+
+
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

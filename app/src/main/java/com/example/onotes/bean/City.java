@@ -27,6 +27,16 @@ public class City {
     private String lat;
     private String lon;
 
+    private String sortLetters;//数据的首字母
+
+    public String getSortLetters() {
+        return sortLetters;
+    }
+
+    public void setSortLetters(String sortLetters) {
+        this.sortLetters = sortLetters;
+    }
+
     public String getId() {
         return id;
     }

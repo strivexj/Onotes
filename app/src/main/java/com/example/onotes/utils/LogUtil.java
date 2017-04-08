@@ -23,18 +23,22 @@ public class LogUtil {
     }
     public static void d(Activity mActivity,String msg){
         if(level<=DEBUG)
-            Log.v(mActivity.getLocalClassName(),msg);
+            Log.d(mActivity.getLocalClassName(),msg);
+    }
+    public static void d(String ATG,String msg){
+        if(level<=DEBUG)
+            Log.d(ATG,msg);
     }
     public static void i(Activity mActivity,String msg){
         if(level<=INFO)
-            Log.v(mActivity.getLocalClassName(),msg);
+            Log.i(mActivity.getLocalClassName(),msg);
     }
     public static void w(Activity mActivity,String msg){
         if(level<=WARN)
-            Log.v(mActivity.getLocalClassName(),msg);
+            Log.w(mActivity.getLocalClassName(),msg);
     }
     public static void e(Activity mActivity,String msg){
         if(level<=ERROR)
-            Log.v(mActivity.getLocalClassName(),msg);
+            Log.e(mActivity.getLocalClassName(),msg);
     }
 }
