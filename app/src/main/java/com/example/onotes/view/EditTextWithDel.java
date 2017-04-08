@@ -33,6 +33,7 @@ public class EditTextWithDel extends EditText {
         mContext = context;
         init();
     }
+
     public EditTextWithDel(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;

@@ -3,7 +3,7 @@ package com.example.onotes.anim;
 /**
  * Created by cwj Apr.02.2017 5:01 PM
  *
- *Copy from https://github.com/XunMengWinter/CircularAnim
+ * Copy from https://github.com/XunMengWinter/CircularAnim
  *
  * Android ripple animation helper, easy to create Circular Reveal. |
  * Android水波动画帮助类，轻松实现View show/hide/startActivity()特效。(0.3.3)

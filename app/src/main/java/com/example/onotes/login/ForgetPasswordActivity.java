@@ -1,21 +1,22 @@
-package com.example.onotes;
+package com.example.onotes.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.onotes.R;
+import com.example.onotes.utils.SendMail;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
 import com.example.onotes.utils.InputUtil;
-import com.example.onotes.weatheractivity.WeatherActivity;
+import com.example.onotes.weather.WeatherActivity;
 
 import java.util.List;
 
@@ -53,41 +54,39 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
         forgetverifycode.setFilters(new InputFilter[]{InputUtil.filterspace()});
         forgetpasswordemail.setFilters(new InputFilter[]{InputUtil.filterspace()});
         resetpassword.setFilters(new InputFilter[]{InputUtil.filterspace()});
-        //forgetpasswordemail.setText("1003214597@qq.com");
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.forgetbutton:
-                Log.d("cwj",""+"2122");
+                Log.d("cwj", "" + "2122");
                 resetPassword();
                 break;
             case R.id.forgetsendcodebutton:
                 verfiycode = 100000 + (int) (Math.random() * 800000);
                 String message = "Your verify code is:" + verfiycode;
-               // Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
                 SendMail sm = new SendMail(this, forgetpasswordemail.getText().toString(), message);
                 sm.execute();
-                //forgetverifycode.setText(""+verfiycode);
-               // resetpassword.setText("fsads");
 
                 break;
         }
     }
 
     private void resetPassword() {
-        Log.d("cwj",""+"21");
+        Log.d("cwj", "" + "21");
 
         if (forgetverifycode.getText().toString().equals("" + verfiycode)) {
-            Log.d("cwj",""+"euqal");
+            Log.d("cwj", "" + "euqal");
             BmobQuery<Person> query = new BmobQuery<Person>();
             query.addWhereEqualTo("email", forgetpasswordemail.getText().toString());
             query.findObjects(new FindListener<Person>() {
                 @Override
                 public void done(List<Person> object, BmobException e) {
                     if (e == null) {
-                        Log.d("cwj",""+object.size());
+                        Log.d("cwj", "" + object.size());
                         final Person person = object.get(0);
                         person.setPassword(resetpassword.getText().toString());
                         person.update(person.getObjectId(), new UpdateListener() {
@@ -100,7 +99,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                                     editor.putString("username", person.getUsername());
                                     editor.putString("password", resetpassword.getText().toString());
                                     editor.apply();
-                                    CircularAnim.fullActivity(ForgetPasswordActivity.this,forgetbutton)
+                                    CircularAnim.fullActivity(ForgetPasswordActivity.this, forgetbutton)
                                             .colorOrImageRes(R.color.accent)
                                             .go(new CircularAnim.OnAnimationEndListener() {
                                                 @Override

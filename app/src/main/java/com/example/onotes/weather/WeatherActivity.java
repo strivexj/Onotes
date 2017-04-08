@@ -1,4 +1,4 @@
-package com.example.onotes.weatheractivity;
+package com.example.onotes.weather;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,9 +25,10 @@ import com.example.onotes.R;
 import com.example.onotes.gson.Forecast;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.utils.HttpUtil;
-import com.example.onotes.utils.Utility;
+import com.example.onotes.utils.WeatherUtil;
 
 import java.io.IOException;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -63,6 +65,7 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView sportText;
 
     private ImageView bingPicImg;
+
     private String weatherId;
 
     @Override
@@ -83,19 +86,12 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-               // String weatherId2 = prefs.getString("weather", null);
-                //requestWeather(weatherId);
-                //showWeatherInfo();
-
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(WeatherActivity.this);
                 String id = prefs.getString("weatherid", null);
-             //   Log.d("refresh","2  "+weatherId);
-                // weatherId="CN101270101";
-               // weatherLayout.setVisibility(View.INVISIBLE);
-                requestWeather(weatherId);
 
-                Log.d("refresh","3  "+id);
+                requestWeather(id);
+
             }
         });
         navButton.setOnClickListener(new View.OnClickListener() {
@@ -110,25 +106,23 @@ public class WeatherActivity extends AppCompatActivity {
         } else {
             loadBingPic();
         }
-        Log.d("xj","oncreat");
+
     }
 
     private void showWeatherInfo() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
-        // final String weatherId;
         if (weatherString != null) {
 
             // 有缓存时直接解析天气数据
-            Weather weather = Utility.handleWeatherResponse(weatherString);
+            Weather weather = WeatherUtil.handleWeatherResponse(weatherString);
             weatherId = weather.basic.weatherId;
-            Log.d("refresh","1  "+weatherId);
+            Log.d("refresh", "1  " + weatherId);
             showWeatherInfo(weather);
         } else {
             // 无缓存时去服务器查询天气
             weatherId = getIntent().getStringExtra("weather_id");
-            Log.d("refresh","2  "+weatherId);
-           // weatherId="CN101270101";
+
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }
@@ -158,34 +152,31 @@ public class WeatherActivity extends AppCompatActivity {
      * 根据天气id请求城市天气信息。
      */
     public void requestWeather(final String weatherid) {
-        Log.d("refresh","545");
+        Log.d("refresh", "545");
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
 
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
-                final Weather weather = Utility.handleWeatherResponse(responseText);
-               // Log.d("cwj","responseText"+responseText);
+                final Weather weather = WeatherUtil.handleWeatherResponse(responseText);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //Toast.makeText(WeatherActivity.this, "succeed", Toast.LENGTH_SHORT).show();
                         if (weather != null && "ok".equals(weather.status)) {
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
-                          //  SharedPreferences.Editor editor = getSharedPreferences("Weather", MODE_PRIVATE).edit();
                             editor.putString("weather", responseText);
                             editor.apply();
-                            weatherId=weather.basic.weatherId;
-                            Log.d("refresh",""+weatherId);
+                            weatherId = weather.basic.weatherId;
+                            Log.d("refresh", "" + weatherId);
                             showWeatherInfo(weather);
-                            Log.d("refresh","show");
+                            Log.d("refresh", "show");
                         } else {
                             Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }
 
                         swipeRefresh.setRefreshing(false);
-                        Log.d("refresh","false");
+                        Log.d("refresh", "false");
                     }
                 });
             }
@@ -269,9 +260,11 @@ public class WeatherActivity extends AppCompatActivity {
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
         swipeRefresh.setRefreshing(false);
-        //Intent intent = new Intent(this, AutoUpdateService.class);
-       // startService(intent);
+
     }
+
+
+
 
 }
 

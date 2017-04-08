@@ -1,51 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/etdrawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <ScrollView
+    android:layout_height="match_parent">
+    <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-    >
-    <EditText
-        android:id="@+id/edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        />
-    </ScrollView>
-    <LinearLayout
-        android:id="@+id/lineSpacinglayout"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        >
+            <EditText
+                android:id="@+id/edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+            />
+        </ScrollView>
+        <LinearLayout
+            android:id="@+id/lineSpacinglayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
 
-  <TextView
-      android:text="Linespace:"
-      android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    <SeekBar
-        android:id="@+id/linespacing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Linespace:"/>
+            <SeekBar
+                android:id="@+id/linespacing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            />
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/textSizelayout"
-        android:layout_above="@+id/lineSpacinglayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:text="Textsize:   "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    <SeekBar
-        android:id="@+id/textsize"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/textSizelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lineSpacinglayout">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Textsize:   "/>
+            <SeekBar
+                android:id="@+id/textsize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            />
+        </LinearLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu">
+        <RelativeLayout
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginLeft="35dp">
+
+
+            <ImageView
+                android:id="@+id/settingimg"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/setting"/>
+            <TextView
+                android:id="@+id/setting"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/settingimg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+    </android.support.design.widget.NavigationView>
+
+</android.support.v4.widget.DrawerLayout>

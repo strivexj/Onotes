@@ -1,4 +1,4 @@
-package com.example.onotes;
+package com.example.onotes.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage;
 
 
 //Class is extending AsyncTask because this class is going to perform a networking operation
-public class SendMail extends AsyncTask<Void,Void,Void> {
+public class SendMail extends AsyncTask<Void, Void, Void> {
 
     //Declaring Variables
     private Context context;
@@ -28,13 +28,13 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
     private String subject;
     private String message;
 
-    private String myEmail="strivexj@gmail.com";
-    private String myPassword="strivexj";
+    private String myEmail = "strivexj@gmail.com";
+    private String myPassword = "strivexj";
     //Progressdialog to show while sending email
     private ProgressDialog progressDialog;
 
     //Class Constructorw
-    public SendMail(Context context, String email, String message){
+    public SendMail(Context context, String email, String message) {
         //Initializing variables
         this.context = context;
         this.email = email;
@@ -46,7 +46,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
     protected void onPreExecute() {
         super.onPreExecute();
         //Showing progress dialog while sending email
-        progressDialog = ProgressDialog.show(context,"Sending email","Please wait...",false,false);
+        progressDialog = ProgressDialog.show(context, "Sending email", "Please wait...", false, false);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         //Dismissing the progress dialog
         progressDialog.dismiss();
         //Showing a success message
-        Toast.makeText(context,"Message Sent", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Message Sent", Toast.LENGTH_LONG).show();
     }
 
     @Override

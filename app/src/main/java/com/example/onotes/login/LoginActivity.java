@@ -1,4 +1,4 @@
-package com.example.onotes;
+package com.example.onotes.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,16 +14,21 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
 import com.example.onotes.utils.InputUtil;
-import com.example.onotes.weatheractivity.WeatherMainActivity;
+import com.example.onotes.utils.LogUtil;
+import com.example.onotes.view.EditTextActivity;
+import com.example.onotes.weather.WeatherMainActivity;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
 import com.tencent.connect.common.Constants;
@@ -56,20 +61,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean issignin = false;
 
     private static final String TAG = "LoginActivity";
-    private static final String APP_ID = "***";//官方获取的APPID
+    private static final String APP_ID = "**";//官方获取的APPID
     private Tencent mTencent;
     private BaseUiListener mIUiListener;
     private UserInfo mUserInfo;
 
     private TextView qq;
     private TextView addgroup;
+    private ProgressBar progressBar;
+    private ImageView backgroud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
-        Log.d("cwja", "oncreate");
+        LogUtil.v(this,"aaa");
         Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
 
         //传入参数APPID和全局Context上下文
@@ -80,15 +87,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
-        login_progress = (ProgressBar) findViewById(R.id.login_progress);
+        backgroud=(ImageView)findViewById(R.id.backgroud) ;
         username = (AutoCompleteTextView) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         sign_in_button = (Button) findViewById(R.id.sign_in_button);
         signup = (TextView) findViewById(R.id.signup);
         forgetpassword = (TextView) findViewById(R.id.forgetpassword);
         rememeberpassword = (CheckBox) findViewById(R.id.rememeberpassword);
-        qq=(TextView) findViewById(R.id.qq);
-        addgroup=(TextView) findViewById(R.id.addgroup);
+        qq = (TextView) findViewById(R.id.qq);
+        addgroup = (TextView) findViewById(R.id.addgroup);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar);
+
+
         username.setFilters(new InputFilter[]{InputUtil.filterspace()});
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
 
@@ -102,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-
+       // Glide.with(this).load(R.drawable.backgroud).into(backgroud);
         SharedPreferences pref = getSharedPreferences("account", MODE_PRIVATE);
         String susername = pref.getString("username", "");
         final String spassword = pref.getString("password", "");
@@ -142,6 +152,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.sign_in_button: {
 
+                progressBar.setVisibility(View.VISIBLE);
+                // 收缩按钮
+                CircularAnim.hide(sign_in_button).go();
+
                 BmobQuery<Person> query = new BmobQuery<Person>();
                 query.addWhereEqualTo("username", username.getText().toString());
                 query.findObjects(new FindListener<Person>() {
@@ -150,14 +164,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (e == null) {
                             Person person = object.get(0);
                             if (password.getText().toString().equals(person.getPassword())) {
-                                Toast.makeText(LoginActivity.this, "Sign in succeed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Sign in succeeded", Toast.LENGTH_SHORT).show();
                                 Log.d("cwj", "Sign in succeed");
                                 SharedPreferences.Editor editor = getSharedPreferences("account", MODE_PRIVATE).edit();
                                 editor.putString("username", username.getText().toString());
                                 if (rememeberpassword.isChecked()) {
-                                    Log.d("cwj", "2");
 
-                                    //Toast.makeText(LoginActivity.this, password.getText().toString(), Toast.LENGTH_SHORT).show();
                                     editor.putString("password", password.getText().toString());
                                     editor.putBoolean("checkbox", true);
                                     editor.apply();
@@ -167,21 +179,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     editor.putString("password", "");
                                     editor.apply();
                                 }
+                                CircularAnim.show(sign_in_button).go();
                                 CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
-                                        .colorOrImageRes(R.color.accent)
+                                        .colorOrImageRes(R.color.primary)
                                         .go(new CircularAnim.OnAnimationEndListener() {
                                             @Override
                                             public void onAnimationEnd() {
-                                                startActivity(new Intent(LoginActivity.this, WeatherMainActivity.class));
+                                                startActivity(new Intent(LoginActivity.this, EditTextActivity.class));
                                             }
                                         });
                                 issignin = true;
 
                             } else {
+
+                                progressBar.setVisibility(View.GONE);
+                                CircularAnim.show(sign_in_button).go();
+
                                 Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
+                            progressBar.setVisibility(View.GONE);
+                            CircularAnim.show(sign_in_button).go();
+
                             Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
                             Log.d("cwj", "query failed");
                         }
@@ -192,27 +212,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             break;
             case R.id.signup:
                 CircularAnim.fullActivity(LoginActivity.this, signup)
-                        .colorOrImageRes(R.color.accent)
+                        .colorOrImageRes(R.color.primary)
                         .go(new CircularAnim.OnAnimationEndListener() {
                             @Override
                             public void onAnimationEnd() {
                                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
                             }
                         });
-               /* Intent intent=new Intent(LoginActivity.this,SignUpActivity.class);
-                startActivity(intent);*/
                 break;
             case R.id.forgetpassword:
-                CircularAnim.fullActivity(LoginActivity.this,forgetpassword)
-                        .colorOrImageRes(R.color.accent)
+                CircularAnim.fullActivity(LoginActivity.this, forgetpassword)
+                        .colorOrImageRes(R.color.primary)
                         .go(new CircularAnim.OnAnimationEndListener() {
                             @Override
                             public void onAnimationEnd() {
                                 startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class));
                             }
                         });
-
-
 
 
                 break;
@@ -227,7 +243,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // startActivity(intent);
                 break;
             case R.id.addgroup:
-                 joinQQGroup();
+                joinQQGroup();
                 break;
 
         }
@@ -280,7 +296,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {
-                                        startActivity(new Intent(LoginActivity.this, WeatherMainActivity.class));
+                                        startActivity(new Intent(LoginActivity.this, EditTextActivity.class));
                                     }
                                 });
                         issignin = true;

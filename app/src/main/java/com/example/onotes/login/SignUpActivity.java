@@ -1,4 +1,4 @@
-package com.example.onotes;
+package com.example.onotes.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,10 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
 import com.example.onotes.utils.InputUtil;
-import com.example.onotes.weatheractivity.WeatherActivity;
+import com.example.onotes.utils.SendMail;
+import com.example.onotes.weather.WeatherActivity;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
@@ -153,12 +155,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
              sendverifycode.setClickable(false);
 
-       /*  if(verifycode.getText().toString().equals(""+verfiycode)){
-             b=true;
-         }
-         if(b){
-             Log.d("cwj","equal");
-         }*/
             }
              else {
             Toast.makeText(this, "your verify code is wrong", Toast.LENGTH_SHORT).show();
