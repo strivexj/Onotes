@@ -26,11 +26,11 @@ import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.bean.QqUser;
 import com.example.onotes.service.CityDownloadSerivce;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.LogUtil;
-import com.example.onotes.view.EditTextActivity;
-import com.example.onotes.weather.WeatherMainActivity;
+import com.example.onotes.view.NotelistActivity;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
 import com.tencent.connect.common.Constants;
@@ -46,7 +46,10 @@ import java.util.List;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -72,36 +75,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView addgroup;
     private ProgressBar progressBar;
     private ImageView backgroud;
+    private CircleImageView userpicture;
+    private CircleImageView qqpicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_login);
-        LogUtil.v(this,"aaa");
-        Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
+        Bmob.initialize(this, "**");
 
         //传入参数APPID和全局Context上下文
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
 
-        initView();
+        SharedPreferences preferences = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
+        issignin = preferences.getBoolean("issignin", false);
 
-
-        SharedPreferences preferences= App.getContext().getSharedPreferences("weather",MODE_PRIVATE);
-        if(!preferences.getBoolean("cityadded",false)){
-            Intent intentService=new Intent(this, CityDownloadSerivce.class);
+        SharedPreferences pref = App.getContext().getSharedPreferences("weather", MODE_PRIVATE);
+        if (!pref.getBoolean("cityadded", false)) {
+            Intent intentService = new Intent(this, CityDownloadSerivce.class);
             startService(intentService);
         }
 
+        if (issignin) {
+            startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
+        }
 
+        setContentView(R.layout.activity_login);
+
+        initView();
 
 
     }
 
     private void initView() {
-        Log.d("cwj","oasfdds");
-        backgroud=(ImageView)findViewById(R.id.backgroud) ;
-        username = (AutoCompleteTextView) findViewById(R.id.username);
+        Log.d("cwj", "oasfdds");
+        backgroud = (ImageView) findViewById(R.id.backgroud);
+        username = (AutoCompleteTextView) findViewById(R.id.signinusername);
         password = (EditText) findViewById(R.id.password);
         sign_in_button = (Button) findViewById(R.id.sign_in_button);
         signup = (TextView) findViewById(R.id.signup);
@@ -109,8 +118,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         rememeberpassword = (CheckBox) findViewById(R.id.rememeberpassword);
         qq = (TextView) findViewById(R.id.qq);
         addgroup = (TextView) findViewById(R.id.addgroup);
-        progressBar=(ProgressBar)findViewById(R.id.progressBar);
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        userpicture = (CircleImageView) findViewById(R.id.userpicture);
 
         username.setFilters(new InputFilter[]{InputUtil.filterspace()});
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
@@ -125,7 +134,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-       // Glide.with(this).load(R.drawable.backgroud).into(backgroud);
+        SharedPreferences qqsp = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
+        String pictureurl = qqsp.getString("figureurl_qq_2", "");
+        if (!TextUtils.isEmpty(pictureurl)) {
+            Glide.with(this).load(pictureurl).into(userpicture);
+        }
+
+
+        // Glide.with(this).load(R.drawable.backgroud).into(backgroud);
         SharedPreferences pref = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
         String susername = pref.getString("username", "");
         final String spassword = pref.getString("password", "");
@@ -158,6 +174,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         forgetpassword.setOnClickListener(this);
         qq.setOnClickListener(this);
         addgroup.setOnClickListener(this);
+
+        userpicture.setOnClickListener(this);
+        qqpicture = (CircleImageView) findViewById(R.id.qqpicture);
+        qqpicture.setOnClickListener(this);
     }
 
     @Override
@@ -185,12 +205,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                     editor.putString("password", password.getText().toString());
                                     editor.putBoolean("checkbox", true);
-                                    editor.apply();
+                                    //editor.apply();
                                 } else {
                                     Log.d("cwj", "1");
                                     editor.putBoolean("checkbox", false);
                                     editor.putString("password", "");
-                                    editor.apply();
+                                    //editor.apply();
                                 }
                                 CircularAnim.show(sign_in_button).go();
                                 CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
@@ -198,9 +218,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .go(new CircularAnim.OnAnimationEndListener() {
                                             @Override
                                             public void onAnimationEnd() {
-                                                startActivity(new Intent(LoginActivity.this, EditTextActivity.class));
+                                                startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
                                             }
                                         });
+                                editor.putBoolean("issignin", true);
+                                editor.apply();
+
                                 issignin = true;
 
                             } else {
@@ -246,6 +269,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
             case R.id.qq:
+
+                break;
+            case R.id.addgroup:
+                joinQQGroup();
+                break;
+            case R.id.qqpicture:
                 /**通过这句代码，SDK实现了QQ的登录，这个方法有三个参数，第一个参数是context上下文，第二个参数SCOPO 是一个String类型的字符串，表示一些权限
                  官方文档中的说明：应用需要获得哪些API的权限，由“，”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
                  第三个参数，是一个事件监听器，IUiListener接口的实例，这里用的是该接口的实现类 */
@@ -255,9 +284,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 //Intent intent=new Intent(LoginActivity.this,ForgetPasswordActivity.class);
                 // startActivity(intent);
                 break;
-            case R.id.addgroup:
-                joinQQGroup();
-                break;
+
 
         }
     }
@@ -294,24 +321,165 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.e(TAG, "response:" + response);
             JSONObject obj = (JSONObject) response;
             try {
-                String openID = obj.getString("openid");
-                String accessToken = obj.getString("access_token");
-                String expires = obj.getString("expires_in");
+                final String openID = obj.getString("openid");
+                final String accessToken = obj.getString("access_token");
+                final String expires = obj.getString("expires_in");
+
                 mTencent.setOpenId(openID);
                 mTencent.setAccessToken(accessToken, expires);
-                QQToken qqToken = mTencent.getQQToken();
+                final QQToken qqToken = mTencent.getQQToken();
                 mUserInfo = new UserInfo(getApplicationContext(), qqToken);
+
                 mUserInfo.getUserInfo(new IUiListener() {
                     @Override
                     public void onComplete(Object response) {
+
+                        Log.d("cwj", response.toString());
+
+                        try {
+                            JSONObject jo = (JSONObject) response;
+                            SharedPreferences.Editor editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
+                            final String nickname = jo.getString("nickname");
+                            final String gender = jo.getString("gender");
+                            final String province = jo.getString("province");
+                            final String city = jo.getString("city");
+                            final String figureurl = jo.getString("figureurl");
+                            final String figureurl_1 = jo.getString("figureurl_1");
+                            final String figureurl_2 = jo.getString("figureurl_2");
+                            final String figureurl_qq_1 = jo.getString("figureurl_qq_1");
+                            final String figureurl_qq_2 = jo.getString("figureurl_qq_2");
+
+                            editor.putString("nickname", nickname);
+                            editor.putString("gender", gender);
+                            editor.putString("province", province);
+                            editor.putString("city", city);
+                            editor.putString("figureurl", figureurl);
+                            editor.putString("figureurl_1", figureurl_1);
+                            editor.putString("figureurl_2", figureurl_2);
+                            editor.putString("figureurl_qq_1", figureurl_qq_1);
+                            editor.putString("figureurl_qq_2", figureurl_qq_2);
+                            editor.putString("openID", openID);
+                            editor.putString("accessToken", accessToken);
+                            editor.putString("expires", expires);
+                            editor.apply();
+
+                            BmobQuery<QqUser> query = new BmobQuery<QqUser>();
+                            query.addWhereEqualTo("accessToken", accessToken);
+                            query.count(QqUser.class, new CountListener() {
+                                @Override
+                                public void done(Integer count, BmobException e) {
+                                    if (e == null) {
+                                        if (count == 0) {
+
+                                            QqUser user = new QqUser();
+                                            user.setNickname(nickname);
+                                            user.setGender(gender);
+                                            user.setProvince(province);
+                                            user.setCity(city);
+                                            user.setFigureurl(figureurl);
+                                            user.setFigureurl_1(figureurl_1);
+                                            user.setFigureurl_2(figureurl_2);
+                                            user.setFigureurl_qq_1(figureurl_qq_1);
+                                            user.setFigureurl_2(figureurl_qq_2);
+                                            user.setAccessToken(accessToken);
+                                            user.setOpenID(openID);
+                                            user.setExpires(expires);
+                                            user.save(new SaveListener<String>() {
+                                                @Override
+                                                public void done(String s, BmobException e) {
+                                                    if (e == null) {
+                                                        LogUtil.d("cwj", "register");
+                                                    } else {
+                                                        LogUtil.d("cwj", "register fail");
+                                                    }
+                                                }
+                                            });
+                                        }
+
+
+                                    } else {
+                                        LogUtil.d("cwj", "失败：" + e.getMessage() + "," + e.getErrorCode());
+                                    }
+                                }
+                            });
+
+                         /*   BmobQuery<QqUser> query = new BmobQuery<QqUser>();
+                            query.addWhereEqualTo("nickname", nickname);
+                            query.findObjects(new FindListener<QqUser>() {
+                                                  @Override
+                                                  public void done(List<QqUser> object, BmobException e) {
+                                                      if (e == null) {
+                                                            QqUser qqUser=object.get(0);
+                                                            if (!qqUser.getNickname().equals(nickname)&&!qqUser.getFigureurl_qq_2().equals(figureurl_qq_2)){
+                                                                QqUser user = new QqUser();
+                                                                user.setNickname(nickname);
+                                                                user.setGender(gender);
+                                                                user.setProvince(province);
+                                                                user.setCity(city);
+                                                                user.setFigureurl(figureurl);
+                                                                user.setFigureurl_1(figureurl_1);
+                                                                user.setFigureurl_2(figureurl_2);
+                                                                user.setFigureurl_qq_1(figureurl_qq_1);
+                                                                user.setFigureurl_2(figureurl_qq_2);
+                                                                user.save(new SaveListener<String>() {
+                                                                    @Override
+                                                                    public void done(String s, BmobException e) {
+                                                                        if(e==null){
+                                                                            LogUtil.d("cwj","register");
+                                                                        }else{
+                                                                            LogUtil.d("cwj","register fail");
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+
+                                                      } else {
+                                                          QqUser user = new QqUser();
+                                                          user.setNickname(nickname);
+                                                          user.setGender(gender);
+                                                          user.setProvince(province);
+                                                          user.setCity(city);
+                                                          user.setFigureurl(figureurl);
+                                                          user.setFigureurl_1(figureurl_1);
+                                                          user.setFigureurl_2(figureurl_2);
+                                                          user.setFigureurl_qq_1(figureurl_qq_1);
+                                                          user.setFigureurl_2(figureurl_qq_2);
+                                                          user.save(new SaveListener<String>() {
+                                                              @Override
+                                                              public void done(String s, BmobException e) {
+                                                                  if(e==null){
+                                                                      LogUtil.d("cwj","register");
+                                                                  }else{
+                                                                      LogUtil.d("cwj","register fail");
+                                                                  }
+                                                              }
+                                                          });
+                                                      }
+                                                  }
+                                              });
+
+                            Log.d("cwj", jo.getString("nickname"));
+                            Log.d("cwj", jo.getString("gender"));
+                            Log.d("cwj", jo.getString("province"));
+                            Log.d("cwj", jo.getString("city"));
+                            Log.d("cwj", jo.getString("figureurl_qq_2"));
+*/
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
                                 .colorOrImageRes(R.color.accent)
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {
-                                        startActivity(new Intent(LoginActivity.this, EditTextActivity.class));
+                                        startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
                                     }
                                 });
+
+                        SharedPreferences.Editor editor = App.getContext().getSharedPreferences("account", MODE_PRIVATE).edit();
+                        editor.putBoolean("issignin", true);
+                        editor.apply();
+
                         issignin = true;
                         Log.e(TAG, "登录成功" + response.toString());
                     }

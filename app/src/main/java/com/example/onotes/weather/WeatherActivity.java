@@ -64,6 +64,13 @@ public class WeatherActivity extends AppCompatActivity {
 
     private TextView carWashText;
 
+    @Override
+    protected void onResume() {
+        //ChooseAreaFragment chooseAreaFragment=(ChooseAreaFragment)getFragmentManager().findFragmentById(R.id.choose_area_fragment);
+        //chooseAreaFragment.search();
+        super.onResume();
+    }
+
     private TextView sportText;
 
     private ImageView bingPicImg;
@@ -71,6 +78,12 @@ public class WeatherActivity extends AppCompatActivity {
     private String weatherId;
     private SideBar mSideBar;
     private TextView dialog;
+
+    public static String[] INDEX_STRING = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+            "W", "X", "Y", "Z"};
+
+    public static int[]indexposition=new int[26];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +122,8 @@ public class WeatherActivity extends AppCompatActivity {
             loadBingPic();
         }
 
+
+
     }
 
     private void showWeatherInfo() {
@@ -124,8 +139,8 @@ public class WeatherActivity extends AppCompatActivity {
             showWeatherInfo(weather);
         } else {
             // 无缓存时去服务器查询天气
-            weatherId = getIntent().getStringExtra("weather_id");
-
+            //weatherId = getIntent().getStringExtra("weather_id");
+            weatherId=prefs.getString("weatherid","");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }

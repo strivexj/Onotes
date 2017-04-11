@@ -54,14 +54,19 @@ import static com.example.onotes.R.id.dialog;
 public class ChooseAreaFragment extends Fragment {
     private ProgressDialog progressDialog;
     private EditText searchText;
-    private Button backButton;
     private SearchView mSearchView;
     private ListView listView;
-    private WeatherAdapter adapter;
+
+
+    public static String[] INDEX_STRING = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+            "W", "X", "Y", "Z"};
+
+    public static int[]indexposition=new int[26];
 
     private SideBar sideBar;
 
-   //1. private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
 
 
@@ -83,13 +88,17 @@ public class ChooseAreaFragment extends Fragment {
  * lon : 116.405285
  */
 
-    private void search() {
+    public  void search() {
         dataList.clear();
         CityDbHelper cityDbHelper = new CityDbHelper(getActivity());
         SQLiteDatabase db = cityDbHelper.getWritableDatabase();
         Log.d("db", "search");
         Cursor cursor = db.query("City", null, null, null, null, null, "CityEn");
         int j = 0;
+        for(int i=0;i<26;i++){
+            indexposition[i]=-1;
+        }
+        //dataList.add("A");
         if (cursor.moveToFirst()) {
             do {
                 City city = new City();
@@ -114,8 +123,25 @@ public class ChooseAreaFragment extends Fragment {
                 city.setSortLetters(CityEn.charAt(0)+"");
                 cityList.add(city);
                 Log.d("db", "find a city  " + j);
+
+               /* for(int i=0;i<26;i++){
+                    Log.d("db", "189");
+                    String ind=city.getCityEn().charAt(0)+"";
+                    ind=ind.toUpperCase();
+                    Log.d("db", ind);
+                    if(ind.equals(INDEX_STRING[i])){
+                        for(int k=0;k<26;k++){
+                            if(indexposition[k]!=-1){
+                                dataList.add(ind);
+                                Log.d("db", "159");
+                                indexposition[k]=dataList.size()-1;
+                            }
+                        }
+                    }
+                }
+*/
                 dataList.add(cityList.get(j).getCityZh());
-                //5.adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
                 j++;
             } while (cursor.moveToNext());
         }
@@ -136,7 +162,6 @@ public class ChooseAreaFragment extends Fragment {
         View view = inflater.inflate(R.layout.choose_area, container, false);
         Log.d("db", "oncreateview");
         searchText = (EditText) view.findViewById(R.id.title_text);
-        backButton = (Button) view.findViewById(R.id.back_button);
         listView = (ListView) view.findViewById(R.id.list_view);
 
         //filter space
@@ -158,7 +183,7 @@ public class ChooseAreaFragment extends Fragment {
                     if (searchText.getText().toString().equals(cityList.get(i).getCityZh())) {
                         dataList.clear();
                         dataList.add(cityList.get(i).getCityZh());
-                        //6.wadapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                         break;
                     }
                 }
@@ -166,9 +191,9 @@ public class ChooseAreaFragment extends Fragment {
         });
         //mSearchView=(SearchView)view.findViewById(R.id.searchView);
 
-       //2. adapter = new ArrayAdapter<>(getActivity().getApplication(), android.R.layout.simple_list_item_1, dataList);
+        adapter = new ArrayAdapter<>(getActivity().getApplication(), android.R.layout.simple_list_item_1, dataList);
 
-        //3.listView.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
 
         return view;
@@ -216,9 +241,16 @@ public class ChooseAreaFragment extends Fragment {
         });
 
 
-        search();
-        adapter = new WeatherAdapter(getActivity().getApplication(), cityList);
-        listView.setAdapter(adapter);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        search();
+                    }
+                });
+
+       // adapter = new WeatherAdapter(getActivity().getApplication(), cityList);
+      //  listView.setAdapter(adapter);
+       // adapter.notifyDataSetChanged();
     }
 
     @Override

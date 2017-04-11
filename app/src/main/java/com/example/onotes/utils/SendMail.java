@@ -26,8 +26,8 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
     private String subject;
     private String message;
 
-    private String myEmail = "strivexj@gmail.com";
-    private String myPassword = "strivexj";
+    private String myEmail = "**";
+    private String myPassword = "**";
 
     private ProgressDialog progressDialog;
 

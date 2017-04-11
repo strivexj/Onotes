@@ -5,6 +5,16 @@
     android:id="@+id/etdrawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:title="Search"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    </android.support.v7.widget.Toolbar>
+
     <RelativeLayout
 
         android:layout_width="match_parent"
@@ -60,33 +70,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu">
-        <RelativeLayout
-            android:layout_gravity="bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:layout_marginRight="35dp"
-            android:layout_marginLeft="35dp">
+        <!-- app:headerLayout="@layout/nav_header"-->
 
 
-            <ImageView
-                android:id="@+id/settingimg"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/setting"/>
-            <TextView
-                android:id="@+id/setting"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@+id/settingimg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
     </android.support.design.widget.NavigationView>
+
 
 </android.support.v4.widget.DrawerLayout>
