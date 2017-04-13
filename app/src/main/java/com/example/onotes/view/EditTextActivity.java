@@ -41,6 +41,7 @@ import com.example.onotes.datebase.CityDbHelper;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.login.LoginActivity;
 import com.example.onotes.setting.SettingActivity;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.KeyboardUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.weather.WeatherActivity;
@@ -53,33 +54,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditTextActivity extends AppCompatActivity {
-    private DrawerLayout mDrawerLayout;
 
     private SeekBar linespacing;
     private SeekBar textsize;
     private EditText edittext;
-
-    private NavigationView navigationView;
-
-    private SideBar mSideBar;
-
-    private TextView setting;
-
-    private TextView username;
-    private CircleImageView icon_image;
-
-
+    public static final String REFRESH="com.example.onotes.refresh";
+    private String notesid;
+    private float linespace=0;
+    private float textsizef=25;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_text);
         LogUtil.d("cwj","oncerate");
-        initView();
+        ActivityCollector.addActivity(this);
 
+
+        LogUtil.d("time",System.currentTimeMillis()+"");
+
+       LogUtil.d("time",getcurrenttime());
 
         // this work
        // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -96,11 +94,20 @@ public class EditTextActivity extends AppCompatActivity {
         //InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
        // keyboard.hideSoftInputFromWindow(getWindow().getAttributes().token, 0);
 
-        edittext.setTextSize(25);
-       // hideSoftKeyboard();
+
+        initView();
+        //edittext.setTextSize(25);
         linespacing.setMax(1000);
         textsize.setMax(100);
+    }
 
+    private String getcurrenttime() {
+        Calendar calendar= Calendar.getInstance();
+        return calendar.get(Calendar.YEAR)+"."+
+                calendar.get(Calendar.MONTH)+"."
+                + calendar.get(Calendar.DAY_OF_MONTH)+" "+
+                        calendar.get(Calendar.HOUR_OF_DAY)+"."+
+                                calendar.get(Calendar.MINUTE)+ "."+calendar.get(Calendar.SECOND);
     }
 
     @Override
@@ -120,6 +127,8 @@ public class EditTextActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 edittext.setLineSpacing((float) progress, 1);
+
+                linespace=(float)progress;
             }
 
             @Override
@@ -136,7 +145,7 @@ public class EditTextActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 edittext.setTextSize(progress);
-
+                textsizef=(float)progress;
             }
 
             @Override
@@ -184,31 +193,42 @@ public class EditTextActivity extends AppCompatActivity {
             }
         });
         LogUtil.d("cwj","length:"+edittext.getText().toString().length());
-        //Toast.makeText(this, edittext.getText().toString()+"", Toast.LENGTH_SHORT).show();
-
-
-
+        textsize.setProgress((int)textsizef);
+       linespacing.setProgress((int)linespace);
     }
     public String load(){
         Intent intent=getIntent();
+        notesid=intent.getIntExtra("id",-1)+"";
+        textsizef=intent.getFloatExtra("textsize",25);
+        linespace=intent.getFloatExtra("linespace",0);
+        edittext.setTextSize(textsizef);
+        edittext.setLineSpacing(linespace, 1);
+
+
+        LogUtil.d("load",textsize+"  "+linespace);
         return intent.getStringExtra("content");
     }
     public void save(String data){
         if(!TextUtils.isEmpty(data)) {
             NotesDbHelper notesDbHelper = new NotesDbHelper(this);
             SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+            db.delete("Notes","id=?",new String[]{notesid});
+            LogUtil.d("delete",notesid+"");
             ContentValues values = new ContentValues();
+            values.put("textsize",textsizef);
+            values.put("linespace",linespace);
             values.put("content", data);
+            values.put("time",getcurrenttime());
             db.insert("Notes", null, values);
             db.close();
+            LogUtil.d("textsize",edittext.getTextSize()+"");
+            LogUtil.d("texts",""+linespace);
         }
+        Intent intent=new Intent(REFRESH);
+        sendBroadcast(intent);
     }
 
 
-
-    public EditTextActivity() {
-        super();
-    }
 
     @Override
     protected void onStart() {
@@ -231,10 +251,8 @@ public class EditTextActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        LogUtil.d("cwj","edondestory");
-        save(edittext.getText().toString());
         super.onDestroy();
+        LogUtil.d("cwj","edondestory");
+       save(edittext.getText().toString());
     }
-
-
 }

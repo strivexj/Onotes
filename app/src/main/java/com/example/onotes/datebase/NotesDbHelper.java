@@ -14,8 +14,8 @@ public class NotesDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
             "create table Notes (" + "id integer primary key autoincrement,"
                     + "cityid text," + "cityEn text,"+ "cityZh text," +"lat text," + "lon text,"
-                    + "date text," + "time text," + "title text," + "picture text,"
-                    + "content text," + "location text)";
+                    + "data text," + "time text," + "title text," + "picture text,"+"textsize real,"
+                    +"linespace real,"+ "content text," + "location text)";
 
     public NotesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

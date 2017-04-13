@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-
+    android:orientation="horizontal"
     android:layout_height="wrap_content"
     android:gravity="left">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/topicture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/robot"
+        android:layout_gravity="center"/>
+
     <TextView
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="5dp"
+
         android:layout_marginLeft="10dp"
         android:background="@drawable/bg_item_chat_left"
         android:gravity="center_vertical"
@@ -23,4 +31,6 @@
         android:textColor="#FF000000"
         android:textSize="15sp"/>
 
-</RelativeLayout>
+
+
+</LinearLayout>

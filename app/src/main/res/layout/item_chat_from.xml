@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:gravity="right"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
+
 
     <TextView
         android:id="@+id/content"
@@ -11,7 +13,7 @@
         android:background="@drawable/bg_item_chat_right"
         android:layout_alignParentRight="true"
         android:textIsSelectable="true"
-        android:layout_marginBottom="12dp"
+
         android:layout_marginLeft="78dp"
         android:layout_marginRight="10dp"
         android:gravity="center_vertical"
@@ -23,4 +25,10 @@
         android:paddingTop="16dp"
         android:textColor="#FFFFFFFF"
         android:textSize="15sp" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/frompicture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/icon"
+        android:layout_gravity="center"/>
 </LinearLayout>

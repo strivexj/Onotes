@@ -17,6 +17,26 @@ public class Notes {
     private String picture;
     private String content;
     private String location;
+    private float textsize;
+    private float linespace;
+
+    public float getTextsize() {
+        return textsize;
+    }
+
+    public void setTextsize(float textsize) {
+        this.textsize = textsize;
+    }
+
+    public float getLinespace() {
+        return linespace;
+    }
+
+    public void setLinespace(float linespace) {
+        this.linespace = linespace;
+    }
+
+
 
     public int getId() {
         return id;

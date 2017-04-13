@@ -1,17 +1,14 @@
 package com.example.onotes.weather;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,34 +16,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 
 import com.example.onotes.App;
 import com.example.onotes.R;
-import com.example.onotes.adapter.WeatherAdapter;
 import com.example.onotes.bean.City;
 import com.example.onotes.datebase.CityDbHelper;
-import com.example.onotes.utils.HttpUtil;
-import com.example.onotes.utils.PinyinUtils;
-import com.example.onotes.utils.WeatherUtil;
-import com.example.onotes.view.PinyinComparator;
 import com.example.onotes.view.SideBar;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.onotes.R.id.dialog;
 
 /**
  * Created by cwj on 2017/3/9 13:52

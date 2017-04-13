@@ -23,6 +23,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
+            android:src="@drawable/icon"
             android:layout_gravity="center"/>
 
         <android.support.v7.widget.CardView

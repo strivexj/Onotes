@@ -1,7 +1,11 @@
 package com.example.onotes.view;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +17,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -34,9 +40,11 @@ import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.adapter.NotesAdapter;
 import com.example.onotes.anim.CircularAnim;
+import com.example.onotes.bean.Notes;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.setting.SettingActivity;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.WeatherUtil;
@@ -65,12 +73,12 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     private NavigationView navigationView;
     private TextView setting;
     private FloatingActionButton fab;
-    private List<String> list=new ArrayList<>();
+    private List<Notes> list=new ArrayList<>();
     private RecyclerView mRecyclerView;
     private NotesAdapter adapter;
     private TextView weather_degree;
     private TextView weather_city;
-
+    private TextView saying;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +87,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        ActivityCollector.addActivity(this);
         //实例化并传输数据给adapter
         adapter = new NotesAdapter(getApplicationContext(), list);
         mRecyclerView.setAdapter(adapter);
@@ -113,20 +121,15 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
+
+                String notesid =list.get(position).getId()+"";
+                NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
+                SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+
+                db.delete("Notes","id=?",new String[]{notesid});
+
                 list.remove(position);
                 adapter.notifyItemRemoved(position);
-
-               // NotesDbHelper notesDbHelper = new NotesDbHelper(App.getContext());
-               // SQLiteDatabase db = notesDbHelper.getWritableDatabase();
-
-                //db.delete("Notes","content=?",new String[]{list.get(position)});
-                /*try{
-
-                }catch (IndexOutOfBoundsException e){
-                    e.printStackTrace();
-                }
-                db.close();*/
-
 
             }
 
@@ -198,7 +201,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         username = (TextView) headerLayout.findViewById(R.id.username);
         icon_image = (CircleImageView) headerLayout.findViewById(R.id.icon_image);
+        saying=(TextView)headerLayout.findViewById(R.id.saying);
 
+        saying.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -234,11 +239,10 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         String pictureurl = qqinfo.getString("figureurl_qq_2", "");
         LogUtil.d("ccwj", qqusername);
         LogUtil.d("ccwj", pictureurl);
-        try {
-            username.setText(qqusername);
+        username.setText(qqusername);
+        
+        if(!TextUtils.isEmpty(pictureurl)){
             Glide.with(this).load(pictureurl).into(icon_image);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
 
@@ -269,22 +273,37 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         weather_city.setOnClickListener(this);
 
          requestWeather();
-
+        register_refresh();
 
     }
 
     private void initData() {
         list.clear();
-
+        LogUtil.d("onsaveread ","aoninitdata");
         NotesDbHelper notesDbHelper = new NotesDbHelper(this);
+
         SQLiteDatabase db = notesDbHelper.getWritableDatabase();
         Cursor cursor = db.query("Notes", null, null, null, null, null, null);
         if (cursor.moveToLast()) {
+            int i=1;
             do {
                 String content=cursor.getString(cursor.getColumnIndex("content"));
-                //String content=cursor.getString(cursor.getColumnIndex("id"))+"";
-                list.add(content);
+                String time=cursor.getString(cursor.getColumnIndex("time"));
+                int id=cursor.getInt(cursor.getColumnIndex("id"));
+                float textsize=cursor.getFloat(cursor.getColumnIndex("textsize"));
+                float linespace=cursor.getFloat(cursor.getColumnIndex("linespace"));
+                //LogUtil.d("delete in",id+"");
+                LogUtil.d("delete in"+id ,content);
+                Notes notes=new Notes();
+                notes.setId(id);
+                notes.setTime(time);
+                notes.setContent(content);
+                notes.setTextsize(textsize);
+                notes.setLinespace(linespace);
+                list.add(notes);
 
+                LogUtil.d("aonsaveread "+i,content);
+                i++;
             } while (cursor.moveToPrevious());
         }
         cursor.close();
@@ -293,10 +312,31 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(refresh);
+        LogUtil.d("cwj","aondestory");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LogUtil.d("cwj","aonstart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LogUtil.d("cwj","aonpause");
+    }
+
+    @Override
     protected void onResume() {
-        super.onResume();
+
         initData();
-        LogUtil.d("cwj","onresumeinit");
+        requestWeather();
+        LogUtil.d("cwj","aonresumeinit");
+        super.onResume();
     }
 
     public void onClick(View v) {
@@ -322,6 +362,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 startActivity(new Intent(NotelistActivity.this, WeatherMainActivity.class));
                             }
                         });
+                break;
+            case R.id.saying:
+                Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -334,15 +377,35 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.category: {
-                mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+                mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                 break;
             }
             case R.id.delete: {
-                Toast.makeText(NotelistActivity.this,"You clicked delete~!",Toast.LENGTH_SHORT).show();
-                break;
-            }
-            case R.id.settings: {
-                Toast.makeText(NotelistActivity.this,"You clicked settings~!",Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder dialog=new AlertDialog.Builder(NotelistActivity.this);
+                dialog.setTitle("Delete");
+                dialog.setMessage("Are you sure to delete all notes?");
+                dialog.setCancelable(true);
+                dialog.setIcon(R.drawable.warning);
+                dialog.setPositiveButton("Yes",new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog,int which)
+                    {
+                        NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
+                        SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+                        String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS Notes";
+                        db.execSQL(SQL_DELETE_ENTRIES);
+                        notesDbHelper.onCreate(db);
+                        list.clear();
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                dialog.show();
+
+
                 break;
             }
             case android.R.id.home: {
@@ -359,6 +422,17 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         return true;
     }
 
+    private BroadcastReceiver refresh = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initData();
+        }
+    };
+
+    private void register_refresh() {
+        IntentFilter filter = new IntentFilter(EditTextActivity.REFRESH);
+        registerReceiver(refresh, filter);
+    }
 
 
     private long clickTime = 0;
@@ -386,6 +460,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void requestWeather() {
+        LogUtil.d("onsaveread ","aonrequest");
         SharedPreferences pref = App.getContext().getSharedPreferences("weather", MODE_APPEND);
         String weatherid = pref.getString("weatherid", "");
         //https://free-api.heweather.com/v5/weather?city=yourcity&key=yourkey；

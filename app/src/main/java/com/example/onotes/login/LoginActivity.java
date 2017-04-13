@@ -29,6 +29,7 @@ import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
 import com.example.onotes.bean.QqUser;
 import com.example.onotes.service.CityDownloadSerivce;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.view.NotelistActivity;
@@ -84,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
 
         Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
-
+        ActivityCollector.addActivity(this);
         //传入参数APPID和全局Context上下文
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
 
@@ -141,8 +142,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Glide.with(this).load(pictureurl).into(userpicture);
         }
 
-
-        // Glide.with(this).load(R.drawable.backgroud).into(backgroud);
         SharedPreferences pref = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
         String susername = pref.getString("username", "");
         final String spassword = pref.getString("password", "");
@@ -623,6 +622,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void finish() {
         Log.d("cwja", "onsfinish");
         super.finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+            ActivityCollector.finishAll();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
 

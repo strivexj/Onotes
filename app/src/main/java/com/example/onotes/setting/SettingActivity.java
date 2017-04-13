@@ -13,6 +13,7 @@ import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.login.LoginActivity;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.view.EditTextActivity;
 
@@ -24,6 +25,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        ActivityCollector.addActivity(this);
         initView();
     }
 
@@ -39,7 +41,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logout:
-
                 CircularAnim.fullActivity(SettingActivity.this, logout)
                         .colorOrImageRes(R.color.primary)
                         .go(new CircularAnim.OnAnimationEndListener() {
@@ -52,21 +53,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 SharedPreferences.Editor editor= App.getContext().getSharedPreferences("account",MODE_PRIVATE).edit();
                 editor.putBoolean("issignin",false);
                 editor.apply();
-
-
-
                 LogUtil.d(this,"cwji");
                 break;
         }
     }
 
-  /*  @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK){
-            startActivity(new Intent(this,EditTextActivity.class));
-        }
-        return super.onKeyDown(keyCode, event);
-    }*/
 
     @Override
     protected void onStop() {

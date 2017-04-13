@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.onotes.R;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.SendMail;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
@@ -39,6 +40,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password);
+        ActivityCollector.addActivity(this);
         initView();
     }
 

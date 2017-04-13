@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.onotes.App;
 import com.example.onotes.R;
+import com.example.onotes.utils.ActivityCollector;
 
 
 public class WeatherMainActivity extends AppCompatActivity {
@@ -17,7 +18,7 @@ public class WeatherMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_main);
-
+        ActivityCollector.addActivity(this);
         SharedPreferences prefs = App.getContext().getSharedPreferences("weather",MODE_PRIVATE);
         if (prefs.getString("weatherresponseText", null) != null) {
             Intent intent = new Intent(this, WeatherActivity.class);

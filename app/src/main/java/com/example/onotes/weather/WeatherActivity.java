@@ -25,6 +25,7 @@ import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.gson.Forecast;
 import com.example.onotes.gson.Weather;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.view.SideBar;
@@ -88,6 +89,7 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCollector.addActivity(this);
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN

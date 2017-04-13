@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.SendMail;
 import com.example.onotes.weather.WeatherActivity;
@@ -38,6 +39,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        ActivityCollector.addActivity(this);
         initView();
     }
 

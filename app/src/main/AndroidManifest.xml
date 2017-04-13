@@ -91,9 +91,6 @@
         <activity android:name=".setting.SettingActivity"
                   android:launchMode="singleTask">
         </activity>
-        <activity android:name=".view.MainActivity"
-                  android:launchMode="singleTask">
-        </activity>
         <activity android:name=".view.NotelistActivity"
                   android:launchMode="singleTask">
         </activity>

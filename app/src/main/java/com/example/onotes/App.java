@@ -10,7 +10,6 @@ public class App extends Application {
     private static Context context;
     @Override
     public void onCreate() {
-        Log.d("aa","sf");
        context=getApplicationContext();
     }
     public static Context getContext(){

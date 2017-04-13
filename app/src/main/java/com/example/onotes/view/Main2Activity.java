@@ -1,44 +1,39 @@
 package com.example.onotes.view;
 
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
 import com.example.onotes.R;
 import com.example.onotes.adapter.ChatAdapter;
-import com.example.onotes.adapter.NotesAdapter;
 import com.example.onotes.bean.Chat;
 import com.example.onotes.datebase.ChatDbHelper;
-import com.example.onotes.datebase.CityDbHelper;
-import com.example.onotes.datebase.NotesDbHelper;
+import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.LogUtil;
 import com.turing.androidsdk.HttpRequestListener;
 import com.turing.androidsdk.TuringManager;
+import android.Manifest;
+import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.v3.http.bean.Init;
 
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -54,10 +49,15 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     public static final int TYPE_MSG_FROM = 0;
     public static final int TYPE_MSG_TO = 1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        ActivityCollector.addActivity(this);
+        if(ContextCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(Main2Activity.this,new String[]{Manifest.permission.READ_PHONE_STATE},1);
+        }
         initView();
         initdata();
     }
@@ -65,13 +65,14 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     private void initView() {
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
 
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.arrowleft);
         }
         mTuringManager = new TuringManager(this, turingKey,
                 secret);
@@ -98,6 +99,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
         write = (EditText) findViewById(R.id.write);
         write.setOnClickListener(this);
+        write.requestFocus();
 
         request = (Button) findViewById(R.id.request);
         request.setOnClickListener(this);
@@ -175,6 +177,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             values.put("content",content);
             db.insert("Chat",null,values);
         }
+        db.close();
 
     }
 
@@ -201,5 +204,27 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
         savedata();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0) {
+                    for (int result : grantResults) {
+                        if (result != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(this, "必须同意所有权限才能使用本程序", Toast.LENGTH_SHORT).show();
+                            finish();
+                            return;
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "发生未知错误", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+            default:
+        }
     }
 }

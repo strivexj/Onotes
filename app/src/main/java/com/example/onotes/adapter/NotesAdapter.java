@@ -12,8 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.onotes.R;
+import com.example.onotes.bean.Notes;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.login.LoginActivity;
+import com.example.onotes.utils.LogUtil;
 import com.example.onotes.view.EditTextActivity;
 import com.example.onotes.weather.WeatherActivity;
 
@@ -29,17 +31,17 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
     private Context mContext;
-    private List<String> mList;
+    private List<Notes> mList;
     private List<Integer> mHeight;
 
-    public NotesAdapter(Context context, List<String> list) {
+    public NotesAdapter(Context context, List<Notes> list) {
         mContext = context;
         mList = list;
 
-        mHeight = new ArrayList<Integer>();
+     /*   mHeight = new ArrayList<Integer>();
         for (int i = 0; i < mList.size(); i++) {
             mHeight.add((int) (80 + Math.random() * 300));
-        }
+        }*/
     }
 
     @Override
@@ -54,8 +56,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         //此处设置Item中view的数据
-        holder.mTextView.setText(mList.get(position));
-
+        holder.mTextView.setText(mList.get(position).getContent());
+        holder.time.setText(mList.get(position).getTime());
         // ViewGroup.LayoutParams lp = holder.mTextView.getLayoutParams();
         // lp.height = mHeight.get(position);
 
@@ -64,10 +66,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), EditTextActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("content", mList.get(position));
+                intent.putExtra("content", mList.get(position).getContent());
+                intent.putExtra("id",mList.get(position).getId());
+                intent.putExtra("textsize",mList.get(position).getTextsize());
+                intent.putExtra("linespace",mList.get(position).getLinespace());
+                LogUtil.d("dbtextsize",mList.get(position).getTextsize()+"");
+                LogUtil.d("dbtextspace",mList.get(position).getLinespace()+"");
+                mList.remove(position);
                 view.getContext().startActivity(intent);
-
-                Toast.makeText(mContext, mList.get(position), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -82,25 +88,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     //Item的ViewHolder以及Item内部布局控件的id绑定
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
-
+        TextView time;
         public ViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.recycle_textview);
-
+            time=(TextView)itemView.findViewById(R.id.notetime);
         }
 
     }
 
-    public void addData(int position) {
-
-        mList.add(position, "新增" + position);
-        //通知适配器item内容插入
-        notifyItemInserted(position);
-    }
-
-    public void RemoveData(int position) {
-        mList.remove(position);
-        //通知适配器item内容删除
-        notifyItemRemoved(position);
-    }
 }
