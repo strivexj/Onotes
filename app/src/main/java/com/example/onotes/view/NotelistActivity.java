@@ -3,6 +3,8 @@ package com.example.onotes.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +34,7 @@ import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.adapter.NotesAdapter;
 import com.example.onotes.anim.CircularAnim;
+import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.setting.SettingActivity;
 import com.example.onotes.utils.HttpUtil;
@@ -62,9 +65,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     private NavigationView navigationView;
     private TextView setting;
     private FloatingActionButton fab;
-    private List<String> list;
+    private List<String> list=new ArrayList<>();
     private RecyclerView mRecyclerView;
-    NotesAdapter adapter;
+    private NotesAdapter adapter;
     private TextView weather_degree;
     private TextView weather_city;
 
@@ -76,8 +79,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        initData();
-        //实例化并传输数据给adapterw
+
+        //实例化并传输数据给adapter
         adapter = new NotesAdapter(getApplicationContext(), list);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -112,6 +115,19 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 int position = viewHolder.getAdapterPosition();
                 list.remove(position);
                 adapter.notifyItemRemoved(position);
+
+               // NotesDbHelper notesDbHelper = new NotesDbHelper(App.getContext());
+               // SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+
+                //db.delete("Notes","content=?",new String[]{list.get(position)});
+                /*try{
+
+                }catch (IndexOutOfBoundsException e){
+                    e.printStackTrace();
+                }
+                db.close();*/
+
+
             }
 
             @Override
@@ -152,14 +168,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-
-       /* FloatingActionButton transfab=(FloatingActionButton)findViewById(R.id.transfab);
-        transfab.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-            }
-        });
-
+        initData();
         //mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
         //mRecyclerView.setLayoutManager(new GridLayoutManager(this, 5));
         // mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));*/
@@ -183,14 +192,12 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
 
-
         //如果在xml中用app:headerLayout="@layout/nav_header“会出现 不能引用nav_header中的widgets
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         final View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header);
 
         username = (TextView) headerLayout.findViewById(R.id.username);
         icon_image = (CircleImageView) headerLayout.findViewById(R.id.icon_image);
-
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -205,7 +212,18 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                         startActivity(new Intent(NotelistActivity.this, WeatherMainActivity.class));
                                     }
                                 });
+                        break;
                     }
+                    case R.id.robot:
+                        CircularAnim.fullActivity(NotelistActivity.this, navigationView)
+                                .colorOrImageRes(R.color.primary)
+                                .go(new CircularAnim.OnAnimationEndListener() {
+                                    @Override
+                                    public void onAnimationEnd() {
+                                        startActivity(new Intent(NotelistActivity.this, Main2Activity.class));
+                                    }
+                                });
+                        break;
                 }
                 return true;
             }
@@ -233,7 +251,6 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         fab.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-
                 CircularAnim.fullActivity(NotelistActivity.this, fab)
                         .colorOrImageRes(R.color.primary)
                         .go(new CircularAnim.OnAnimationEndListener() {
@@ -252,7 +269,34 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         weather_city.setOnClickListener(this);
 
          requestWeather();
-       
+
+
+    }
+
+    private void initData() {
+        list.clear();
+
+        NotesDbHelper notesDbHelper = new NotesDbHelper(this);
+        SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+        Cursor cursor = db.query("Notes", null, null, null, null, null, null);
+        if (cursor.moveToLast()) {
+            do {
+                String content=cursor.getString(cursor.getColumnIndex("content"));
+                //String content=cursor.getString(cursor.getColumnIndex("id"))+"";
+                list.add(content);
+
+            } while (cursor.moveToPrevious());
+        }
+        cursor.close();
+        db.close();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+        LogUtil.d("cwj","onresumeinit");
     }
 
     public void onClick(View v) {
@@ -266,7 +310,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 startActivity(new Intent(NotelistActivity.this, SettingActivity.class));
                             }
                         });
+
                 break;
+            case R.id.weather_degree:
             case R.id.weather_city:
                 CircularAnim.fullActivity(NotelistActivity.this, weather_city)
                         .colorOrImageRes(R.color.primary)
@@ -276,7 +322,6 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 startActivity(new Intent(NotelistActivity.this, WeatherMainActivity.class));
                             }
                         });
-
         }
 
     }
@@ -290,30 +335,22 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         switch (item.getItemId()) {
             case R.id.category: {
                 mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-                //Intent intent=new Intent(MainActivity.this,LoationActivity.class);
-                // startActivityForResult(intent,0);
                 break;
             }
             case R.id.delete: {
-
-                // //Toast.makeText(MainActivity.this,"You clicked delete~!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(NotelistActivity.this,"You clicked delete~!",Toast.LENGTH_SHORT).show();
                 break;
             }
             case R.id.settings: {
-                //  Toast.makeText(MainActivity.this,"You clicked settings~!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(NotelistActivity.this,"You clicked settings~!",Toast.LENGTH_SHORT).show();
                 break;
             }
             case android.R.id.home: {
-                // mRecyclerView.setLayoutManager(new GridLayoutManager(this, 5));
-
-
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             }
             case R.id.list: {
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                // Intent intent=new Intent(MainActivity.this,TranslateActivity.class);
-                // startActivity(intent);
                 break;
             }
 
@@ -322,13 +359,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         return true;
     }
 
-    private void initData() {
-        list = new ArrayList<String>();
-        for (int i = 1; i < 50; i++) {
-            list.add(i + "只");
-            LogUtil.d("cwj", "ji");
-        }
-    }
+
 
     private long clickTime = 0;
 
@@ -373,7 +404,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                             weather_city.setText(weather.basic.cityName);
                             weather_degree.setText(weather.now.temperature+"°C");
                         } else {
-                            weather_city.setTextSize(10);
+                            weather_city.setTextSize(15);
                             weather_city.setText("点击我选择城市吧");
                             //Toast.makeText(NotelistActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }

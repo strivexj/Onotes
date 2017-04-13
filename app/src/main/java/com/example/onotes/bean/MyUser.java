@@ -1,12 +1,13 @@
 package com.example.onotes.bean;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.BmobUser;
 
 /**
  * Created by cwj Apr.03.2017 11:08 AM
  */
 
-public class _User extends BmobObject {
+public class MyUser extends BmobUser {
     private String username;
     private String password;
     private String email;

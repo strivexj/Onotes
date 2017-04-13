@@ -27,80 +27,78 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
  * Created by cwj Apr.04.2017 11:13 AM
  */
 
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder>{
-       private Context mContext;
-        private List<String>mList;
-        private List<Integer> mHeight;
-        private CardView mCardView;
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
+    private Context mContext;
+    private List<String> mList;
+    private List<Integer> mHeight;
 
+    public NotesAdapter(Context context, List<String> list) {
+        mContext = context;
+        mList = list;
 
-        public NotesAdapter( Context context, List<String> list) {
-                mContext = context;
-                mList = list;
-
-            mHeight = new ArrayList<Integer>();
-            for (int i = 0; i < mList.size(); i++) {
-                mHeight.add((int) (80 + Math.random() * 300));
-            }
+        mHeight = new ArrayList<Integer>();
+        for (int i = 0; i < mList.size(); i++) {
+            mHeight.add((int) (80 + Math.random() * 300));
         }
+    }
 
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                //此处动态加载ViewHolder的布局文件并返回holder
-                View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleview_item,parent,false);
-                ViewHolder viewHolder=new ViewHolder(view);
-
-                return viewHolder;
-        }
-
-
-
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //此处动态加载ViewHolder的布局文件并返回holder
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleview_item, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
+    }
 
 
     @Override
-        public void onBindViewHolder(ViewHolder holder, final int position) {
-                //此处设置Item中view的数据
-                holder.mTextView.setText(mList.get(position));
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        //此处设置Item中view的数据
+        holder.mTextView.setText(mList.get(position));
 
-                ViewGroup.LayoutParams lp = holder.mTextView.getLayoutParams();
-                lp.height = mHeight.get(position);
+        // ViewGroup.LayoutParams lp = holder.mTextView.getLayoutParams();
+        // lp.height = mHeight.get(position);
 
-                holder.mTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent=new Intent(view.getContext(), EditTextActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    view.getContext().startActivity(intent);
+        holder.mTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), EditTextActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("content", mList.get(position));
+                view.getContext().startActivity(intent);
 
-                    Toast.makeText(mContext, mList.get(position),Toast.LENGTH_SHORT).show();
-                }
-            });
+                Toast.makeText(mContext, mList.get(position), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    @Override
+    public int getItemCount() {
+        //生成的Item的数量
+        return mList.size();
+    }
+
+    //Item的ViewHolder以及Item内部布局控件的id绑定
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView mTextView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            mTextView = (TextView) itemView.findViewById(R.id.recycle_textview);
 
         }
 
-        @Override
-        public int getItemCount() {
-                //生成的Item的数量
-                return mList.size();
-        }
-        //Item的ViewHolder以及Item内部布局控件的id绑定
-        class  ViewHolder extends RecyclerView.ViewHolder{
-                TextView mTextView;
-                public ViewHolder(View itemView) {
-                        super(itemView);
-                        mTextView=(TextView)itemView.findViewById(R.id.recycle_textview);
+    }
 
-                }
-
-        }
-
-    public void addData(int position){
+    public void addData(int position) {
 
         mList.add(position, "新增" + position);
         //通知适配器item内容插入
         notifyItemInserted(position);
     }
-    public void RemoveData(int position){
+
+    public void RemoveData(int position) {
         mList.remove(position);
         //通知适配器item内容删除
         notifyItemRemoved(position);

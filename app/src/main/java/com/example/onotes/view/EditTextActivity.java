@@ -1,8 +1,12 @@
 package com.example.onotes.view;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -11,11 +15,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -26,6 +37,8 @@ import com.bumptech.glide.Glide;
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
+import com.example.onotes.datebase.CityDbHelper;
+import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.login.LoginActivity;
 import com.example.onotes.setting.SettingActivity;
 import com.example.onotes.utils.KeyboardUtil;
@@ -67,6 +80,24 @@ public class EditTextActivity extends AppCompatActivity {
         LogUtil.d("cwj","oncerate");
         initView();
 
+
+        // this work
+       // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
+        // Check if no view has focus:
+
+       /*View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }*/
+
+        //InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+       // keyboard.hideSoftInputFromWindow(getWindow().getAttributes().token, 0);
+
+        edittext.setTextSize(25);
+       // hideSoftKeyboard();
         linespacing.setMax(1000);
         textsize.setMax(100);
 
@@ -80,7 +111,7 @@ public class EditTextActivity extends AppCompatActivity {
 
     private void initView() {
 
-       // mDrawerLayout = (DrawerLayout) findViewById(R.id.etdrawer_layout);
+
         linespacing = (SeekBar) findViewById(R.id.linespacing);
         textsize = (SeekBar) findViewById(R.id.textsize);
         edittext = (EditText) findViewById(R.id.edittext);
@@ -123,44 +154,57 @@ public class EditTextActivity extends AppCompatActivity {
         edittext.post(new Runnable() {
             @Override
             public void run() {
-                edittext.setSelection(edittext.getText().toString().length()-1);
-                LogUtil.d("cwj","set");
+                if(!TextUtils.isEmpty(edittext.getText().toString())) {
+                    edittext.setSelection(edittext.getText().toString().length());
+                    LogUtil.d("cwj", "set");
+                }
             }
         });
-        LogUtil.d("cwj","length:"+edittext.getText().toString().length());
-        Toast.makeText(this, edittext.getText().toString()+"", Toast.LENGTH_SHORT).show();
+        edittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-    }
+            }
 
-    public void save(String data){
-        LogUtil.d("cwj","before"+data);
-        FileOutputStream outputStream=null;
-        BufferedWriter writer=null;
-        try{
-            outputStream=openFileOutput("data", Context.MODE_PRIVATE);
-            writer=new BufferedWriter(new OutputStreamWriter(outputStream));
-            writer.write(data);
-            LogUtil.d("cwj","after"+data);
-        }catch (IOException e){
-            e.printStackTrace();
-        }finally {
-                try{
-                    if(writer!=null){
-                        writer.close();
-                    }
-                }catch (IOException e){
-                    e.printStackTrace();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Spannable inputStr = (Spannable)s;
+                if(s.equals("草")){
+                    inputStr.setSpan(new ForegroundColorSpan(Color.BLUE),start,start+count, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
 
+            @Override
+            public void afterTextChanged(Editable s) {
+                Spannable inputStr = (Spannable)s;
+                if(s.equals("草")){
+                    inputStr.setSpan(new ForegroundColorSpan(Color.BLUE),0,1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+
+            }
+        });
+        LogUtil.d("cwj","length:"+edittext.getText().toString().length());
+        //Toast.makeText(this, edittext.getText().toString()+"", Toast.LENGTH_SHORT).show();
+
+
+
+    }
+    public String load(){
+        Intent intent=getIntent();
+        return intent.getStringExtra("content");
+    }
+    public void save(String data){
+        if(!TextUtils.isEmpty(data)) {
+            NotesDbHelper notesDbHelper = new NotesDbHelper(this);
+            SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("content", data);
+            db.insert("Notes", null, values);
+            db.close();
+        }
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        edittext.setText(load());
 
-    }
 
     public EditTextActivity() {
         super();
@@ -186,86 +230,11 @@ public class EditTextActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        save(edittext.getText().toString());
-    }
-
-    @Override
     protected void onDestroy() {
-        super.onDestroy();
         LogUtil.d("cwj","edondestory");
         save(edittext.getText().toString());
-
+        super.onDestroy();
     }
 
-    public String load(){
-        FileInputStream inputStream=null;
-        BufferedReader reader=null;
-        StringBuilder content=new StringBuilder();
-        try{
-            inputStream=openFileInput("data");
-            reader=new BufferedReader(new InputStreamReader(inputStream));
-            String line="";
-            while ((line=reader.readLine())!=null){
-                content.append(line);
-                content.append("\n");
-            }
-            LogUtil.d("cwj","load");
-        }catch (IOException e){
-            e.printStackTrace();
-        }finally {
-
-                try{
-                    if(reader!=null) {
-                        reader.close();
-                    }
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-            }
-
-        return  content.toString();
-    }
-
-
-   /*@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            mDrawerLayout.closeDrawers();
-            return false;
-        }
-        if (keyCode == KeyEvent.KEYCODE_BACK){
-            LogUtil.d("cwj","back");
-            save(edittext.getText().toString());
-            return false;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }*/
-   private long clickTime = 0;
-
-   /* @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            mDrawerLayout.closeDrawers();
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void exit() {
-        if ((System.currentTimeMillis() - clickTime) > 3000) {
-            Toast.makeText(getApplicationContext(), "再次点击退出", Toast.LENGTH_SHORT).show();
-            clickTime = System.currentTimeMillis();
-        } else {
-
-            this.finish();
-            System.exit(0);
-        }
-    }*/
 
 }

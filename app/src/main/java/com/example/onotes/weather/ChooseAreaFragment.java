@@ -52,7 +52,7 @@ import static com.example.onotes.R.id.dialog;
  * Created by cwj on 2017/3/9 13:52
  */
 public class ChooseAreaFragment extends Fragment {
-    private ProgressDialog progressDialog;
+
     private EditText searchText;
     private SearchView mSearchView;
     private ListView listView;
@@ -290,24 +290,5 @@ public class ChooseAreaFragment extends Fragment {
         super.onDestroy();
     }
 
-    /**
-     * show progress dialog
-     */
-    private void showProgressDialog() {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
-    }
 
-    /**
-     * close progress dialog
-     */
-    private void closeProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
 }

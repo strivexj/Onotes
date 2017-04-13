@@ -1,0 +1,205 @@
+package com.example.onotes.view;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.example.onotes.R;
+import com.example.onotes.adapter.ChatAdapter;
+import com.example.onotes.adapter.NotesAdapter;
+import com.example.onotes.bean.Chat;
+import com.example.onotes.datebase.ChatDbHelper;
+import com.example.onotes.datebase.CityDbHelper;
+import com.example.onotes.datebase.NotesDbHelper;
+import com.example.onotes.utils.LogUtil;
+import com.turing.androidsdk.HttpRequestListener;
+import com.turing.androidsdk.TuringManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.bmob.v3.http.bean.Init;
+
+public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
+
+    private TuringManager mTuringManager;
+    private String turingKey = "d7670b6895a745f9a50bea198cfeb1f8";
+    private String secret = "abc1e88f6f592c43";
+    private EditText write;
+    private Button request;
+    private RecyclerView mRecyclerView;
+    private ChatAdapter adapter;
+    private List<Chat>data=new ArrayList<>();
+    private int initial;
+    public static final int TYPE_MSG_FROM = 0;
+    public static final int TYPE_MSG_TO = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main2);
+        initView();
+        initdata();
+    }
+
+    private void initView() {
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        mTuringManager = new TuringManager(this, turingKey,
+                secret);
+
+        mTuringManager.setHttpRequestListener(new HttpRequestListener() {
+
+            @Override
+            public void onSuccess(String s) {
+                try{
+                    JSONObject jsonObject=new JSONObject(s);
+                    String text=jsonObject.get("text").toString();
+                    adddata(TYPE_MSG_TO,text);
+                   // tv.setText(text);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(int i, String s) {
+              adddata(TYPE_MSG_TO,"sending failed");
+            }
+        });
+
+        write = (EditText) findViewById(R.id.write);
+        write.setOnClickListener(this);
+
+        request = (Button) findViewById(R.id.request);
+        request.setOnClickListener(this);
+
+
+
+        mRecyclerView=(RecyclerView)findViewById(R.id.chat_recyclerview);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        //实例化并传输数据给adapter
+        adapter=new ChatAdapter(getApplicationContext(),data);
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+    }
+
+   private void initdata(){
+       LogUtil.d("cwj","initdata");
+
+
+       ChatDbHelper chatDbHelper = new ChatDbHelper(this);
+       SQLiteDatabase db = chatDbHelper.getWritableDatabase();
+       Cursor cursor = db.query("Chat", null, null, null, null, null, null);
+       if(cursor.moveToFirst()){
+           do {
+               String content=cursor.getString(cursor.getColumnIndex("content"));
+               int type=cursor.getInt(cursor.getColumnIndex("type"));
+               Chat chat=new Chat();
+               chat.setType(type);
+               chat.setContent(content);
+               data.add(chat);
+           } while (cursor.moveToNext());
+           adapter.notifyDataSetChanged();
+       }
+       initial=data.size();
+       cursor.close();
+       if(data.size()>0)
+       mRecyclerView.smoothScrollToPosition(data.size()-1);
+
+    }
+
+    private void adddata(int type,String content) {
+        LogUtil.d("cwj","adddata");
+        if(type==TYPE_MSG_TO){
+            Chat chat=new Chat();
+            chat.setContent(content);
+            chat.setType(TYPE_MSG_TO);
+            data.add(chat);
+            adapter.notifyDataSetChanged();
+            mRecyclerView.smoothScrollToPosition(data.size()-1);
+        }
+        if(type==TYPE_MSG_FROM){
+            Chat chat=new Chat();
+            chat.setContent(content);
+            chat.setType(TYPE_MSG_FROM);
+            data.add(chat);
+            adapter.notifyDataSetChanged();
+            mRecyclerView.smoothScrollToPosition(data.size()-1);
+        }
+
+    }
+
+
+    private void savedata(){
+        LogUtil.d("cwj","savedata");
+        ChatDbHelper chatDbHelper = new ChatDbHelper(this);
+        SQLiteDatabase db = chatDbHelper.getWritableDatabase();
+
+        ContentValues values=new ContentValues();
+        for(int i=initial;i<data.size();i++){
+            String content=data.get(i).getContent();
+            int type=data.get(i).getType();
+            values.put("type",type);
+            values.put("content",content);
+            db.insert("Chat",null,values);
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.request:
+                adddata(TYPE_MSG_FROM,write.getText().toString());
+                mTuringManager.requestTuring(write.getText().toString());
+                write.setText("");
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        savedata();
+    }
+}

@@ -26,16 +26,13 @@ public class CityDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "City.db";
     private static final String SQL_CREATE_ENTRIES =
-                    "create table City (" + "id integer primary key autoincrement,"
+            "create table City (" + "id integer primary key autoincrement,"
                     + "cityid text," + "cityEn text," +
-                    "cityZh text,"+ "provinceEn text,"+
-                            "provinceZh text,"+"leaderEn text,"
-            +"leaderZh text,"+"lat text,"+"lon text)";
+                    "cityZh text," + "provinceEn text," +
+                    "provinceZh text," + "leaderEn text,"
+                    + "leaderZh text," + "lat text," + "lon text)";
 
-    private Context mContext;
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + "City";
-
+    private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + "City";
 
 
     public CityDbHelper(Context context) {
@@ -45,7 +42,7 @@ public class CityDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
-        Log.d("db","Created succeeded");
+        Log.d("db", "Created succeeded");
         //Toast.makeText(mContext, "Created succeeded", Toast.LENGTH_SHORT).show();
     }
 

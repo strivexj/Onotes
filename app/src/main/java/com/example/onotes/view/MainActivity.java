@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<String> list;
     private RecyclerView mRecyclerView;
-    NotesAdapter adapter;
+    private NotesAdapter adapter;
     private Activity mActivity=this;
 
 
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView=(RecyclerView)findViewById(R.id.activity_main_recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         initData();
-        //实例化并传输数据给adapterw
+        //实例化并传输数据给adapter
         adapter=new NotesAdapter(getApplicationContext(),list);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

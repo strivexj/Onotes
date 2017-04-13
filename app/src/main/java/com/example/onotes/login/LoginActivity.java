@@ -1,5 +1,6 @@
 package com.example.onotes.login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -53,7 +54,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-
+    private  ProgressDialog progressDialog;
     private ProgressBar login_progress;
     private AutoCompleteTextView username;
     private EditText password;
@@ -66,7 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean issignin = false;
 
     private static final String TAG = "LoginActivity";
-    private static final String APP_ID = "**";//官方获取的APPID
+    private static final String APP_ID = "1106087728";//官方获取的APPID
     private Tencent mTencent;
     private BaseUiListener mIUiListener;
     private UserInfo mUserInfo;
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bmob.initialize(this, "**");
+        Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
 
         //传入参数APPID和全局Context上下文
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
@@ -274,17 +275,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.addgroup:
                 joinQQGroup();
                 break;
-            case R.id.qqpicture:
+            case R.id.qqpicture: {
                 /**通过这句代码，SDK实现了QQ的登录，这个方法有三个参数，第一个参数是context上下文，第二个参数SCOPO 是一个String类型的字符串，表示一些权限
                  官方文档中的说明：应用需要获得哪些API的权限，由“，”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
                  第三个参数，是一个事件监听器，IUiListener接口的实例，这里用的是该接口的实现类 */
+                showProgressDialog();
+
                 mIUiListener = new BaseUiListener();
                 //all表示获取所有权限
                 mTencent.login(LoginActivity.this, "all", mIUiListener);
                 //Intent intent=new Intent(LoginActivity.this,ForgetPasswordActivity.class);
                 // startActivity(intent);
+                //closeProgressDialog();
                 break;
-
+            }
 
         }
     }
@@ -319,6 +323,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         public void onComplete(Object response) {
             Toast.makeText(LoginActivity.this, "授权成功", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "response:" + response);
+
             JSONObject obj = (JSONObject) response;
             try {
                 final String openID = obj.getString("openid");
@@ -497,20 +502,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
             } catch (JSONException e) {
                 e.printStackTrace();
+            }finally {
+                closeProgressDialog();
             }
+
         }
 
         @Override
         public void onError(UiError uiError) {
             Toast.makeText(LoginActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
-
+            closeProgressDialog();
         }
 
         @Override
         public void onCancel() {
             Toast.makeText(LoginActivity.this, "授权取消", Toast.LENGTH_SHORT).show();
-
+            closeProgressDialog();
         }
+
 
     }
 
@@ -534,6 +543,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onPause() {
         if (issignin)
             finish();
+
         Log.d("cwja", "onPause");
         super.onPause();
     }
@@ -571,7 +581,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (pref.getBoolean("checkbox", false)) rememeberpassword.setChecked(true);
         super.onResume();
     }
+    /**
+     * show progress dialog
+     */
+    public  void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Please wait...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
 
+    /**
+     * close progress dialog
+     */
+    public  void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
     @Override
     protected void onDestroy() {
         Log.d("cwja", "ondestroy");

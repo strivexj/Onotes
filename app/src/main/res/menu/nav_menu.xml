@@ -8,6 +8,10 @@
         android:id="@+id/weather"
         android:icon="@drawable/weather"
         android:title="Weather"/>
+    <item
+        android:id="@+id/robot"
+        android:icon="@drawable/robot"
+        android:title="Robot"/>
 
 </group>
 </menu>
