@@ -42,7 +42,7 @@ public class EditTextWithDel extends EditText {
 
     private void init() {
         imgAble = mContext.getResources().getDrawable(
-                R.drawable.delete);
+                R.drawable.rounddelete);
         addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,

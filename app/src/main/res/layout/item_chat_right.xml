@@ -10,23 +10,38 @@
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_item_chat_right"
-        android:layout_alignParentRight="true"
+        android:background="@drawable/bubbleright"
+
         android:textIsSelectable="true"
 
-        android:layout_marginLeft="78dp"
+        android:layout_marginLeft="90dp"
         android:layout_marginRight="10dp"
+
         android:gravity="center_vertical"
         android:lineSpacingExtra="2dp"
-        android:minHeight="60dp"
-        android:paddingBottom="14dp"
-        android:paddingLeft="33dp"
-        android:paddingRight="22dp"
-        android:paddingTop="16dp"
+
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+
+        android:minHeight="40dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp"
         android:textColor="#FFFFFFFF"
         android:textSize="15sp" />
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="250dp"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"
+        android:layout_height="300dp"/>
+
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/frompicture"
+        android:id="@+id/picture"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/icon"
