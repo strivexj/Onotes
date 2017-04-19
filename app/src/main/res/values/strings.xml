@@ -13,4 +13,26 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_on_boarding">OnBoardingActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+
+    <!--onboarding-->
+    <string name="onboarding_next_button_description">Next</string>
+    <string name="onboarding_finish_button_description">Finish</string>
+    <string name="onboarding_pre_button_description">Pre</string>
+    <string name="onboarding_section_1">Welcome to Onotes~!</string>
+    <string name="onboarding_intro_1">There are some exciting functions in this application.
+    </string>
+    <string name="onboarding_section_2">Powerfully editable fuctions designed for you to write
+        notes. such as balalalala.
+    </string>
+    <string name="onboarding_intro_2">such as balalalala.</string>
+    <string name="onboarding_section_3">It also have a smart robot</string>
+    <string name="onboarding_intro_3">which not only can chat with you when you are bored,but also
+        can help you look up something, including weather,your express and so on.
+    </string>
+    <string name="onboarding_finish_button_description_wait">Preparing, please wait…</string>
+    <!--onboarding end-->
 </resources>

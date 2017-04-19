@@ -1,6 +1,7 @@
 package com.example.onotes.login;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -11,6 +12,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -84,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
+        //Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
         ActivityCollector.addActivity(this);
         //传入参数APPID和全局Context上下文
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
@@ -126,7 +130,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         username.setFilters(new InputFilter[]{InputUtil.filterspace()});
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
 
-        password.setOnKeyListener(new View.OnKeyListener() {
+        //默认弹出英文输入法
+        password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
+        username.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
+
+        password.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        /**
+         *
+         * IME_ACTION_SEARCH 搜索
+         * IME_ACTION_SEND 发送
+         * IME_ACTION_NEXT 下一步
+         * IME_ACTION_DONE 完成
+         */
+
+
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                   // LoginActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                    View view =  LoginActivity.this.getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+
+
+                    /* 打开输入法
+                        InputMethodManagerinputMethodManager=(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(editText,0);
+                     */
+                    sign_in_button.callOnClick();
+                }
+           return true;
+        }
+        });
+
+
+     /*   password.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -134,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 return false;
             }
-        });
+        });*/
 
         SharedPreferences qqsp = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
         String pictureurl = qqsp.getString("figureurl_qq_2", "");
@@ -192,6 +233,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 BmobQuery<Person> query = new BmobQuery<Person>();
                 query.addWhereEqualTo("username", username.getText().toString());
                 query.findObjects(new FindListener<Person>() {
+
                     @Override
                     public void done(List<Person> object, BmobException e) {
                         if (e == null) {

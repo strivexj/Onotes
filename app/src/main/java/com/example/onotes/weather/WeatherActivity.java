@@ -27,6 +27,7 @@ import com.example.onotes.gson.Forecast;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
+import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.view.SideBar;
 
@@ -183,8 +184,10 @@ public class WeatherActivity extends AppCompatActivity {
      */
     public void requestWeather(final String weatherid) {
         Log.d("refresh", "545");
-        String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
-
+        //http://guolin.tech/api/weather?cityid=CN101010100&key=1e5bbb41868b4bce9f9586755e3a99e2
+        //https://free-api.heweather.com/v5/weather?city=CN101010100&key=1e5bbb41868b4bce9f9586755e3a99e2
+       // String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
+        String weatherUrl="https://free-api.heweather.com/v5/weather?city="+weatherid+"&key=1e5bbb41868b4bce9f9586755e3a99e2";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {

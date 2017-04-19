@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.onotes.R;
 import com.example.onotes.bean.City;
+import com.example.onotes.utils.LogUtil;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class WeatherAdapter extends BaseAdapter implements SectionIndexer {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        int section = getSectionForPosition(position);
+     /*   int section = getSectionForPosition(position);
 
         if (position == getPositionForSection(section)) {
             viewHolder.tvLetter.setVisibility(View.VISIBLE);
@@ -69,7 +70,8 @@ public class WeatherAdapter extends BaseAdapter implements SectionIndexer {
         } else {
             viewHolder.tvLetter.setVisibility(View.GONE);
         }
-
+*/
+        LogUtil.d("sort",list.get(position).getSortLetters());
         viewHolder.tvTitle.setText(this.list.get(position).getCityZh());
 
         return view;

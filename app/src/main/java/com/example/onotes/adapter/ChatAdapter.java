@@ -56,13 +56,23 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             holder.mTextView.setVisibility(View.VISIBLE);
 
         } else if (viewType == TYPE_MSG_LEFT) {
+
+
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_left, parent, false);
             holder = new ViewHolder(view);
+
+           // SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
+           // String pictureurl = qqinfo.getString("otherpicture", "");
+           /* String pictureurl = mList.get();
+            if(!TextUtils.isEmpty(pictureurl)){
+                Glide.with(App.getContext()).load(pictureurl).into(holder.mCircleImageView);
+            }*/
 
             holder.mImageView.setVisibility(View.GONE);
             holder.mTextView.setVisibility(View.VISIBLE);
         }
         else if(viewType==TYPE_PICTURE_LEFT){
+
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_left, parent, false);
             holder = new ViewHolder(view);
             Glide.with(App.getContext()).load(R.drawable.back).into( holder.mImageView);
@@ -84,6 +94,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(ChatAdapter.ViewHolder holder, int position) {
         holder.mTextView.setText(mList.get(position).getContent());
+        String pictureurl =mList.get(position).getPictureurl();
+
+        if(!TextUtils.isEmpty(pictureurl)){
+            Glide.with(App.getContext()).load(pictureurl).into(holder.mCircleImageView);
+        }
     }
 
     @Override
@@ -94,6 +109,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
     public int getItemViewType(int position) {
         return mList.get(position).getType();
     }
+
+
 
     public class  ViewHolder extends RecyclerView.ViewHolder{
         TextView mTextView;

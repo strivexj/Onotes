@@ -2,15 +2,18 @@ package com.example.onotes.view;
 
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -35,6 +38,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.bumptech.glide.Glide;
 import com.example.onotes.App;
 import com.example.onotes.R;
@@ -43,7 +47,10 @@ import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Notes;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.gson.Weather;
+import com.example.onotes.service.ChatService;
+
 import com.example.onotes.setting.SettingActivity;
+import com.example.onotes.ui.PopUpActivity;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.LogUtil;
@@ -79,17 +86,24 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     private TextView weather_degree;
     private TextView weather_city;
     private TextView saying;
+    boolean serviceBound = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
 
+        // String url=DebugDB.getAddressLog();
+        // LogUtil.d("debugdb",url);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycle_view);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         ActivityCollector.addActivity(this);
         //实例化并传输数据给adapter
         adapter = new NotesAdapter(getApplicationContext(), list);
+
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         ItemTouchHelper.Callback mCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
@@ -219,13 +233,33 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 });
                         break;
                     }
-                    case R.id.robot:
+                    case R.id.chat:
                         CircularAnim.fullActivity(NotelistActivity.this, navigationView)
                                 .colorOrImageRes(R.color.primary)
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {
                                         startActivity(new Intent(NotelistActivity.this, Main2Activity.class));
+                                    }
+                                });
+                        break;
+                    case R.id.file:
+                        CircularAnim.fullActivity(NotelistActivity.this, navigationView)
+                                .colorOrImageRes(R.color.primary)
+                                .go(new CircularAnim.OnAnimationEndListener() {
+                                    @Override
+                                    public void onAnimationEnd() {
+                                        startActivity(new Intent(NotelistActivity.this, FileActivity.class));
+                                    }
+                                });
+                        break;
+                    case R.id.popupexercise:
+                        CircularAnim.fullActivity(NotelistActivity.this, navigationView)
+                                .colorOrImageRes(R.color.primary)
+                                .go(new CircularAnim.OnAnimationEndListener() {
+                                    @Override
+                                    public void onAnimationEnd() {
+                                        startActivity(new Intent(NotelistActivity.this, PopUpActivity.class));
                                     }
                                 });
                         break;
@@ -309,8 +343,29 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         cursor.close();
         db.close();
         adapter.notifyDataSetChanged();
+
+
+
+        Intent intentService = new Intent(this, ChatService.class);
+
+        //bindService(intentService, serviceConnection, Context.BIND_AUTO_CREATE);
+        startService(intentService);
     }
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            ChatService.LocalBinder binder = (ChatService.LocalBinder) service;
+           // player = binder.getService();
+            serviceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serviceBound = false;
+        }
+    };
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -454,19 +509,18 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             Toast.makeText(getApplicationContext(), "再次点击退出", Toast.LENGTH_SHORT).show();
             clickTime = System.currentTimeMillis();
         } else {
-            this.finish();
-            System.exit(0);
+            ActivityCollector.finishAll();
         }
     }
 
     public void requestWeather() {
-        LogUtil.d("onsaveread ","aonrequest");
         SharedPreferences pref = App.getContext().getSharedPreferences("weather", MODE_APPEND);
         String weatherid = pref.getString("weatherid", "");
+        LogUtil.d("onrequest1",weatherid);
         //https://free-api.heweather.com/v5/weather?city=yourcity&key=yourkey；
         //String weatherUrl = "https://free-api.heweather.com/v5/weather?city=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
-        String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
-
+        //String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
+        String weatherUrl="https://free-api.heweather.com/v5/weather?city="+weatherid+"&key=1e5bbb41868b4bce9f9586755e3a99e2";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {

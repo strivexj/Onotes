@@ -27,4 +27,7 @@
     <color name="teal_500">#009688</color>
     <color name="green_500">#4CAF50</color>
     <color name="light_green_500">#8BC34A</color>
+
+    <color name="indicator_selected">@android:color/white</color>
+    <color name="indicator_unselected">#4D000000</color>
 </resources>

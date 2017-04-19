@@ -87,9 +87,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     }
 
     //Item的ViewHolder以及Item内部布局控件的id绑定
-    class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTextView;
-        TextView time;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView mTextView;
+        public TextView time;
 
         public ViewHolder(View itemView) {
             super(itemView);
