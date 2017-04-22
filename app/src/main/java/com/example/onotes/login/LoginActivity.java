@@ -148,10 +148,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // LoginActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-                    View view = LoginActivity.this.getCurrentFocus();
+
+                   // LoginActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                    View view =  LoginActivity.this.getCurrentFocus();
                     if (view != null) {
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
 
@@ -164,6 +165,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 return true;
             }
+
         });
 
 

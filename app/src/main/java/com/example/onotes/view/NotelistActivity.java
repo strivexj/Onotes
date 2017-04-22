@@ -264,6 +264,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                     }
                                 });
                         break;
+
                     case R.id.about:
                         CircularAnim.fullActivity(NotelistActivity.this, navigationView)
                                 .colorOrImageRes(R.color.primary)
@@ -274,6 +275,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                     }
                                 });
                         break;
+
                 }
                 return true;
             }

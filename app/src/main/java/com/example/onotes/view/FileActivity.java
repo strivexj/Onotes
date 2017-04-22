@@ -9,9 +9,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
+
 import android.provider.MediaStore;
-import android.support.design.widget.BottomSheetBehavior;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,12 +22,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.onotes.R;
+
 import com.example.onotes.utils.LogUtil;
+
 import com.example.onotes.utils.ToastUtil;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+
 
 import org.apache.http.client.methods.HttpPost;
 import org.jsoup.Jsoup;
@@ -49,6 +52,14 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
     private static final int GALLERY_CODE = 2;
     private static final int CROP_CODE = 3;
     private ImageView mImageView;
+
+
+    private Uri imageUri;
+    private File outputImage1;
+    private final File outputImage2 = new File(Environment.
+            getExternalStorageDirectory(), "tempImage2.jpg");
+    private ImageView imageview;
+
     private Button takephote;
     private Button choosephoto;
 
@@ -59,20 +70,24 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_file);
         initView();
 
-        if (ContextCompat.checkSelfPermission(FileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(FileActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
             //请求权限
             ActivityCompat.requestPermissions(FileActivity.this,
-                    new String[]{Manifest.permission.CAMERA}, 1);
+                    new String[]{Manifest.permission.CAMERA},1);
+
         }
     }
 
     private void initView() {
+
         mImageView = (ImageView) findViewById(R.id.imageview);
         takephote = (Button) findViewById(R.id.takephoto);
+
         choosephoto = (Button) findViewById(R.id.choosephoto);
 
         takephote.setOnClickListener(this);
         choosephoto.setOnClickListener(this);
+
 
         new Thread(new Runnable() {
             @Override
@@ -90,10 +105,15 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
 
         }).start();
       /*  BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
+=======
+
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
+>>>>>>> dcd88902b7652eb8125fbb4d781cfb9fc6923534
         if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }else {
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+<<<<<<< HEAD
         }*/
 
 
@@ -265,10 +285,10 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(intent, CROP_CODE);
     }
     private void colorpicker() {
-        ColorPickerDialogBuilder
+       ColorPickerDialogBuilder
                 .with(this)
                 .setTitle("Choose color")
-                .initialColor(R.color.black_20)
+                .initialColor(R.color.light_blue_500)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 //.wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
                 .density(12)
@@ -293,6 +313,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
                 .build()
                 .show();
     }
+
 }
 
    /*  private void choosephote() {
@@ -346,6 +367,61 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, TAKE_PHOTO); // 启动相机程序
+=======
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.takephote:
+                outputImage1 = new File(Environment.
+                        getExternalStorageDirectory(), "tempImage1.jpg");
+                try {
+                    if (outputImage1.exists()) {
+                        imageUri = Uri.fromFile(outputImage1);
+                        try {
+                            Bitmap bitmap = BitmapFactory.decodeStream
+                                    (getContentResolver()
+                                            .openInputStream(imageUri));
+                           // Glide.with(this).load(bitmap).into(imageview);
+                          imageview.setImageBitmap(bitmap);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        outputImage1.delete();
+                    }
+                    outputImage1.createNewFile();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imageUri = Uri.fromFile(outputImage1);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent, TAKE_PHOTO); // 启动相机程序
+                break;
+            case R.id.choosephoto:
+                File outputImage = new File(Environment.
+                        getExternalStorageDirectory(), "output_image.jpg");
+                try {
+                    if (outputImage.exists()) {
+                        outputImage.delete();
+                    }
+                    outputImage.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imageUri = Uri.fromFile(outputImage);
+               // Intent intent2 = new Intent(Intent.ACTION_PICK);
+                Intent intent2=new Intent("android.intent.action.GET_CONTENT");
+                intent2.setType("image/*");//相片类型
+                intent2.putExtra("crop", true);
+                intent2.putExtra("scale", true);
+                intent2.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent2, 3);
+                break;
+        }
+>>>>>>> dcd88902b7652eb8125fbb4d781cfb9fc6923534
     }
 
     @Override
@@ -390,6 +466,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+<<<<<<< HEAD
 }*/
 // 监听表更新
 

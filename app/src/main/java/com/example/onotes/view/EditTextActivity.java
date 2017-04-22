@@ -15,7 +15,9 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+
 import android.support.design.widget.BottomSheetDialog;
+
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
@@ -41,7 +43,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
 import android.webkit.WebView;
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -119,12 +123,15 @@ public class EditTextActivity extends AppCompatActivity {
     private String getcurrenttime() {
         Calendar calendar= Calendar.getInstance();
         String second=calendar.get(Calendar.SECOND)+"";
+
         String hour=calendar.get(Calendar.HOUR_OF_DAY)+"";
         String minute= calendar.get(Calendar.MINUTE)+"";
+
         if(second.length()==1)
         {
             second="0"+second;
         }
+
         if(hour.length()==1)
         {
            hour="0"+hour;
@@ -138,6 +145,7 @@ public class EditTextActivity extends AppCompatActivity {
                 calendar.get(Calendar.MONTH)+"."
                 + calendar.get(Calendar.DAY_OF_MONTH)+"  "+
                       hour+ ":"+minute + ":"+second;
+
     }
 
     @Override
@@ -158,6 +166,22 @@ public class EditTextActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+
+       /* final BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
+        Button bottomsheet=(Button)findViewById(R.id.bottomsheet);
+        bottomsheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }else {
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });*/
+
+
 
 
        /* final BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
@@ -266,7 +290,6 @@ public class EditTextActivity extends AppCompatActivity {
                 int b=s.length();
                 if(a>0)
                     inputStr.setSpan(new ForegroundColorSpan(Color.BLUE),a-b,a, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
             }
         });
         LogUtil.d("cwj","length:"+edittext.getText().toString().length());

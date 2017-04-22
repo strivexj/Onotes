@@ -20,10 +20,12 @@
         android:id="@+id/popupexercise"
         android:icon="@drawable/icon"
         android:title="popupexercise"/>
+
     <item
         android:id="@+id/about"
         android:icon="@drawable/about"
         android:title="About"/>
+
 
 </group>
 </menu>
