@@ -65,19 +65,29 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), EditTextActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("content", mList.get(position).getContent());
-                intent.putExtra("id",mList.get(position).getId());
-                intent.putExtra("textsize",mList.get(position).getTextsize());
-                intent.putExtra("linespace",mList.get(position).getLinespace());
-                LogUtil.d("dbtextsize",mList.get(position).getTextsize()+"");
-                LogUtil.d("dbtextspace",mList.get(position).getLinespace()+"");
-                mList.remove(position);
-                view.getContext().startActivity(intent);
+                gotoeditactivity(view, position);
+            }
+        });
+        holder.time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoeditactivity(view, position);
             }
         });
 
+    }
+
+    private void gotoeditactivity(View view, int position) {
+        Intent intent = new Intent(view.getContext(), EditTextActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("content", mList.get(position).getContent());
+        intent.putExtra("id", mList.get(position).getId());
+        intent.putExtra("textsize", mList.get(position).getTextsize());
+        intent.putExtra("linespace", mList.get(position).getLinespace());
+        LogUtil.d("dbtextsize", mList.get(position).getTextsize() + "");
+        LogUtil.d("dbtextspace", mList.get(position).getLinespace() + "");
+        mList.remove(position);
+        view.getContext().startActivity(intent);
     }
 
     @Override
@@ -87,14 +97,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     }
 
     //Item的ViewHolder以及Item内部布局控件的id绑定
-    class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTextView;
-        TextView time;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView mTextView;
+        public TextView time;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.recycle_textview);
-            time=(TextView)itemView.findViewById(R.id.notetime);
+            time = (TextView) itemView.findViewById(R.id.notetime);
 
         }
 

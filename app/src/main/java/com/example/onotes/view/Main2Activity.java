@@ -2,6 +2,7 @@ package com.example.onotes.view;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +15,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.adapter.ChatAdapter;
 import com.example.onotes.bean.Chat;
@@ -35,6 +39,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.BmobRealTimeData;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.ValueEventListener;
 
 
 public class Main2Activity extends AppCompatActivity implements View.OnClickListener {
@@ -53,6 +62,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     public static final int TYPE_PICTURE_LEFT = 2;
     public static final int TYPE_PICTURE_RIGHT = 3;
     private ImageView sendpicture;
+    private String name;
 
 
     @Override
@@ -65,6 +75,7 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         }
         initView();
         initdata();
+        initchat();
     }
 
     private void initView() {
@@ -89,7 +100,8 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     String text = jsonObject.get("text").toString();
-                    adddata(TYPE_MSG_LEFT, text);
+                   // adddata(TYPE_MSG_LEFT, text);
+                    sendMsg("robot",text,true);
                     // tv.setText(text);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -139,7 +151,8 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
     private void initdata() {
         LogUtil.d("cwj", "initdata");
-
+        SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
+        name = qqinfo.getString("nickname", "anonymity");
 
         ChatDbHelper chatDbHelper = new ChatDbHelper(this);
         SQLiteDatabase db = chatDbHelper.getWritableDatabase();
@@ -148,9 +161,11 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
             do {
                 String content = cursor.getString(cursor.getColumnIndex("content"));
                 int type = cursor.getInt(cursor.getColumnIndex("type"));
+                String pictureurl=cursor.getString(cursor.getColumnIndex("pictureurl"));
                 Chat chat = new Chat();
                 chat.setType(type);
                 chat.setContent(content);
+                chat.setPictureurl(pictureurl);
                 data.add(chat);
             } while (cursor.moveToNext());
             adapter.notifyDataSetChanged();
@@ -193,7 +208,9 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         for (int i = initial; i < data.size(); i++) {
             String content = data.get(i).getContent();
             int type = data.get(i).getType();
+            String pictureurl=data.get(i).getPictureurl();
             values.put("type", type);
+            values.put("pictureurl",pictureurl);
             values.put("content", content);
             db.insert("Chat", null, values);
         }
@@ -214,9 +231,18 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.request:
-                adddata(TYPE_MSG_RIGHT, write.getText().toString());
-                mTuringManager.requestTuring(write.getText().toString());
-                write.setText("");
+                String send=write.getText().toString();
+                //adddata(TYPE_MSG_RIGHT, write.getText().toString());
+                //mTuringManager.requestTuring(write.getText().toString());
+                if(!TextUtils.isEmpty(send)) {
+                    if (send.charAt(0) == '@') {
+                       // Toast.makeText(this, send.replaceFirst("@", ""), Toast.LENGTH_SHORT).show();
+                        mTuringManager.requestTuring(send.replaceFirst("@", ""));
+                    }
+                    sendMsg(name, send, false);
+                    adddata(TYPE_MSG_RIGHT, send);
+                    write.setText("");
+                }
                 break;
             case R.id.sendpicture:
                 Chat chat = new Chat();
@@ -234,8 +260,63 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
         super.onDestroy();
         savedata();
     }
+    private void initchat() {
+        final BmobRealTimeData rtd = new BmobRealTimeData();
+        rtd.start(new ValueEventListener() {
+            @Override
+            public void onDataChange(JSONObject data) {
+                if(BmobRealTimeData.ACTION_UPDATETABLE.equals(data.optString("action"))){
+                    JSONObject contentdata = data.optJSONObject("data");
+                    if(!name.equals(contentdata.optString("name"))){
+
+                        //SharedPreferences.Editor editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
+                        //editor.putString("otherpicture",contentdata.optString("pictureurl"));
+                       // editor.apply();
+                        adddata(TYPE_MSG_LEFT,contentdata.optString("content"));
+                    }
+
+                    Log.d("bmob",contentdata.optString("name")+" "+contentdata.optString("content")+ contentdata.optString("pictureurl"));
+                }
+            }
+
+            @Override
+            public void onConnectCompleted(Exception ex) {
+                Log.d("bmob", "连接成功:"+rtd.isConnected());
+                if(rtd.isConnected())
+                    rtd.subTableUpdate("Chat");
+            }
+        });
+    }
+    private void sendMsg(String name, String msg,Boolean isrobot){
 
 
+        SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
+        String pictureurl = qqinfo.getString("figureurl_qq_2", "");
+
+        Chat chat = new Chat();
+        chat.setName(name);
+        chat.setContent(msg);
+        if(!isrobot){
+            LogUtil.d("bmob","isrobot=false");
+            chat.setPictureurl(pictureurl);
+        }
+        else {
+            LogUtil.d("bmob","isrobot=true");
+        }
+
+
+        chat.save(new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if(e==null){
+                    //Toast.makeText(Main2Activity.this, "succeed", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(Main2Activity.this, "sending failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {

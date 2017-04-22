@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tool="http://schemas.android.com/tools"
           package="com.example.onotes">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -7,14 +8,25 @@
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
-    <!-- 允许联网 -->
+    <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- 获取GSM（2g）、WCDMA（联通3g）等网络状态的信息 -->
+    <!-- 监听网络的变化 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!-- 获取wifi网络状态的信息 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <!-- 设备休眠 -->
     <!-- 保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <!-- 摄像头 -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- 录音 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- 通知震动 -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <!-- 获取wifi网络状态的信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
     <!-- 获取sd卡写的权限，用于文件上传和下载 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -24,7 +36,6 @@
 
     <!-- 图灵机器人 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -37,18 +48,14 @@
         android:label="Onotes"
         android:launchMode="singleTask"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tool:replace="android:label">
         <activity
             android:name=".login.LoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
-
+        <!-- 腾讯登陆 -->
         <!-- 注册SDKActivity -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
@@ -67,12 +74,38 @@
             android:name="com.tencent.connect.common.AssistActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <!-- bmobim start -->
+        <receiver android:name="cn.bmob.newim.core.ConnectChangeReceiver">
+            <intent-filter>
+                <action android:name="cn.bmob.action.RECONNECT"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="cn.bmob.newim.core.service.BmobIMService"
+            android:process=":bmobcore"/>
+        <service
+            android:name="cn.bmob.newim.core.service.NotifyService"
+            android:process=":bmobcore"/>
+        <service android:name="cn.bmob.newim.core.service.ReConnectService"/>
+        <service android:name="cn.bmob.newim.core.service.HeartBeatService"/>
+
+        <meta-data
+            android:name="Bmob_APP_KEY"
+            android:value="9114a2d5e04f0ff10206a7efb408e11e"/>
+        <!-- bmobim end -->
+
         <activity
             android:name=".weather.WeatherActivity"
             android:launchMode="singleTask">
         </activity>
-        <activity android:name=".weather.WeatherMainActivity"
-                  android:launchMode="singleTask">
+        <activity
+            android:name=".weather.WeatherMainActivity"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".login.SignUpActivity"
@@ -82,23 +115,52 @@
             android:name=".login.ForgetPasswordActivity"
             android:launchMode="singleTask">
         </activity>
-        <activity android:name=".view.EditTextActivity"
-                  android:launchMode="singleTask">
+        <activity
+            android:name=".view.EditTextActivity"
+            android:launchMode="singleTask">
         </activity>
 
         <service android:name=".service.CityDownloadSerivce"/>
 
-        <activity android:name=".setting.SettingActivity"
-                  android:launchMode="singleTask">
+        <activity
+            android:name=".setting.SettingActivity"
+            android:launchMode="singleTask">
         </activity>
-        <activity android:name=".view.NotelistActivity"
-                  android:launchMode="singleTask">
+        <activity
+            android:name=".view.NotelistActivity"
+            android:launchMode="singleTask">
         </activity>
-        <activity android:name=".view.Main2Activity"
-                  android:launchMode="singleTask"
-                  android:windowSoftInputMode="adjustResize">
+        <activity
+            android:name=".view.Main2Activity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".view.FileActivity">
+        </activity>
+        <activity android:name=".ui.onboarding.OnboardingActivity"
+                  android:noHistory="true"
+                  android:theme="@style/AppTheme.Onboarding">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
 
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.ChatService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
+        <activity android:name=".ui.PopUpActivity">
+        </activity>
+
+        <activity android:name=".about.AboutActivity"
+                  android:label="@string/about"
+                  android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
     </application>
 
 </manifest>

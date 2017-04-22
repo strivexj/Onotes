@@ -9,9 +9,21 @@
         android:icon="@drawable/weather"
         android:title="Weather"/>
     <item
-        android:id="@+id/robot"
-        android:icon="@drawable/robot"
-        android:title="Robot"/>
+        android:id="@+id/chat"
+        android:icon="@drawable/chat"
+        android:title="Chat"/>
+    <item
+        android:id="@+id/file"
+        android:icon="@drawable/filefolder"
+        android:title="File"/>
+    <item
+        android:id="@+id/popupexercise"
+        android:icon="@drawable/icon"
+        android:title="popupexercise"/>
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/about"
+        android:title="About"/>
 
 </group>
 </menu>

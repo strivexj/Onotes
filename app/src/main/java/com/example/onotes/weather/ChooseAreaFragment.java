@@ -18,12 +18,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.City;
 import com.example.onotes.datebase.CityDbHelper;
+import com.example.onotes.utils.LogUtil;
 import com.example.onotes.view.SideBar;
 
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class ChooseAreaFragment extends Fragment {
 
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
+    private List<String> fitdataList = new ArrayList<>();
 
 
     /**
@@ -123,6 +126,7 @@ public class ChooseAreaFragment extends Fragment {
                     }
                 }
 */
+                LogUtil.d("sortletter",city.getSortLetters());
                 dataList.add(cityList.get(j).getCityZh());
                 adapter.notifyDataSetChanged();
                 j++;
@@ -161,15 +165,19 @@ public class ChooseAreaFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+
                 Log.d("search", "" + cityList.size());
                 for (int i = 0; i < cityList.size(); i++) {
-                    if (searchText.getText().toString().equals(cityList.get(i).getCityZh())) {
-                        dataList.clear();
-                        dataList.add(cityList.get(i).getCityZh());
+                 //   if (searchText.getText().toString().equals(cityList.get(i).getCityZh())) {
+                    if (cityList.get(i).getCityZh().contains(searchText.getText().toString())) {
+                        fitdataList.add(cityList.get(i).getCityZh());
+                        //dataList.add(cityList.get(i).getCityZh());
+                        Toast.makeText(getActivity(), cityList.get(i).getCityZh(), Toast.LENGTH_SHORT).show();
                         adapter.notifyDataSetChanged();
                         break;
                     }
                 }
+
             }
         });
         //mSearchView=(SearchView)view.findViewById(R.id.searchView);
@@ -222,8 +230,6 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
-
-
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

@@ -13,4 +13,82 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_on_boarding">OnBoardingActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+
+    <!--onboarding-->
+    <string name="onboarding_next_button_description">Next</string>
+    <string name="onboarding_finish_button_description">Finish</string>
+    <string name="onboarding_pre_button_description">Pre</string>
+    <string name="onboarding_section_1">Welcome to Onotes~!</string>
+    <string name="onboarding_intro_1">There are some exciting functions in this application.
+    </string>
+    <string name="onboarding_section_2">Powerfully editable fuctions designed for you to write
+        notes. such as balalalala.
+    </string>
+    <string name="onboarding_intro_2">such as balalalala.</string>
+    <string name="onboarding_section_3">It also have a smart robot</string>
+    <string name="onboarding_intro_3">which not only can chat with you when you are bored,but also
+        can help you look up something, including weather,your express and so on.
+    </string>
+    <string name="onboarding_finish_button_description_wait">Preparing, please wait…</string>
+    <!--onboarding end-->
+
+    <!--pref_about-->
+    <string name="about">About</string>
+
+    <string name="version">Version: V1.0.0</string>
+
+    <string name="rate">Rate</string>
+    <string name="rate_description">If you like the Onotes app, please do rate it</string>
+
+    <string name="feedback">Report Bugs</string>
+    <string name="feedback_description">Help me to improve the Onotes app</string>
+
+    <string name="author">Author</string>
+    <string name="author_name">Cheng Wenjie</string>
+    <string name="author_description">Guangdong, China</string>
+
+    <string name="follow_me_on_github">Follow Me on GitHub</string>
+    <string name="github_url">https://github.com/strivexj</string>
+
+    <string name="addqqgroup">Add QQ group</string>
+    <string name="qqgroupnumber">311357701</string>
+
+    <string name="support">Support</string>
+
+    <string name="sendto">mailto:strivexj@gmail.com</string>
+    <string name="mail_topic">Onotes Feedback / Advice</string>
+
+    <string name="device_model">Device Version: </string>
+    <string name="sdk_version">SDK Version: </string>
+    <string name="no_mail_app">No Mail App Installed</string>
+    <string name="no_app_store_found">No App Store Installed</string>
+    <string name="no_browser_found">No Browser Installed</string>
+
+    <string name="follow_me_on_zhihu">Follow Me on ZhiHu</string>
+    <string name="zhihu_url">https://www.zhihu.com/people/cheng-wen-jie-37</string>
+    <string name="zhihu_account">\@Cheng Wenjie</string>
+    <string name="contactme">Contact Me</string>
+    <!--pref_about end-->
+
+
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="copied_to_clipboard_failed">Copy to clipboard failed</string>
+    <string name="added_to_bookmarks">Added to bookmarks</string>
+    <string name="deleted_from_bookmarks">Deleted from bookmarks</string>
+    <string name="search_bookmarks">Search bookmarks</string>
+    <string name="check_bookmarks">Bookmarks</string>
+
+
+    <!--bottom sheet list-->
+    <string name="action_add_to_bookmarks">Add to bookmarks</string>
+    <string name="action_delete_from_bookmarks">Delete from bookmarks</string>
+    <string name="action_copy_text">Copy text</string>
+    <string name="action_share_as_text">Share as Text</string>
+    <string name="share_to">Share to</string>
+
+    <string name="share_extra">-------share from Onotes</string>
 </resources>

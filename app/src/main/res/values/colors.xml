@@ -1,30 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#88a4b3</color>
-    <color name="primary">#3C515C</color>
-    <color name="primary_dark">#142E3C</color>
+      <color name="viewpager1">#00BCD4</color>
+      <color name="viewpager3">#0097A7</color>
 
-    <color name="accent">#40C4FF</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="black">#ffffff</color>
-    <color name="black_20">#33000000</color>
-    <color name="white_20">#33FFFFFF</color>
-    <color name="transparent">#00000000</color>
+      <color name="viewpager2">#03A9F4</color>
+    <color name="textColorPrimary">#616161</color>
+      <color name="viewBackground">@android:color/white</color>
+      <!-- <color name="primary_text">#212121</color>
+       <color name="secondary_text">#757575</color>
+       <color name="viewpager1">#B2EBF2</color>
+       <color name="icons">#FFFFFF</color>
+       <color name="divider">#BDBDBolor>-->
+      <color name="colorPrimary">@color/primary</color>
+      <color name="colorPrimaryDark">@color/primary_dark</color>
+      <color name="colorAccent">#88a4b3</color>
+      <color name="primary">#3C515C</color>
+      <color name="primary_dark">#142E3C</color>
 
-    <color name="text_enabled">#FFFFFFFF</color>
-    <color name="text_disabled">#4DFFFFFF</color>
+      <color name="accent">#40C4FF</color>
+      <color name="white">#FFFFFFFF</color>
+      <color name="black">#000000</color>
+      <color name="black_20">#33000000</color>
+      <color name="white_20">#33FFFFFF</color>
+      <color name="transparent">#00000000</color>
 
-    <color name="icon_enabled">#FFFFFFFF</color>
-    <color name="icon_disabled">#FF63727B</color>
+      <color name="text_enabled">#FFFFFFFF</color>
+      <color name="text_disabled">#4DFFFFFF</color>
 
-    <color name="medium_text_enabled">#FF000000</color>
-    <color name="medium_text_disabled">#4D000000</color>
+      <color name="icon_enabled">#FFFFFFFF</color>
+      <color name="icon_disabled">#FF63727B</color>
 
-    <color name="light_blue_500">#03A9F4</color>
-    <color name="cyan_500">#00BCD4</color>
-    <color name="teal_500">#009688</color>
-    <color name="green_500">#4CAF50</color>
-    <color name="light_green_500">#8BC34A</color>
+      <color name="medium_text_enabled">#FF000000</color>
+      <color name="medium_text_disabled">#4D000000</color>
+
+      <color name="light_blue_500">#03A9F4</color>
+      <color name="cyan_500">#00BCD4</color>
+      <color name="teal_500">#009688</color>
+      <color name="green_500">#4CAF50</color>
+      <color name="light_green_500">#8BC34A</color>
+
+      <color name="indicator_selected">@android:color/white</color>
+      <color name="indicator_unselected">#4D000000</color>
 </resources>

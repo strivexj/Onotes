@@ -27,6 +27,7 @@ import com.example.onotes.gson.Forecast;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
+import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.view.SideBar;
 
@@ -84,12 +85,13 @@ public class WeatherActivity extends AppCompatActivity {
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
             "W", "X", "Y", "Z"};
 
-    public static int[]indexposition=new int[26];
+    public static int[] indexposition = new int[26];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityCollector.addActivity(this);
+
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -100,7 +102,7 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weather);
         initview();
         showWeatherInfo();
-        final SharedPreferences prefs = App.getContext().getSharedPreferences("weather",MODE_PRIVATE);
+        final SharedPreferences prefs = App.getContext().getSharedPreferences("weather", MODE_PRIVATE);
 
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -125,12 +127,11 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
 
-
     }
 
     private void showWeatherInfo() {
 
-        SharedPreferences prefs = App.getContext().getSharedPreferences("weather",MODE_PRIVATE);
+        SharedPreferences prefs = App.getContext().getSharedPreferences("weather", MODE_PRIVATE);
         String weatherString = prefs.getString("weatherresponseText", null);
         if (weatherString != null) {
 
@@ -142,7 +143,7 @@ public class WeatherActivity extends AppCompatActivity {
         } else {
             // 无缓存时去服务器查询天气
             //weatherId = getIntent().getStringExtra("weather_id");
-            weatherId=prefs.getString("weatherid","");
+            weatherId = prefs.getString("weatherid", "");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }
@@ -166,14 +167,14 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navButton = (Button) findViewById(R.id.nav_button);
-        mSideBar=(SideBar)findViewById(R.id.sidebar);
+        mSideBar = (SideBar) findViewById(R.id.sidebar);
         dialog = (TextView) findViewById(R.id.dialog);
         mSideBar.setTextView(dialog);
         mSideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
             @Override
             public void onTouchingLetterChanged(String s) {
-               // dialog.setVisibility(View.VISIBLE);
-               //dialog.setText(s);
+                // dialog.setVisibility(View.VISIBLE);
+                //dialog.setText(s);
             }
         });
     }
@@ -183,8 +184,10 @@ public class WeatherActivity extends AppCompatActivity {
      */
     public void requestWeather(final String weatherid) {
         Log.d("refresh", "545");
-        String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
-
+        //http://guolin.tech/api/weather?cityid=CN101010100&key=1e5bbb41868b4bce9f9586755e3a99e2
+        //https://free-api.heweather.com/v5/weather?city=CN101010100&key=1e5bbb41868b4bce9f9586755e3a99e2
+        // String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
+        String weatherUrl = "https://free-api.heweather.com/v5/weather?city=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -194,7 +197,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
-                           SharedPreferences.Editor editor= App.getContext().getSharedPreferences("weather",MODE_PRIVATE).edit();
+                            SharedPreferences.Editor editor = App.getContext().getSharedPreferences("weather", MODE_PRIVATE).edit();
                             editor.putString("weatherresponseText", responseText);
                             editor.apply();
                             weatherId = weather.basic.weatherId;
@@ -235,7 +238,7 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String bingPic = response.body().string();
-                SharedPreferences.Editor editor = App.getContext().getSharedPreferences("weather",MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = App.getContext().getSharedPreferences("weather", MODE_PRIVATE).edit();
                 editor.putString("bing_pic", bingPic);
                 editor.apply();
                 runOnUiThread(new Runnable() {

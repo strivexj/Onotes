@@ -13,7 +13,7 @@ public class ChatDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Chat.db";
     private static final String SQL_CREATE_ENTRIES =
             "create table Chat (" + "id integer primary key autoincrement,"
-                    + "type integer," + "content text)";
+                    + "type integer,"+ "pictureurl text," + "content text)";
 
     public ChatDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

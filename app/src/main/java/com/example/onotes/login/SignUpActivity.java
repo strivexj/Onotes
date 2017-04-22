@@ -18,6 +18,7 @@ import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.SendMail;
 import com.example.onotes.weather.WeatherActivity;
+
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
@@ -64,15 +65,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sendverifycode:
-                verfiycode=100000+(int)(Math.random()*800000);
-                String message="Hi "+signupusername.getText().toString()+": \n  Weclome to sign up Onotes application. Here is your verify code : "+verfiycode
-                                +"\n  If it is not your sign up action, please ignore it. \n  Please don't reply to this email. Thank you!";
+                verfiycode = 100000 + (int) (Math.random() * 800000);
+                String message = "Hi " + signupusername.getText().toString() + ": \n  Weclome to sign up Onotes application. Here is your verify code : " + verfiycode
+                        + "\n  If it is not your sign up action, please ignore it. \n  Please don't reply to this email. Thank you!";
                 //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 SendMail sm = new SendMail(this, signupemail.getText().toString(), message);
                 sm.execute();
                 break;
             case R.id.signupbutton:
-               // isexist();
+                // isexist();
                 register();
                 break;
         }
@@ -85,15 +86,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         query.count(Person.class, new CountListener() {
             @Override
             public void done(Integer count, BmobException e) {
-                if(e==null){
-                    if(count!=0){
+                if (e == null) {
+                    if (count != 0) {
                         Toast.makeText(SignUpActivity.this, "Your username have been registered.", Toast.LENGTH_SHORT).show();
-                        isexist=true;
-                    }
-                    else isexist=false;
+                        isexist = true;
+                    } else isexist = false;
 
-                }else{
-                    Log.d("cwj","失败："+e.getMessage()+","+e.getErrorCode());
+                } else {
+                    Log.d("cwj", "失败：" + e.getMessage() + "," + e.getErrorCode());
                 }
             }
         });
@@ -101,43 +101,42 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void register() {
-        if(verifycode.getText().toString().equals(""+verfiycode))
-         {
-             signupbutton.setClickable(false);
-             Person person = new Person();
-             person.setUsername(signupusername.getText().toString());
-             person.setPassword(signuppassword.getText().toString());
-             person.setEmail(signupemail.getText().toString());
-             if(isexist()){
-                 Toast.makeText(SignUpActivity.this, "Your username have been registered.", Toast.LENGTH_SHORT).show();
-                 signupbutton.setClickable(true);
-             }else {
-                 person.save(new SaveListener<String>() {
-                     @Override
-                     public void done(String s, BmobException e) {
-                         if (e == null) {
-                             Toast.makeText(SignUpActivity.this, "succeed", Toast.LENGTH_SHORT).show();
+        if (verifycode.getText().toString().equals("" + verfiycode)) {
+            signupbutton.setClickable(false);
+            Person person = new Person();
+            person.setUsername(signupusername.getText().toString());
+            person.setPassword(signuppassword.getText().toString());
+            person.setEmail(signupemail.getText().toString());
+            if (isexist()) {
+                Toast.makeText(SignUpActivity.this, "Your username have been registered.", Toast.LENGTH_SHORT).show();
+                signupbutton.setClickable(true);
+            } else {
+                person.save(new SaveListener<String>() {
+                    @Override
+                    public void done(String s, BmobException e) {
+                        if (e == null) {
+                            Toast.makeText(SignUpActivity.this, "succeed", Toast.LENGTH_SHORT).show();
 
-                             SharedPreferences.Editor editor = getSharedPreferences("account", MODE_PRIVATE).edit();
-                             editor.putString("username", signupusername.getText().toString());
-                             editor.putString("password", signuppassword.getText().toString());
-                             editor.apply();
+                            SharedPreferences.Editor editor = getSharedPreferences("account", MODE_PRIVATE).edit();
+                            editor.putString("username", signupusername.getText().toString());
+                            editor.putString("password", signuppassword.getText().toString());
+                            editor.apply();
 
-                             CircularAnim.fullActivity(SignUpActivity.this,signupbutton)
-                                     .colorOrImageRes(R.color.accent)
-                                     .go(new CircularAnim.OnAnimationEndListener() {
-                                         @Override
-                                         public void onAnimationEnd() {
-                                             startActivity(new Intent(SignUpActivity.this, WeatherActivity.class));
-                                         }
-                                     });
-                             finish();
-                         } else {
-                             Toast.makeText(SignUpActivity.this, "failed", Toast.LENGTH_SHORT).show();
-                         }
-                     }
-                 });
-             }
+                            CircularAnim.fullActivity(SignUpActivity.this, signupbutton)
+                                    .colorOrImageRes(R.color.accent)
+                                    .go(new CircularAnim.OnAnimationEndListener() {
+                                        @Override
+                                        public void onAnimationEnd() {
+                                            startActivity(new Intent(SignUpActivity.this, WeatherActivity.class));
+                                        }
+                                    });
+                            finish();
+                        } else {
+                            Toast.makeText(SignUpActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
 
              /*_User user = new _User();
              user.setUsername(signupusername.getText().toString());
@@ -155,10 +154,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                  }
              });*/
 
-             sendverifycode.setClickable(false);
+            sendverifycode.setClickable(false);
 
-            }
-             else {
+        } else {
             Toast.makeText(this, "your verify code is wrong", Toast.LENGTH_SHORT).show();
         }
     }

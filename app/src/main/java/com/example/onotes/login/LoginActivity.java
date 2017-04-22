@@ -1,6 +1,7 @@
 package com.example.onotes.login;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -11,6 +12,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -55,7 +59,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private  ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     private ProgressBar login_progress;
     private AutoCompleteTextView username;
     private EditText password;
@@ -84,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
+        //Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
         ActivityCollector.addActivity(this);
         //传入参数APPID和全局Context上下文
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
@@ -126,7 +130,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         username.setFilters(new InputFilter[]{InputUtil.filterspace()});
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
 
-        password.setOnKeyListener(new View.OnKeyListener() {
+        //默认弹出英文输入法
+        password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
+        username.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
+
+        password.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        /**
+         *
+         * IME_ACTION_SEARCH 搜索
+         * IME_ACTION_SEND 发送
+         * IME_ACTION_NEXT 下一步
+         * IME_ACTION_DONE 完成
+         */
+
+
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    // LoginActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                    View view = LoginActivity.this.getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+
+
+                    /* 打开输入法
+                        InputMethodManagerinputMethodManager=(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(editText,0);
+                     */
+                    sign_in_button.callOnClick();
+                }
+                return true;
+            }
+        });
+
+
+     /*   password.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -134,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 return false;
             }
-        });
+        });*/
 
         SharedPreferences qqsp = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
         String pictureurl = qqsp.getString("figureurl_qq_2", "");
@@ -192,6 +233,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 BmobQuery<Person> query = new BmobQuery<Person>();
                 query.addWhereEqualTo("username", username.getText().toString());
                 query.findObjects(new FindListener<Person>() {
+
                     @Override
                     public void done(List<Person> object, BmobException e) {
                         if (e == null) {
@@ -271,9 +313,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.qq:
 
                 break;
-            case R.id.addgroup:
-                joinQQGroup();
-                break;
             case R.id.qqpicture: {
                 /**通过这句代码，SDK实现了QQ的登录，这个方法有三个参数，第一个参数是context上下文，第二个参数SCOPO 是一个String类型的字符串，表示一些权限
                  官方文档中的说明：应用需要获得哪些API的权限，由“，”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
@@ -292,26 +331,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    /****************
-     * 发起添加群流程。群号：pdf(311357701) 的 key 为： _pTMqAXJrpUUk0t86WRYonnbx-axNgWb
-     * 调用 joinQQGroup(_pTMqAXJrpUUk0t86WRYonnbx-axNgWb) 即可发起手Q客户端申请加群 pdf(311357701)
-     *
-     * @param
-     * @return 返回true表示呼起手Q成功，返回fals表示呼起失败
-     ******************/
-    public boolean joinQQGroup() {
-        String key = "_pTMqAXJrpUUk0t86WRYonnbx-axNgWb";
-        Intent intent = new Intent();
-        intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
-        // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        try {
-            startActivityForResult(intent, 0);
-            return true;
-        } catch (Exception e) {
-            // 未安装手Q或安装的版本不支持
-            return false;
-        }
-    }
+
 
     /**
      * 自定义监听器实现IUiListener接口后，需要实现的3个方法
@@ -407,67 +427,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 }
                             });
 
-                         /*   BmobQuery<QqUser> query = new BmobQuery<QqUser>();
-                            query.addWhereEqualTo("nickname", nickname);
-                            query.findObjects(new FindListener<QqUser>() {
-                                                  @Override
-                                                  public void done(List<QqUser> object, BmobException e) {
-                                                      if (e == null) {
-                                                            QqUser qqUser=object.get(0);
-                                                            if (!qqUser.getNickname().equals(nickname)&&!qqUser.getFigureurl_qq_2().equals(figureurl_qq_2)){
-                                                                QqUser user = new QqUser();
-                                                                user.setNickname(nickname);
-                                                                user.setGender(gender);
-                                                                user.setProvince(province);
-                                                                user.setCity(city);
-                                                                user.setFigureurl(figureurl);
-                                                                user.setFigureurl_1(figureurl_1);
-                                                                user.setFigureurl_2(figureurl_2);
-                                                                user.setFigureurl_qq_1(figureurl_qq_1);
-                                                                user.setFigureurl_2(figureurl_qq_2);
-                                                                user.save(new SaveListener<String>() {
-                                                                    @Override
-                                                                    public void done(String s, BmobException e) {
-                                                                        if(e==null){
-                                                                            LogUtil.d("cwj","register");
-                                                                        }else{
-                                                                            LogUtil.d("cwj","register fail");
-                                                                        }
-                                                                    }
-                                                                });
-                                                            }
-
-                                                      } else {
-                                                          QqUser user = new QqUser();
-                                                          user.setNickname(nickname);
-                                                          user.setGender(gender);
-                                                          user.setProvince(province);
-                                                          user.setCity(city);
-                                                          user.setFigureurl(figureurl);
-                                                          user.setFigureurl_1(figureurl_1);
-                                                          user.setFigureurl_2(figureurl_2);
-                                                          user.setFigureurl_qq_1(figureurl_qq_1);
-                                                          user.setFigureurl_2(figureurl_qq_2);
-                                                          user.save(new SaveListener<String>() {
-                                                              @Override
-                                                              public void done(String s, BmobException e) {
-                                                                  if(e==null){
-                                                                      LogUtil.d("cwj","register");
-                                                                  }else{
-                                                                      LogUtil.d("cwj","register fail");
-                                                                  }
-                                                              }
-                                                          });
-                                                      }
-                                                  }
-                                              });
-
-                            Log.d("cwj", jo.getString("nickname"));
-                            Log.d("cwj", jo.getString("gender"));
-                            Log.d("cwj", jo.getString("province"));
-                            Log.d("cwj", jo.getString("city"));
-                            Log.d("cwj", jo.getString("figureurl_qq_2"));
-*/
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -501,7 +460,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
             } catch (JSONException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 closeProgressDialog();
             }
 
@@ -580,10 +539,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (pref.getBoolean("checkbox", false)) rememeberpassword.setChecked(true);
         super.onResume();
     }
+
     /**
      * show progress dialog
      */
-    public  void showProgressDialog() {
+    public void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Please wait...");
@@ -595,11 +555,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * close progress dialog
      */
-    public  void closeProgressDialog() {
+    public void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
+
     @Override
     protected void onDestroy() {
         Log.d("cwja", "ondestroy");
@@ -626,7 +587,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             ActivityCollector.finishAll();
             return true;
         }

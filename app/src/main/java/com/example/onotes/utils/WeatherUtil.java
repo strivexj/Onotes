@@ -35,17 +35,16 @@ import static android.content.Context.MODE_PRIVATE;
 public class WeatherUtil {
 
 
-
     /**
      * parse JSON date to Weather class
      */
-    public static Weather handleWeatherResponse(String response){
-        try{
-            JSONObject jsonObject=new JSONObject(response);
-            JSONArray jsonArray=jsonObject.getJSONArray("HeWeather");
-            String weatherContent=jsonArray.getJSONObject(0).toString();
-            return new Gson().fromJson(weatherContent,Weather.class);
-        }catch (Exception e){
+    public static Weather handleWeatherResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather5");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -65,43 +64,42 @@ public class WeatherUtil {
     /**
      * Parse and handle the data of city from server
      */
-    public static boolean handleCityResponse(String response, Context context){
+    public static boolean handleCityResponse(String response, Context context) {
 
-        if(!TextUtils.isEmpty(response)){
-            try{
-                JSONArray allCitys=new JSONArray(response);
-                CityDbHelper cityDbHelper=new CityDbHelper(context);
-                SQLiteDatabase db=cityDbHelper.getWritableDatabase();
-                for(int i=0;i<allCitys.length();i++){
-                    JSONObject cityObject=allCitys.getJSONObject(i);
-                    ContentValues values=new ContentValues();
-                    values.put("cityid",cityObject.getString("id"));
-                    values.put("cityEn",cityObject.getString("cityEn"));
-                    values.put("cityZh",cityObject.getString("cityZh"));
-                    values.put("provinceEn",cityObject.getString("provinceEn"));
-                    values.put("provinceZh",cityObject.getString("provinceZh"));
-                    values.put("leaderEn",cityObject.getString("leaderEn"));
-                    values.put("leaderZh",cityObject.getString("leaderZh"));
-                    values.put("lat",cityObject.getString("lat"));
-                    values.put("lon",cityObject.getString("lon"));
-                    db.insert("City",null,values);
-                    Log.d("cwj","add a city");
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONArray allCitys = new JSONArray(response);
+                CityDbHelper cityDbHelper = new CityDbHelper(context);
+                SQLiteDatabase db = cityDbHelper.getWritableDatabase();
+                for (int i = 0; i < allCitys.length(); i++) {
+                    JSONObject cityObject = allCitys.getJSONObject(i);
+                    ContentValues values = new ContentValues();
+                    values.put("cityid", cityObject.getString("id"));
+                    values.put("cityEn", cityObject.getString("cityEn"));
+                    values.put("cityZh", cityObject.getString("cityZh"));
+                    values.put("provinceEn", cityObject.getString("provinceEn"));
+                    values.put("provinceZh", cityObject.getString("provinceZh"));
+                    values.put("leaderEn", cityObject.getString("leaderEn"));
+                    values.put("leaderZh", cityObject.getString("leaderZh"));
+                    values.put("lat", cityObject.getString("lat"));
+                    values.put("lon", cityObject.getString("lon"));
+                    db.insert("City", null, values);
+                    Log.d("cwj", "add a city");
                 }
                 db.close();
 
-                SharedPreferences.Editor editor=context.getSharedPreferences("weather",MODE_PRIVATE).edit();
-                editor.putBoolean("cityadded",true);
+                SharedPreferences.Editor editor = context.getSharedPreferences("weather", MODE_PRIVATE).edit();
+                editor.putBoolean("cityadded", true);
                 editor.apply();
 
-
-
                 return true;
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         return false;
     }
+
     /*
      * according to the address and type poured in,query data from server
      */
@@ -127,7 +125,7 @@ public class WeatherUtil {
                 final String responseText = response.body().string();
                 boolean result;
                 result = WeatherUtil.handleCityResponse(responseText, App.getContext());
-                LogUtil.d("cwj","queryFromServer succeed");
+                LogUtil.d("cwj", "queryFromServer succeed");
             }
         });
     }

@@ -81,16 +81,17 @@ public class SideBar extends View {
         final OnTouchingLetterChangedListener listener = onTouchingLetterChangedListener;
         final int c = (int) (y / getHeight() * letterList.size());// 点击y坐标所占总高度的比例*b数组的长度就等于点击b中的个数.
 
-        switch (action) {
-            case MotionEvent.ACTION_UP:
-                setBackgroundColor(Color.parseColor("#FFFFFF"));
-                choose = -1;
-                invalidate();
-                if (mTextDialog != null) {
-                    mTextDialog.setVisibility(View.GONE);
-                }
-                break;
-            default:
+       if(event.getAction()==MotionEvent.ACTION_UP) {
+
+           setBackgroundColor(Color.parseColor("#FFFFFF"));
+           choose = -1;
+           invalidate();
+           if (mTextDialog != null) {
+               mTextDialog.setVisibility(View.GONE);
+           }
+
+       }else {
+
                 setBackgroundResource(R.drawable.bg_sidebar);
                 if (oldChoose != c) {
                     if (c >= 0 && c < letterList.size()) {
@@ -105,7 +106,7 @@ public class SideBar extends View {
                         invalidate();
                     }
                 }
-                break;
+
         }
         return true;
     }

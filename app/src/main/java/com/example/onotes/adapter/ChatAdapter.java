@@ -25,14 +25,15 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by cwj Apr.13.2017 10:14 AM
  */
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
 
-    private List<Chat>mList;
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
+
+    private List<Chat> mList;
     private Context mContext;
     public static final int TYPE_MSG_RIGHT = 0;
     public static final int TYPE_MSG_LEFT = 1;
-    public static final int TYPE_PICTURE_LEFT= 2;
-    public static final int TYPE_PICTURE_RIGHT= 3;
+    public static final int TYPE_PICTURE_LEFT = 2;
+    public static final int TYPE_PICTURE_RIGHT = 3;
 
     public ChatAdapter(Context context, List<Chat> list) {
         mContext = context;
@@ -49,31 +50,33 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
             String pictureurl = qqinfo.getString("figureurl_qq_2", "");
 
-            if(!TextUtils.isEmpty(pictureurl)){
+            if (!TextUtils.isEmpty(pictureurl)) {
                 Glide.with(App.getContext()).load(pictureurl).into(holder.mCircleImageView);
             }
             holder.mImageView.setVisibility(View.GONE);
             holder.mTextView.setVisibility(View.VISIBLE);
 
         } else if (viewType == TYPE_MSG_LEFT) {
+
+
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_left, parent, false);
             holder = new ViewHolder(view);
+
 
             holder.mImageView.setVisibility(View.GONE);
             holder.mTextView.setVisibility(View.VISIBLE);
-        }
-        else if(viewType==TYPE_PICTURE_LEFT){
+        } else if (viewType == TYPE_PICTURE_LEFT) {
+
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_left, parent, false);
             holder = new ViewHolder(view);
-            Glide.with(App.getContext()).load(R.drawable.back).into( holder.mImageView);
+            Glide.with(App.getContext()).load(R.drawable.back).into(holder.mImageView);
 
             holder.mImageView.setVisibility(View.VISIBLE);
             holder.mTextView.setVisibility(View.GONE);
-        }
-        else if(viewType==TYPE_PICTURE_RIGHT){
+        } else if (viewType == TYPE_PICTURE_RIGHT) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_right, parent, false);
             holder = new ViewHolder(view);
-            Glide.with(App.getContext()).load(R.drawable.back).into( holder.mImageView);
+            Glide.with(App.getContext()).load(R.drawable.back).into(holder.mImageView);
 
             holder.mImageView.setVisibility(View.VISIBLE);
             holder.mTextView.setVisibility(View.GONE);
@@ -84,26 +87,34 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(ChatAdapter.ViewHolder holder, int position) {
         holder.mTextView.setText(mList.get(position).getContent());
+        String pictureurl = mList.get(position).getPictureurl();
+
+        if (!TextUtils.isEmpty(pictureurl)) {
+            Glide.with(App.getContext()).load(pictureurl).into(holder.mCircleImageView);
+        }
     }
 
     @Override
     public int getItemCount() {
         return mList.size();
     }
+
     @Override
     public int getItemViewType(int position) {
         return mList.get(position).getType();
     }
 
-    public class  ViewHolder extends RecyclerView.ViewHolder{
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
         ImageView mImageView;
         CircleImageView mCircleImageView;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            mTextView=(TextView)itemView.findViewById(R.id.content);
-            mImageView=(ImageView)itemView.findViewById(R.id.item_image);
-            mCircleImageView=(CircleImageView)itemView.findViewById(R.id.picture);
+            mTextView = (TextView) itemView.findViewById(R.id.content);
+            mImageView = (ImageView) itemView.findViewById(R.id.item_image);
+            mCircleImageView = (CircleImageView) itemView.findViewById(R.id.picture);
         }
     }
 
