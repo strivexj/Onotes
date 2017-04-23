@@ -27,6 +27,16 @@ public class City {
     private String lat;
     private String lon;
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    private int type;
+
     private String sortLetters;//数据的首字母
 
     public String getSortLetters() {

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".ui.onboarding.OnboardingFragment">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.onboarding.OnboardingFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/section_img"
@@ -17,7 +17,7 @@
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:alpha="0.30"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"/>
 
     </FrameLayout>
 
@@ -30,24 +30,23 @@
         android:padding="@dimen/activity_horizontal_margin">
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/section_label"
+            style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/section_label"
             android:textAlignment="center"
-            style="@style/TextAppearance.AppCompat.Headline"
             android:textColor="@android:color/white"
-            tools:text="Page One" />
+            tools:text="Page One"/>
 
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/section_intro"
             style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:alpha="0.7"
             android:gravity="center"
-            android:text="Your awesome description about the app"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"/>
 
     </LinearLayout>
 

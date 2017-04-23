@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import android.provider.MediaStore;
-
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +43,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class FileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -53,9 +56,13 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
     private static final int CROP_CODE = 3;
     private ImageView mImageView;
 
+    public static final int TAKE_PHOTO = 1;
+    public static final int CROP_PHOTO = 2;
+
 
     private Uri imageUri;
     private File outputImage1;
+
     private final File outputImage2 = new File(Environment.
             getExternalStorageDirectory(), "tempImage2.jpg");
     private ImageView imageview;
@@ -70,6 +77,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_file);
         initView();
 
+
         if (ContextCompat.checkSelfPermission(FileActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
             //请求权限
             ActivityCompat.requestPermissions(FileActivity.this,
@@ -83,11 +91,11 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
         mImageView = (ImageView) findViewById(R.id.imageview);
         takephote = (Button) findViewById(R.id.takephoto);
 
+
         choosephoto = (Button) findViewById(R.id.choosephoto);
 
         takephote.setOnClickListener(this);
         choosephoto.setOnClickListener(this);
-
 
         new Thread(new Runnable() {
             @Override
@@ -104,19 +112,6 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         }).start();
-      /*  BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-=======
-
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
->>>>>>> dcd88902b7652eb8125fbb4d781cfb9fc6923534
-        if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }else {
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-<<<<<<< HEAD
-        }*/
-
-
     }
 
     @Override
@@ -128,10 +123,29 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.choosephoto:
                 //从相册选取
-                chooseFromGallery();
+               // chooseFromGallery();
+                bottonsheet();
                 break;
         }
     }
+private void popupwindow(){
+
+}
+private void bottonsheet(){
+    BottomSheetDialog dialog = new BottomSheetDialog(this);
+    View view =this.getLayoutInflater().inflate(R.layout.edit_setting_sheet, null);
+    dialog.setContentView(view);
+    dialog.show();
+}
+
+
+
+
+
+
+
+
+
     /**
      * 拍照选择图片
      */
@@ -285,10 +299,13 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(intent, CROP_CODE);
     }
     private void colorpicker() {
+
+
        ColorPickerDialogBuilder
                 .with(this)
                 .setTitle("Choose color")
                 .initialColor(R.color.light_blue_500)
+
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 //.wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
                 .density(12)

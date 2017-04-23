@@ -19,6 +19,15 @@ public class Notes {
     private String location;
     private float textsize;
     private float linespace;
+    private int bgcolor;
+
+    public int getBgcolor() {
+        return bgcolor;
+    }
+
+    public void setBgcolor(int bgcolor) {
+        this.bgcolor = bgcolor;
+    }
 
     public float getTextsize() {
         return textsize;

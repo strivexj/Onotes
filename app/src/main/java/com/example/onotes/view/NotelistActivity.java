@@ -339,6 +339,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 int id=cursor.getInt(cursor.getColumnIndex("id"));
                 float textsize=cursor.getFloat(cursor.getColumnIndex("textsize"));
                 float linespace=cursor.getFloat(cursor.getColumnIndex("linespace"));
+                int bgcolor=cursor.getInt(cursor.getColumnIndex("bgcolor"));
                 //LogUtil.d("delete in",id+"");
                 LogUtil.d("delete in"+id ,content);
                 Notes notes=new Notes();
@@ -347,6 +348,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 notes.setContent(content);
                 notes.setTextsize(textsize);
                 notes.setLinespace(linespace);
+                notes.setBgcolor(bgcolor);
                 list.add(notes);
 
                 LogUtil.d("aonsaveread "+i,content);

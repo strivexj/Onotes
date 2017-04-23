@@ -1,107 +1,84 @@
 package com.example.onotes.view;
 
-import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.net.Uri;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-
 import android.support.design.widget.BottomSheetDialog;
-
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.BulletSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
-import android.text.style.StrikethroughSpan;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-
-import android.webkit.WebView;
-
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.onotes.App;
 import com.example.onotes.R;
-import com.example.onotes.anim.CircularAnim;
-import com.example.onotes.datebase.CityDbHelper;
 import com.example.onotes.datebase.NotesDbHelper;
-import com.example.onotes.login.LoginActivity;
-import com.example.onotes.setting.SettingActivity;
 import com.example.onotes.utils.ActivityCollector;
-import com.example.onotes.utils.KeyboardUtil;
 import com.example.onotes.utils.LogUtil;
-import com.example.onotes.weather.WeatherActivity;
-import com.example.onotes.weather.WeatherMainActivity;
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class EditTextActivity extends AppCompatActivity {
+public class EditTextActivity extends AppCompatActivity implements View.OnClickListener{
 
     private SeekBar linespacing;
     private SeekBar textsize;
     private EditText edittext;
-    public static final String REFRESH="com.example.onotes.refresh";
+    public static final String REFRESH = "com.example.onotes.refresh";
     private String notesid;
-    private float linespace=0;
-    private float textsizef=25;
+    private float linespace = 0;
+    private float textsizef = 25;
+    private ImageView edit_bg;
+    private int bg_color = -1;
+    private String time;
+    private ImageView bold;
+    private ImageView italic;
+    private ImageView textcolor;
+    private ImageView setting_more;
+    private View settingview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_text);
-        LogUtil.d("cwj","oncerate");
+        LogUtil.d("cwj", "oncerate");
         ActivityCollector.addActivity(this);
 
+        LogUtil.d("time", System.currentTimeMillis() + "");
 
-        LogUtil.d("time",System.currentTimeMillis()+"");
-
-       LogUtil.d("time",getcurrenttime());
+        LogUtil.d("time", getcurrenttime());
 
         // this work
-       // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         // Check if no view has focus:
 
@@ -112,7 +89,7 @@ public class EditTextActivity extends AppCompatActivity {
         }*/
 
         //InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-       // keyboard.hideSoftInputFromWindow(getWindow().getAttributes().token, 0);
+        // keyboard.hideSoftInputFromWindow(getWindow().getAttributes().token, 0);
 
 
         initView();
@@ -121,37 +98,34 @@ public class EditTextActivity extends AppCompatActivity {
     }
 
     private String getcurrenttime() {
-        Calendar calendar= Calendar.getInstance();
-        String second=calendar.get(Calendar.SECOND)+"";
+        Calendar calendar = Calendar.getInstance();
+        String second = calendar.get(Calendar.SECOND) + "";
 
-        String hour=calendar.get(Calendar.HOUR_OF_DAY)+"";
-        String minute= calendar.get(Calendar.MINUTE)+"";
+        String hour = calendar.get(Calendar.HOUR_OF_DAY) + "";
+        String minute = calendar.get(Calendar.MINUTE) + "";
 
-        if(second.length()==1)
-        {
-            second="0"+second;
+        if (second.length() == 1) {
+            second = "0" + second;
         }
 
-        if(hour.length()==1)
-        {
-           hour="0"+hour;
+        if (hour.length() == 1) {
+            hour = "0" + hour;
         }
-        if(minute.length()==1)
-        {
-            minute="0"+minute;
+        if (minute.length() == 1) {
+            minute = "0" + minute;
         }
 
-        return calendar.get(Calendar.YEAR)+"."+
-                calendar.get(Calendar.MONTH)+"."
-                + calendar.get(Calendar.DAY_OF_MONTH)+"  "+
-                      hour+ ":"+minute + ":"+second;
+        return calendar.get(Calendar.YEAR) + "." +
+                calendar.get(Calendar.MONTH) + "."
+                + calendar.get(Calendar.DAY_OF_MONTH) + "  " +
+                hour + ":" + minute + ":" + second;
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        LogUtil.d("cwj","edonpause");
+        LogUtil.d("cwj", "edonpause");
     }
 
     private void initView() {
@@ -168,40 +142,11 @@ public class EditTextActivity extends AppCompatActivity {
         }
 
 
-       /* final BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-        Button bottomsheet=(Button)findViewById(R.id.bottomsheet);
-        bottomsheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }else {
-                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-            }
-        });*/
+        settingview = LayoutInflater.from(EditTextActivity.this).inflate(R.layout.edit_setting_sheet, null);
+        // copy the text content to clipboard
+        linespacing = (SeekBar) settingview.findViewById(R.id.linespacing);
+        textsize = (SeekBar) settingview.findViewById(R.id.textsize);
 
-
-
-
-       /* final BottomSheetBehavior behavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-        Button bottomsheet=(Button)findViewById(R.id.bottomsheet);
-        bottomsheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }else {
-                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-            }
-        });*/
-
-
-
-
-        linespacing = (SeekBar) findViewById(R.id.linespacing);
-        textsize = (SeekBar) findViewById(R.id.textsize);
         edittext = (EditText) findViewById(R.id.edittext);
 
         linespacing.setMax(1000);
@@ -212,7 +157,7 @@ public class EditTextActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 edittext.setLineSpacing((float) progress, 1);
 
-                linespace=(float)progress;
+                linespace = (float) progress;
             }
 
             @Override
@@ -229,7 +174,7 @@ public class EditTextActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 edittext.setTextSize(progress);
-                textsizef=(float)progress;
+                textsizef = (float) progress;
             }
 
             @Override
@@ -247,7 +192,7 @@ public class EditTextActivity extends AppCompatActivity {
         edittext.post(new Runnable() {
             @Override
             public void run() {
-                if(!TextUtils.isEmpty(edittext.getText().toString())) {
+                if (!TextUtils.isEmpty(edittext.getText().toString())) {
                     edittext.setSelection(edittext.getText().toString().length());
                     LogUtil.d("cwj", "set");
                 }
@@ -274,86 +219,132 @@ public class EditTextActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Spannable inputStr = (Spannable)s;
-                if(s.equals("草")){
+                Spannable inputStr = (Spannable) s;
+                if (s.equals("草")) {
 
-                    inputStr.setSpan(new ForegroundColorSpan(Color.BLUE),start,start+count, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    inputStr.setSpan(new ForegroundColorSpan(Color.BLUE), start, start + count, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                Spannable inputStr = (Spannable)s;
+                Spannable inputStr = (Spannable) s;
                 //if(s.equals("草")){
 
-                int a=edittext.getText().toString().length();
+               /* int a=edittext.getText().toString().length();
                 int b=s.length();
                 if(a>0)
                     inputStr.setSpan(new ForegroundColorSpan(Color.BLUE),a-b,a, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            */
             }
         });
-        LogUtil.d("cwj","length:"+edittext.getText().toString().length());
-        textsize.setProgress((int)textsizef);
-        linespacing.setProgress((int)linespace);
+        LogUtil.d("cwj", "length:" + edittext.getText().toString().length());
+        textsize.setProgress((int) textsizef);
+        linespacing.setProgress((int) linespace);
+
+        edit_bg = (ImageView) findViewById(R.id.edit_bg);
+
+        if (bg_color != -1) {
+            edit_bg.setBackgroundColor(bg_color);
+        }
+        if (time != null) {
+            actionBar.setTitle("");
+            actionBar.setSubtitle(time);
+        }
+        bold = (ImageView) findViewById(R.id.bold);
+        bold.setOnClickListener(this);
+        italic = (ImageView) findViewById(R.id.italic);
+        italic.setOnClickListener(this);
+        textcolor = (ImageView) findViewById(R.id.textcolor);
+        textcolor.setOnClickListener(this);
+        setting_more = (ImageView) findViewById(R.id.setting_more);
+        setting_more.setOnClickListener(this);
     }
-    public String load(){
-        Intent intent=getIntent();
-        notesid=intent.getIntExtra("id",-1)+"";
-        textsizef=intent.getFloatExtra("textsize",25);
-        linespace=intent.getFloatExtra("linespace",0);
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bold:
+                edittext.getPaint().setFakeBoldText(true);
+                break;
+            case R.id.italic:
+
+                break;
+            case R.id.textcolor:
+                Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.setting_more:
+                final PopupWindow popupWindow = new PopupWindow(settingview, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+                popupWindow.showAtLocation(settingview, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+             //   Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show();
+               /* final BottomSheetDialog dialog = new BottomSheetDialog(this);
+                dialog.setContentView(settingview);
+                dialog.show();*/
+                break;
+        }
+    }
+    public String load() {
+        Intent intent = getIntent();
+        notesid = intent.getIntExtra("id", -1) + "";
+        textsizef = intent.getFloatExtra("textsize", 25);
+        linespace = intent.getFloatExtra("linespace", 0);
         edittext.setTextSize(textsizef);
         edittext.setLineSpacing(linespace, 1);
+        bg_color = intent.getIntExtra("bgcolor", -1);
+        time = intent.getStringExtra("time");
 
-
-        LogUtil.d("load",textsizef+"  "+linespace);
+        LogUtil.d("bgcolorload", "" + bg_color);
+        LogUtil.d("load", textsizef + "  " + linespace);
         return intent.getStringExtra("content");
     }
-    public void save(String data){
-        if(!TextUtils.isEmpty(data)) {
+
+    public void save(String data) {
+        if (!TextUtils.isEmpty(data)) {
             NotesDbHelper notesDbHelper = new NotesDbHelper(this);
             SQLiteDatabase db = notesDbHelper.getWritableDatabase();
-            db.delete("Notes","id=?",new String[]{notesid});
-            LogUtil.d("delete",notesid+"");
+            db.delete("Notes", "id=?", new String[]{notesid});
+            LogUtil.d("delete", notesid + "");
             ContentValues values = new ContentValues();
-            values.put("textsize",textsizef);
-            values.put("linespace",linespace);
+            values.put("textsize", textsizef);
+            values.put("linespace", linespace);
             values.put("content", data);
-            values.put("time",getcurrenttime());
+            values.put("time", getcurrenttime());
+            values.put("bgcolor", bg_color);
             db.insert("Notes", null, values);
             db.close();
-            LogUtil.d("textsavesize",edittext.getTextSize()+"");
-            LogUtil.d("textsavespace",""+linespace);
+            LogUtil.d("bgcolorsave", "" + bg_color);
+            LogUtil.d("textsavesize", edittext.getTextSize() + "");
+            LogUtil.d("textsavespace", "" + linespace);
         }
-        Intent intent=new Intent(REFRESH);
+        Intent intent = new Intent(REFRESH);
         sendBroadcast(intent);
     }
-
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        LogUtil.d("cwj","edonstart");
+        LogUtil.d("cwj", "edonstart");
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LogUtil.d("cwj","edonstop");
+        LogUtil.d("cwj", "edonstop");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        LogUtil.d("cwj","edonresume");
+        LogUtil.d("cwj", "edonresume");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LogUtil.d("cwj","edondestory");
-       save(edittext.getText().toString());
+        LogUtil.d("cwj", "edondestory");
+        save(edittext.getText().toString());
     }
 
     @Override
@@ -361,6 +352,7 @@ public class EditTextActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.edit_more, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -371,14 +363,13 @@ public class EditTextActivity extends AppCompatActivity {
         }
 
 
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
-        }
-        else if(item.getItemId()==R.id.action_more){
+        } else if (item.getItemId() == R.id.action_more) {
 
-            final BottomSheetDialog dialog = new BottomSheetDialog(this);
 
-            View view =this.getLayoutInflater().inflate(R.layout.edit_actions_sheet, null);
+            // final BottomSheetDialog dialog = new BottomSheetDialog(this);
+            // View view =this.getLayoutInflater().inflate(R.layout.edit_actions_sheet, null);
 
         /*    if (queryIfIsBookmarked()) {
                 ((TextView) view.findViewById(R.id.textView)).setText(R.string.action_delete_from_bookmarks);
@@ -395,13 +386,18 @@ public class EditTextActivity extends AppCompatActivity {
                 }
             });*/
 
-
+            View view = LayoutInflater.from(EditTextActivity.this).inflate(R.layout.edit_actions_sheet, null);
             // copy the text content to clipboard
+
+
+            final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
             view.findViewById(R.id.layout_copy_text).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    //dialog.dismiss();
                     copyText(v);
+                    popupWindow.dismiss();
                 }
             });
 
@@ -409,20 +405,52 @@ public class EditTextActivity extends AppCompatActivity {
             view.findViewById(R.id.layout_share_text).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    // dialog.dismiss();
                     shareAsText();
+                    popupWindow.dismiss();
+
                 }
             });
 
-            dialog.setContentView(view);
-            dialog.show();
+            CircleImageView color = (CircleImageView) view.findViewById(R.id.color);
+            if (bg_color != -1) {
+                color.setBackgroundColor(bg_color);
+            }
+
+            view.findViewById(R.id.bg).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    colorpicker();
+                    popupWindow.dismiss();
+
+                }
+            });
+
+
+            ColorDrawable cd = new ColorDrawable(0x000000);
+            popupWindow.setBackgroundDrawable(cd);
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.alpha = 0.8f;
+            getWindow().setAttributes(lp);
+
+            popupWindow.showAtLocation(view, Gravity.TOP, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+           /* dialog.setContentView(view);
+            dialog.show();*/
+            popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    WindowManager.LayoutParams lp = getWindow().getAttributes();
+                    lp.alpha = 1f;
+                    getWindow().setAttributes(lp);
+                }
+            });
         }
-       return  true;
+        return true;
     }
 
 
     public void shareAsText() {
-        String text=edittext.getText().toString();
+        String text = edittext.getText().toString();
         if (TextUtils.isEmpty(text)) {
             Toast.makeText(this, "You haven't written anything!", Toast.LENGTH_SHORT).show();
             return;
@@ -430,37 +458,78 @@ public class EditTextActivity extends AppCompatActivity {
 
         try {
             Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND).setType("text/plain");
-            String shareText =text;
+            String shareText = text;
 
             shareText = shareText + "\t\t\t" + this.getString(R.string.share_extra);
 
-            shareIntent.putExtra(Intent.EXTRA_TEXT,shareText);
-           this.startActivity(Intent.createChooser(shareIntent,this.getString(R.string.share_to)));
-        } catch (android.content.ActivityNotFoundException ex){
-         //  showLoadingError();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            this.startActivity(Intent.createChooser(shareIntent, this.getString(R.string.share_to)));
+        } catch (ActivityNotFoundException ex) {
+            //  showLoadingError();
         }
 
     }
 
+    private void colorpicker() {
 
+        ColorPickerDialogBuilder
+                .with(this)
+                .setTitle("Choose color")
+                .initialColor(bg_color)
+
+                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                //.wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
+                .density(12)
+                .showAlphaSlider(true)
+                .showLightnessSlider(true)
+                .showColorPreview(true)
+                .setOnColorSelectedListener(new OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int selectedColor) {
+                        // Toast.makeText(EditTextActivity.this, Integer.to(selectedColor), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(EditTextActivity.this, Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+
+                .setPositiveButton("ok", new ColorPickerClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                        //changeBackgroundColor(selectedColor);
+                        edit_bg.setBackgroundColor(selectedColor);
+                        //   Toast.makeText(EditTextActivity.this, ""+selectedColor, Toast.LENGTH_SHORT).show();
+
+                        bg_color = selectedColor;
+
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+
+                .build()
+                .show();
+    }
 
     public void copyText(View v) {
-        String text=edittext.getText().toString();
+        String text = edittext.getText().toString();
         if (TextUtils.isEmpty(text)) {
             Toast.makeText(this, "You haven't written anything!", Toast.LENGTH_SHORT).show();
             return;
         }
         ClipboardManager manager = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
-        ClipData clipData = ClipData.newPlainText("text",text);
+        ClipData clipData = ClipData.newPlainText("text", text);
 
         manager.setPrimaryClip(clipData);
         showTextCopied(v);
     }
 
 
-   public void showTextCopied(View v) {
+    public void showTextCopied(View v) {
         //Snackbar.make(imageView, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
-       Snackbar.make(v, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(v, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
     }
    /* public void addToOrDeleteFromBookmarks() {
         String tmpTable = "";

@@ -54,7 +54,7 @@
     <string name="follow_me_on_github">Follow Me on GitHub</string>
     <string name="github_url">https://github.com/strivexj</string>
 
-    <string name="addqqgroup">Add QQ group</string>
+    <string name="addqqgroup">Add QQ Group</string>
     <string name="qqgroupnumber">311357701</string>
 
     <string name="support">Support</string>
@@ -90,6 +90,6 @@
     <string name="action_share_as_text">Share as Text</string>
     <string name="share_to">Share to</string>
 
-    <string name="share_extra">-------share from Onotes</string>
-
+    <string name="share_extra">------- share from Onotes</string>
+    <string name="color_or_picture">Choose color or picture for background</string>
 </resources>

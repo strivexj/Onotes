@@ -84,6 +84,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         intent.putExtra("id", mList.get(position).getId());
         intent.putExtra("textsize", mList.get(position).getTextsize());
         intent.putExtra("linespace", mList.get(position).getLinespace());
+        intent.putExtra("bgcolor",mList.get(position).getBgcolor());
+        intent.putExtra("time",mList.get(position).getTime());
         LogUtil.d("dbtextsize", mList.get(position).getTextsize() + "");
         LogUtil.d("dbtextspace", mList.get(position).getLinespace() + "");
         mList.remove(position);

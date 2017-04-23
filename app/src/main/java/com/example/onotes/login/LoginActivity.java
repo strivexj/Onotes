@@ -433,7 +433,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             e.printStackTrace();
                         }
                         CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
-                                .colorOrImageRes(R.color.accent)
+                                .colorOrImageRes(R.color.colorAccent)
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {

@@ -20,12 +20,20 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <ImageView
+        android:id="@+id/edit_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 <android.support.v4.widget.DrawerLayout
     android:id="@+id/etdrawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
 >
 
 
@@ -48,8 +56,50 @@
             />
         </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/edit_bottom"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/bold"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/bold"
+        />
+        <ImageView
+            android:id="@+id/italic"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/italic"
+        />
+        <ImageView
+            android:id="@+id/textcolor"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/textcolor"
+        />
+        <ImageView
+            android:id="@+id/setting_more"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/setting_more"
+        />
+    </LinearLayout>
 
-        <LinearLayout
+      <!--  <LinearLayout
             android:id="@+id/textSizelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -78,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
             />
-        </LinearLayout>
+        </LinearLayout>-->
 
         <Button
         android:id="@+id/bottomsheet"
@@ -101,13 +151,11 @@
        >
         <!-- app:headerLayout="@layout/nav_header"-->
 
-
     </android.support.design.widget.NavigationView>
 
-
-
-
 </android.support.v4.widget.DrawerLayout>
+
+</FrameLayout>
     </android.support.design.widget.CoordinatorLayout>
 
 

@@ -84,9 +84,10 @@ public class ChooseAreaFragment extends Fragment {
         for(int i=0;i<26;i++){
             indexposition[i]=-1;
         }
-        //dataList.add("A");
+        int i=0;
         if (cursor.moveToFirst()) {
             do {
+
                 City city = new City();
                 String setId = cursor.getString(cursor.getColumnIndex("cityid"));
                 String CityEn = cursor.getString(cursor.getColumnIndex("cityEn"));
@@ -97,6 +98,8 @@ public class ChooseAreaFragment extends Fragment {
                 String leaderZh = cursor.getString(cursor.getColumnIndex("leaderZh"));
                 String lat = cursor.getString(cursor.getColumnIndex("lat"));
                 String lon = cursor.getString(cursor.getColumnIndex("lon"));
+
+
                 city.setId(setId);
                 city.setCityEn(CityEn);
                 city.setCityZh(CityZh);
@@ -107,25 +110,20 @@ public class ChooseAreaFragment extends Fragment {
                 city.setLat(lat);
                 city.setLon(lon);
                 city.setSortLetters(CityEn.charAt(0)+"");
+                city.setType(1);
                 cityList.add(city);
-                Log.d("db", "find a city  " + j);
 
-               /* for(int i=0;i<26;i++){
-                    Log.d("db", "189");
-                    String ind=city.getCityEn().charAt(0)+"";
-                    ind=ind.toUpperCase();
-                    Log.d("db", ind);
-                    if(ind.equals(INDEX_STRING[i])){
-                        for(int k=0;k<26;k++){
-                            if(indexposition[k]!=-1){
-                                dataList.add(ind);
-                                Log.d("db", "159");
-                                indexposition[k]=dataList.size()-1;
-                            }
-                        }
-                    }
+
+                if(i==0){
+                    City type=new City();
+                    type.setType(0);
+                    type.setCityZh(cityList.get(0).getSortLetters().toUpperCase());
+                }else if(!cityList.get(i-1).getSortLetters().equals(cityList.get(i).getSortLetters())){
+                    City type=new City();
+                    type.setType(0);
+                    type.setCityZh(cityList.get(i).getSortLetters().toUpperCase());
                 }
-*/
+                i++;
                 LogUtil.d("sortletter",city.getSortLetters());
                 dataList.add(cityList.get(j).getCityZh());
                 adapter.notifyDataSetChanged();

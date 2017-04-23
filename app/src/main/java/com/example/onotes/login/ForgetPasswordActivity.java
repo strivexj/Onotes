@@ -102,7 +102,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                                     editor.putString("password", resetpassword.getText().toString());
                                     editor.apply();
                                     CircularAnim.fullActivity(ForgetPasswordActivity.this, forgetbutton)
-                                            .colorOrImageRes(R.color.accent)
+                                            .colorOrImageRes(R.color.colorAccent)
                                             .go(new CircularAnim.OnAnimationEndListener() {
                                                 @Override
                                                 public void onAnimationEnd() {
