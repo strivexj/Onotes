@@ -23,6 +23,7 @@ import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.login.ForgetPasswordActivity;
 import com.example.onotes.login.LoginActivity;
 import com.example.onotes.utils.ActivityCollector;
+import com.example.onotes.utils.SharedPreferenesUtil;
 
 public class OnboardingActivity extends AppCompatActivity {
 
@@ -42,7 +43,8 @@ public class OnboardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         final SharedPreferences sp = App.getContext().getSharedPreferences("app", MODE_PRIVATE);
-        if (sp.getBoolean("is_first_lanuch", true)) {
+
+        if (SharedPreferenesUtil.getIs_first_lanuch()) {
             setContentView(R.layout.activity_on_boarding);
 
             initViews();
@@ -76,9 +78,7 @@ public class OnboardingActivity extends AppCompatActivity {
             buttonFinish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SharedPreferences.Editor ed = sp.edit();
-                    ed.putBoolean("is_first_lanuch", false);
-                    ed.apply();
+                    SharedPreferenesUtil.setIs_first_lanuch(false);
                     navigateToMainActivity();
                 }
             });

@@ -3,50 +3,28 @@ package com.example.onotes.service;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.app.TaskStackBuilder;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Binder;
-import android.os.IBinder;
-import android.os.PowerManager;
-import android.os.RemoteException;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaButtonReceiver;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.app.NotificationCompat;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.Chat;
 import com.example.onotes.datebase.ChatDbHelper;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.view.Main2Activity;
-
 import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import cn.bmob.v3.BmobRealTimeData;
 import cn.bmob.v3.listener.ValueEventListener;
 

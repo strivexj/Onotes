@@ -248,6 +248,9 @@ private void bottonsheet(){
      * @param dirPath
      * @return
      */
+
+
+
     private Uri saveBitmap(Bitmap bm, String dirPath) {
         //新建文件夹用于存放裁剪后的图片
         File tmpDir = new File(Environment.getExternalStorageDirectory() + "/" + dirPath);

@@ -26,6 +26,7 @@ import com.example.onotes.R;
 import com.example.onotes.bean.City;
 import com.example.onotes.datebase.CityDbHelper;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.view.SideBar;
 
 import java.util.ArrayList;
@@ -209,12 +210,13 @@ public class ChooseAreaFragment extends Fragment {
                     weatherId = cityList.get(position).getId();
                 }
 
-                SharedPreferences.Editor editor = App.getContext().getSharedPreferences("weather",MODE_PRIVATE).edit();
-                editor.putString("weatherid", weatherId);
-                editor.apply();
+                     LogUtil.d("shared", "id:"+weatherId);
+                    SharedPreferenesUtil.setWeatherid(weatherId);
+                    LogUtil.d("shared", SharedPreferenesUtil.getWeatherid()+" sasdfdf");
+
                 if (getActivity() instanceof WeatherMainActivity) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), WeatherActivity.class);
-                    intent.putExtra("weather_id", weatherId);
+                    //intent.putExtra("weather_id", weatherId);
                     startActivity(intent);
                     getActivity().finish();
                     Log.d("refresh", "start ");

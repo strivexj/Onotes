@@ -89,9 +89,7 @@ public class WeatherUtil {
                 }
                 db.close();
 
-                SharedPreferences.Editor editor = context.getSharedPreferences("weather", MODE_PRIVATE).edit();
-                editor.putBoolean("cityadded", true);
-                editor.apply();
+                SharedPreferenesUtil.setIscityadd(true);
 
                 return true;
             } catch (JSONException e) {
@@ -124,8 +122,9 @@ public class WeatherUtil {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
-                boolean result;
-                result = WeatherUtil.handleCityResponse(responseText, App.getContext());
+              //  boolean result;
+               // result = WeatherUtil.handleCityResponse(responseText, App.getContext());
+                WeatherUtil.handleCityResponse(responseText, App.getContext());
                 LogUtil.d("cwj", "queryFromServer succeed");
             }
         });

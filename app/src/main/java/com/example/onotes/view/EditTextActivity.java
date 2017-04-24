@@ -39,6 +39,7 @@ import com.example.onotes.R;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -452,7 +453,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     public void shareAsText() {
         String text = edittext.getText().toString();
         if (TextUtils.isEmpty(text)) {
-            Toast.makeText(this, "You haven't written anything!", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(R.string.writing_nothing,Toast.LENGTH_SHORT);
             return;
         }
 
@@ -516,7 +518,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     public void copyText(View v) {
         String text = edittext.getText().toString();
         if (TextUtils.isEmpty(text)) {
-            Toast.makeText(this, "You haven't written anything!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "You haven't written anything!", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(R.string.writing_nothing,Toast.LENGTH_SHORT);
             return;
         }
         ClipboardManager manager = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);

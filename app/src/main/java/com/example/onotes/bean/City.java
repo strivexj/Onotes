@@ -2,6 +2,7 @@ package com.example.onotes.bean;
 
 /**
  * Created by cwj Apr.02.2017 9:17 PM
+ * 城市实体类
  */
 
 public class City {

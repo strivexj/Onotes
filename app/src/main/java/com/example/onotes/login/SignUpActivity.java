@@ -17,6 +17,8 @@ import com.example.onotes.bean.Person;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.SendMail;
+import com.example.onotes.utils.SharedPreferenesUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.weather.WeatherActivity;
 
 import cn.bmob.v3.BmobQuery;
@@ -66,14 +68,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.sendverifycode:
                 verfiycode = 100000 + (int) (Math.random() * 800000);
-                String message = "Hi " + signupusername.getText().toString() + ": \n  Weclome to sign up Onotes application. Here is your verify code : " + verfiycode
-                        + "\n  If it is not your sign up action, please ignore it. \n  Please don't reply to this email. Thank you!";
-                //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                String message = R.string.verify_email_hi + signupusername.getText().toString()
+                        + R.string.verify_email_welcome + verfiycode
+                        + R.string.verify_email_end;
+
                 SendMail sm = new SendMail(this, signupemail.getText().toString(), message);
                 sm.execute();
                 break;
             case R.id.signupbutton:
-                // isexist();
+
                 register();
                 break;
         }
@@ -88,7 +91,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void done(Integer count, BmobException e) {
                 if (e == null) {
                     if (count != 0) {
-                        Toast.makeText(SignUpActivity.this, "Your username have been registered.", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(SignUpActivity.this, , Toast.LENGTH_SHORT).show();
+                        ToastUtil.showToast(R.string.username_registered,Toast.LENGTH_SHORT);
                         isexist = true;
                     } else isexist = false;
 
@@ -108,7 +112,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             person.setPassword(signuppassword.getText().toString());
             person.setEmail(signupemail.getText().toString());
             if (isexist()) {
-                Toast.makeText(SignUpActivity.this, "Your username have been registered.", Toast.LENGTH_SHORT).show();
+                ToastUtil.showToast(R.string.username_registered,Toast.LENGTH_SHORT);
                 signupbutton.setClickable(true);
             } else {
                 person.save(new SaveListener<String>() {
@@ -117,10 +121,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         if (e == null) {
                             Toast.makeText(SignUpActivity.this, "succeed", Toast.LENGTH_SHORT).show();
 
-                            SharedPreferences.Editor editor = getSharedPreferences("account", MODE_PRIVATE).edit();
-                            editor.putString("username", signupusername.getText().toString());
-                            editor.putString("password", signuppassword.getText().toString());
-                            editor.apply();
+                            SharedPreferenesUtil.setUsername(signupusername.getText().toString());
+                            SharedPreferenesUtil.setPassword(signuppassword.getText().toString());
 
                             CircularAnim.fullActivity(SignUpActivity.this, signupbutton)
                                     .colorOrImageRes(R.color.accent)
@@ -132,7 +134,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                     });
                             finish();
                         } else {
-                            Toast.makeText(SignUpActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                            ToastUtil.showToast(R.string.signup_failed,Toast.LENGTH_SHORT);
                         }
                     }
                 });
@@ -157,7 +159,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             sendverifycode.setClickable(false);
 
         } else {
-            Toast.makeText(this, "your verify code is wrong", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(R.string.verify_code_wrong,Toast.LENGTH_SHORT);
         }
     }
 

@@ -7,6 +7,8 @@ import android.view.MenuItem;
 
 import com.example.onotes.R;
 
+
+
 public class AboutActivity extends AppCompatActivity {
 
     @Override

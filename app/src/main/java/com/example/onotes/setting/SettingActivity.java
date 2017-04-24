@@ -13,6 +13,7 @@ import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.login.LoginActivity;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.view.EditTextActivity;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -48,9 +49,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         });
 
-                SharedPreferences.Editor editor= App.getContext().getSharedPreferences("account",MODE_PRIVATE).edit();
-                editor.putBoolean("issignin",false);
-                editor.apply();
+                SharedPreferenesUtil.setIssignin(false);
                 LogUtil.d(this,"cwji");
                 break;
         }

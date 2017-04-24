@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Onotes</string>
+    
+    <string name="double_click_exit">Please click again to exit</string>
 
+    
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -62,8 +65,8 @@
     <string name="sendto">mailto:strivexj@gmail.com</string>
     <string name="mail_topic">Onotes Feedback / Advice</string>
 
-    <string name="device_model">Device Version: </string>
-    <string name="sdk_version">SDK Version: </string>
+    <string name="device_model">Device Version:</string>
+    <string name="sdk_version">SDK Version:</string>
     <string name="no_mail_app">No Mail App Installed</string>
     <string name="no_app_store_found">No App Store Installed</string>
     <string name="no_browser_found">No Browser Installed</string>
@@ -92,4 +95,67 @@
 
     <string name="share_extra">------- share from Onotes</string>
     <string name="color_or_picture">Choose color or picture for background</string>
+
+
+    <!--forgetpassword -->
+    <string name="reset_password_sussesfully">Your password have been reset successfully~!</string>
+    <string name="reset_password_failed">Failed</string>
+
+    <string name="verify_code_wrong">your verify code is wrong</string>
+    <!--end-->
+
+    <!--loginactivity-->
+    <string name="sign_in_successfully">Sign in successfully</string>
+    <string name="username_or_password_wrong">Your username or password maybe wrong</string>
+    <string name="authorize_successfully">Authorize successfully</string>
+    <string name="authorize_failed">Authorization was failed</string>
+    <string name="authorize_canceled">Authorization was canceled</string>
+
+    <string name="sign_in_progress">Please wait for a while</string>
+    <!--end-->
+
+    <!--signupactivity-->
+    <string name="verify_email_hi">Hi</string>
+    <string name="verify_email_welcome">Welcome to sign up Onotes application. Here is your verify
+        code :
+    </string>
+    <string name="verify_email_end">\n If it is not your sign up action, please ignore it. \n Please
+        don\'t reply to this email. Thank you!
+    </string>
+    <string name="username_registered">Your username have been registered.</string>
+    <string name="signup_failed">failed</string>
+    <!--end-->
+
+    <!--sendemail-->
+    <string name="subject">Verify code</string>
+    <string name="myemail">strivexj@gmail.com</string>
+    <string name="mypassword">strivexj</string>
+    <string name="progressDialog1">Sending email</string>
+    <string name="progressDialog2">Please wait...</string>
+    <string name="sending_successfully">Verify code have been sent.</string>
+    <!--end-->
+
+    <!--editactivity-->
+    <string name="writing_nothing">You haven\'t written anything!</string>
+    <!--end-->
+
+    <!--notelistactivity-->
+    <string name="dialog_title">Delete</string>
+    <string name="dialog_content">Are you sure to delete all notes?</string>
+    <string name="dialog_positive_button">Yes</string>
+    <string name="dialog_negative_button">Cancel</string>
+    <string name="click_me_select_city">Click me to select a city</string>
+    <!--end-->
+
+    <!--weatheractivity-->
+    <string name="loading_weather_failed">Loading weather infomation falied.</string>
+    <string name="comfort">Comfort: </string>
+    <string name="carwash">Carwash: </string>
+    <string name="sport_suggestion">Sport suggestion: </string>
+    <!--end-->
+
+
+    <!--editactivity-->
+
+    <!--end-->
 </resources>

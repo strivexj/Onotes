@@ -55,6 +55,8 @@ import com.example.onotes.ui.PopUpActivity;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.SharedPreferenesUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.weather.WeatherMainActivity;
 
@@ -281,15 +283,15 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
-        String qqusername = qqinfo.getString("nickname", "");
-        String pictureurl = qqinfo.getString("figureurl_qq_2", "");
-        LogUtil.d("ccwj", qqusername);
-        LogUtil.d("ccwj", pictureurl);
-        username.setText(qqusername);
+       // SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
+       // String qqusername = qqinfo.getString("nickname", "");
+        //String pictureurl = qqinfo.getString("figureurl_qq_2", "");
+       // LogUtil.d("ccwj", qqusername);
+      //  LogUtil.d("ccwj", pictureurl);
+        username.setText(SharedPreferenesUtil.getNickname());
         
-        if(!TextUtils.isEmpty(pictureurl)){
-            Glide.with(this).load(pictureurl).into(icon_image);
+        if(!TextUtils.isEmpty(SharedPreferenesUtil.getFigureurl_qq_2())){
+            Glide.with(this).load(SharedPreferenesUtil.getFigureurl_qq_2()).into(icon_image);
         }
 
 
@@ -452,11 +454,11 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             }
             case R.id.delete: {
                 AlertDialog.Builder dialog=new AlertDialog.Builder(NotelistActivity.this);
-                dialog.setTitle("Delete");
-                dialog.setMessage("Are you sure to delete all notes?");
+                dialog.setTitle(R.string.dialog_title);
+                dialog.setMessage(R.string.dialog_content);
                 dialog.setCancelable(true);
                 dialog.setIcon(R.drawable.warning);
-                dialog.setPositiveButton("Yes",new DialogInterface.OnClickListener(){
+                dialog.setPositiveButton(R.string.dialog_positive_button,new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog,int which)
                     {
                         NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
@@ -468,7 +470,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                         adapter.notifyDataSetChanged();
                     }
                 });
-                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                dialog.setNegativeButton(R.string.dialog_negative_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -521,7 +523,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     private void exit() {
         if ((System.currentTimeMillis() - clickTime) > 3000) {
-            Toast.makeText(getApplicationContext(), "再次点击退出", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.double_click_exit, Toast.LENGTH_SHORT).show();
             clickTime = System.currentTimeMillis();
         } else {
             ActivityCollector.finishAll();
@@ -529,13 +531,17 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void requestWeather() {
-        SharedPreferences pref = App.getContext().getSharedPreferences("weather", MODE_APPEND);
-        String weatherid = pref.getString("weatherid", "");
-        LogUtil.d("onrequest1",weatherid);
+      //  SharedPreferences pref = App.getContext().getSharedPreferences("weather", MODE_APPEND);
+       // String weatherid = pref.getString("weatherid", "");
+
+      //  LogUtil.d("onrequest1",weatherid);
         //https://free-api.heweather.com/v5/weather?city=yourcity&key=yourkey；
         //String weatherUrl = "https://free-api.heweather.com/v5/weather?city=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
         //String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherid + "&key=1e5bbb41868b4bce9f9586755e3a99e2";
-        String weatherUrl="https://free-api.heweather.com/v5/weather?city="+weatherid+"&key=1e5bbb41868b4bce9f9586755e3a99e2";
+        String weatherUrl="https://free-api.heweather.com/v5/weather?city="+SharedPreferenesUtil.getWeatherid()+"&key=1e5bbb41868b4bce9f9586755e3a99e2";
+
+       // ToastUtil.showToast(SharedPreferenesUtil.getWeatherid()+"   aaaaa",Toast.LENGTH_LONG);
+
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -549,7 +555,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                             weather_degree.setText(weather.now.temperature+"°C");
                         } else {
                             weather_city.setTextSize(15);
-                            weather_city.setText("点击我选择城市吧");
+                            weather_city.setText(R.string.click_me_select_city);
                             //Toast.makeText(NotelistActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }
 
@@ -564,7 +570,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void run() {
                         weather_city.setTextSize(15);
-                        weather_city.setText("点击我选择城市吧");
+                        weather_city.setText(R.string.click_me_select_city);
                         //Toast.makeText(NotelistActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -2,19 +2,17 @@ package com.example.onotes.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.example.onotes.App;
 import com.example.onotes.datebase.CityDbHelper;
-import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.WeatherUtil;
-import com.example.onotes.view.NotelistActivity;
+
 
 /**
  * Created by cwj Apr.08.2017 8:09 PM
  */
+
 
 public class CityDownloadSerivce extends IntentService{
 

@@ -1,29 +1,19 @@
 package com.example.onotes.adapter;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.onotes.R;
 import com.example.onotes.bean.Notes;
-import com.example.onotes.gson.Weather;
-import com.example.onotes.login.LoginActivity;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.view.EditTextActivity;
-import com.example.onotes.weather.WeatherActivity;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
 /**

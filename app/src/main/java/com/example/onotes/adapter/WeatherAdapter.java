@@ -7,11 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
-
 import com.example.onotes.R;
 import com.example.onotes.bean.City;
 import com.example.onotes.utils.LogUtil;
-
 import java.util.List;
 
 /**

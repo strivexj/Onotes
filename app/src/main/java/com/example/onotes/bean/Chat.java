@@ -4,7 +4,9 @@ import cn.bmob.v3.BmobObject;
 
 /**
  * Created by cwj Apr.13.2017 10:11 AM
+ * 聊天实体类
  */
+
 
 public class Chat extends BmobObject{
 

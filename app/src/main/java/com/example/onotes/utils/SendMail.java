@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.example.onotes.App;
+import com.example.onotes.R;
+
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -20,14 +23,11 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
     private Context context;
     private Session session;
-
-
     private String email;
     private String subject;
     private String message;
-
-    private String myEmail = "strivexj@gmail.com";
-    private String myPassword = "strivexj";
+    private String myEmail = App.getContext().getString(R.string.myemail);
+    private String myPassword = App.getContext().getString(R.string.mypassword);
 
     private ProgressDialog progressDialog;
 
@@ -36,7 +36,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
         this.context = context;
         this.email = email;
-        this.subject = "Verify code";
+        this.subject =App.getContext().getString(R.string.subject);
         this.message = message;
     }
 
@@ -44,7 +44,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        progressDialog = ProgressDialog.show(context, "Sending email", "Please wait...", false, false);
+        progressDialog = ProgressDialog.show(context, App.getContext().getString(R.string.progressDialog1), App.getContext().getString(R.string.progressDialog2), false, false);
     }
 
     @Override
@@ -53,7 +53,8 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
         progressDialog.dismiss();
 
-        Toast.makeText(context, "Verify code have been sent.", Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, , Toast.LENGTH_LONG).show();
+        ToastUtil.showToast(App.getContext().getString(R.string.sending_successfully),Toast.LENGTH_SHORT);
     }
 
     @Override

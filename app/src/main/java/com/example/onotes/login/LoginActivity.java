@@ -36,6 +36,8 @@ import com.example.onotes.service.CityDownloadSerivce;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.SharedPreferenesUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.view.NotelistActivity;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
@@ -60,23 +62,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ProgressDialog progressDialog;
-    private ProgressBar login_progress;
     private AutoCompleteTextView username;
     private EditText password;
     private Button sign_in_button;
     private TextView signup;
     private TextView forgetpassword;
-    private LinearLayout email_login_form;
-    private ScrollView login_form;
     private CheckBox rememeberpassword;
-    private boolean issignin = false;
-
     private static final String TAG = "LoginActivity";
     private static final String APP_ID = "1106087728";//官方获取的APPID
     private Tencent mTencent;
     private BaseUiListener mIUiListener;
     private UserInfo mUserInfo;
-
     private TextView qq;
     private TextView addgroup;
     private ProgressBar progressBar;
@@ -88,21 +84,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Bmob.initialize(this, "9114a2d5e04f0ff10206a7efb408e11e");
         ActivityCollector.addActivity(this);
+
         //传入参数APPID和全局Context上下文
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
 
-        SharedPreferences preferences = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
-        issignin = preferences.getBoolean("issignin", false);
 
-        SharedPreferences pref = App.getContext().getSharedPreferences("weather", MODE_PRIVATE);
-        if (!pref.getBoolean("cityadded", false)) {
+        if (!SharedPreferenesUtil.isCityadd()) {
+            LogUtil.d("shared","cityadd ==false");
             Intent intentService = new Intent(this, CityDownloadSerivce.class);
             startService(intentService);
         }
 
-        if (issignin) {
+        if (SharedPreferenesUtil.issignin()) {
             startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
         }
 
@@ -114,7 +108,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
-        Log.d("cwj", "oasfdds");
         backgroud = (ImageView) findViewById(R.id.backgroud);
         username = (AutoCompleteTextView) findViewById(R.id.signinusername);
         password = (EditText) findViewById(R.id.password);
@@ -131,10 +124,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
 
         //默认弹出英文输入法
-        password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
+     //   password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
         username.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
 
+       // password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+      //  password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         password.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
         /**
          *
          * IME_ACTION_SEARCH 搜索
@@ -169,25 +165,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
 
-     /*   password.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    sign_in_button.callOnClick();
-                }
-                return false;
-            }
-        });*/
 
-        SharedPreferences qqsp = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
-        String pictureurl = qqsp.getString("figureurl_qq_2", "");
+        String pictureurl=SharedPreferenesUtil.getFigureurl_qq_2();
         if (!TextUtils.isEmpty(pictureurl)) {
             Glide.with(this).load(pictureurl).into(userpicture);
         }
 
-        SharedPreferences pref = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
-        String susername = pref.getString("username", "");
-        final String spassword = pref.getString("password", "");
+        String susername=SharedPreferenesUtil.getUsername();
+        final String spassword = SharedPreferenesUtil.getPassword();
 
         if (!TextUtils.isEmpty(susername)) {
             username.setText(susername);
@@ -211,7 +196,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Log.d("aa", "sd");
             //password.setSelection(password.getSelectionEnd());
         }
-        if (pref.getBoolean("checkbox", false)) rememeberpassword.setChecked(true);
+        if (SharedPreferenesUtil.isRemember_password_checkbox()) {
+            rememeberpassword.setChecked(true);
+        }
+
         signup.setOnClickListener(this);
         sign_in_button.setOnClickListener(this);
         forgetpassword.setOnClickListener(this);
@@ -241,20 +229,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (e == null) {
                             Person person = object.get(0);
                             if (password.getText().toString().equals(person.getPassword())) {
-                                Toast.makeText(LoginActivity.this, "Sign in succeeded", Toast.LENGTH_SHORT).show();
-                                Log.d("cwj", "Sign in succeed");
-                                SharedPreferences.Editor editor = App.getContext().getSharedPreferences("account", MODE_PRIVATE).edit();
-                                editor.putString("username", username.getText().toString());
-                                if (rememeberpassword.isChecked()) {
+                                ToastUtil.showToast( R.string.sign_in_successfully, Toast.LENGTH_SHORT);
 
-                                    editor.putString("password", password.getText().toString());
-                                    editor.putBoolean("checkbox", true);
-                                    //editor.apply();
+                                Log.d("cwj", "Sign in succeed");
+
+                                SharedPreferenesUtil.setUsername(username.getText().toString());
+                                if (rememeberpassword.isChecked()) {
+                                    SharedPreferenesUtil.setPassword(password.getText().toString());
+                                    SharedPreferenesUtil.setRemember_password_checkbox(true);
+
                                 } else {
-                                    Log.d("cwj", "1");
-                                    editor.putBoolean("checkbox", false);
-                                    editor.putString("password", "");
-                                    //editor.apply();
+
+                                    SharedPreferenesUtil.setRemember_password_checkbox(false);
+                                    SharedPreferenesUtil.setPassword("");
+
                                 }
                                 CircularAnim.show(sign_in_button).go();
                                 CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
@@ -265,24 +253,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
                                             }
                                         });
-                                editor.putBoolean("issignin", true);
-                                editor.apply();
-
-                                issignin = true;
-
+                                SharedPreferenesUtil.setIssignin(true);
                             } else {
 
                                 progressBar.setVisibility(View.GONE);
                                 CircularAnim.show(sign_in_button).go();
 
-                                Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
+                                ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
+                                //Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
                             progressBar.setVisibility(View.GONE);
                             CircularAnim.show(sign_in_button).go();
 
-                            Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
+                            ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
+                          //  Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
                             Log.d("cwj", "query failed");
                         }
                     }
@@ -342,11 +328,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private class BaseUiListener implements IUiListener {
         @Override
         public void onComplete(Object response) {
-            Toast.makeText(LoginActivity.this, "授权成功", Toast.LENGTH_SHORT).show();
+           ToastUtil.showToast(R.string.authorize_successfully, Toast.LENGTH_SHORT);
             Log.e(TAG, "response:" + response);
 
             JSONObject obj = (JSONObject) response;
             try {
+
                 final String openID = obj.getString("openid");
                 final String accessToken = obj.getString("access_token");
                 final String expires = obj.getString("expires_in");
@@ -364,7 +351,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         try {
                             JSONObject jo = (JSONObject) response;
-                            SharedPreferences.Editor editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
                             final String nickname = jo.getString("nickname");
                             final String gender = jo.getString("gender");
                             final String province = jo.getString("province");
@@ -375,19 +361,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             final String figureurl_qq_1 = jo.getString("figureurl_qq_1");
                             final String figureurl_qq_2 = jo.getString("figureurl_qq_2");
 
-                            editor.putString("nickname", nickname);
-                            editor.putString("gender", gender);
-                            editor.putString("province", province);
-                            editor.putString("city", city);
-                            editor.putString("figureurl", figureurl);
-                            editor.putString("figureurl_1", figureurl_1);
-                            editor.putString("figureurl_2", figureurl_2);
-                            editor.putString("figureurl_qq_1", figureurl_qq_1);
-                            editor.putString("figureurl_qq_2", figureurl_qq_2);
-                            editor.putString("openID", openID);
-                            editor.putString("accessToken", accessToken);
-                            editor.putString("expires", expires);
-                            editor.apply();
+                            SharedPreferenesUtil.setQqInfo(nickname,gender,province,city,figureurl,
+                                    figureurl_1,figureurl_2,figureurl_qq_1,figureurl_qq_2,openID,
+                                    accessToken,expires);
 
                             BmobQuery<QqUser> query = new BmobQuery<QqUser>();
                             query.addWhereEqualTo("accessToken", accessToken);
@@ -441,11 +417,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     }
                                 });
 
-                        SharedPreferences.Editor editor = App.getContext().getSharedPreferences("account", MODE_PRIVATE).edit();
-                        editor.putBoolean("issignin", true);
-                        editor.apply();
+                        SharedPreferenesUtil.setIssignin(true);
 
-                        issignin = true;
                         Log.e(TAG, "登录成功" + response.toString());
                     }
 
@@ -470,16 +443,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onError(UiError uiError) {
-            Toast.makeText(LoginActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(LoginActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(R.string.authorize_failed, Toast.LENGTH_SHORT);
             closeProgressDialog();
         }
 
         @Override
         public void onCancel() {
-            Toast.makeText(LoginActivity.this, "授权取消", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(LoginActivity.this, "授权取消", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(R.string.authorize_canceled, Toast.LENGTH_SHORT);
             closeProgressDialog();
         }
-
 
     }
 
@@ -501,7 +475,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onPause() {
-        if (issignin)
+        if ( SharedPreferenesUtil.issignin())
             finish();
 
         Log.d("cwja", "onPause");
@@ -511,11 +485,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         Log.d("cwja", "onresume");
-        SharedPreferences pref = App.getContext().getSharedPreferences("account", MODE_PRIVATE);
-        final String susername = pref.getString("username", "");
-        final String spassword = pref.getString("password", "");
-        //if(!TextUtils.isEmpty(susername))username.setText(susername);
-        // if(!TextUtils.isEmpty(spassword))password.setText(spassword);
+
+        final String susername = SharedPreferenesUtil.getUsername();
+        final String spassword =SharedPreferenesUtil.getPassword();
+
         if (!TextUtils.isEmpty(susername)) {
             username.setText(susername);
             password.requestFocus();
@@ -526,6 +499,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // This is because android waits to do some layout stuff until a better time by posting so if you try to
         // setSelection before the system is finished it will undo your work.
         // – MinceMan Dec 7 '13 at 18:16
+
         if (!TextUtils.isEmpty(spassword)) {
             password.setText(spassword);
             password.post(new Runnable() {
@@ -535,10 +509,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
 
-            Log.d("aa", "sd");
-            //password.setSelection(password.getSelectionEnd());
         }
-        if (pref.getBoolean("checkbox", false)) rememeberpassword.setChecked(true);
+        if (SharedPreferenesUtil.isRemember_password_checkbox()) rememeberpassword.setChecked(true);
         super.onResume();
     }
 
@@ -548,7 +520,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("Please wait...");
+            progressDialog.setMessage(this.getString(R.string.sign_in_progress));
             progressDialog.setCanceledOnTouchOutside(false);
         }
         progressDialog.show();
@@ -561,6 +533,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            ActivityCollector.finishAll();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -587,13 +568,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.finish();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            ActivityCollector.finishAll();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+
 }
 

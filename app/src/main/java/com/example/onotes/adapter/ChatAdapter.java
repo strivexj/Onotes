@@ -1,7 +1,6 @@
 package com.example.onotes.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,17 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.Chat;
-
+import com.example.onotes.utils.SharedPreferenesUtil;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by cwj Apr.13.2017 10:14 AM
@@ -47,9 +43,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_right, parent, false);
             holder = new ViewHolder(view);
 
-            SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
-            String pictureurl = qqinfo.getString("figureurl_qq_2", "");
-
+            String pictureurl= SharedPreferenesUtil.getFigureurl_qq_2();
             if (!TextUtils.isEmpty(pictureurl)) {
                 Glide.with(App.getContext()).load(pictureurl).into(holder.mCircleImageView);
             }
@@ -58,19 +52,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         } else if (viewType == TYPE_MSG_LEFT) {
 
-
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_left, parent, false);
             holder = new ViewHolder(view);
             holder.mImageView.setVisibility(View.GONE);
             holder.mTextView.setVisibility(View.VISIBLE);
         } else if (viewType == TYPE_PICTURE_LEFT) {
-           // SharedPreferences qqinfo = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
-           // String pictureurl = qqinfo.getString("otherpicture", "");
-           /* String pictureurl = mList.get();
-            if(!TextUtils.isEmpty(pictureurl)){
-                Glide.with(App.getContext()).load(pictureurl).into(holder.mCircleImageView);
-            }*/
-
             holder.mImageView.setVisibility(View.GONE);
             holder.mTextView.setVisibility(View.VISIBLE);
         }
