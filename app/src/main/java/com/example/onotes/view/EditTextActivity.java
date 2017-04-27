@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -39,6 +40,8 @@ import com.example.onotes.R;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.ScreenShot;
+import com.example.onotes.utils.TimeUtil;
 import com.example.onotes.utils.ToastUtil;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
@@ -269,6 +272,16 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                 edittext.getPaint().setFakeBoldText(true);
                 break;
             case R.id.italic:
+               /* Intent intent  = new Intent(Intent.ACTION_SEND);
+                Bundle bundle = new Bundle();
+                //把Bitmap对象放到bundle中
+                bundle.putParcelable("bitmap", ScreenShot.captureScreen(this));
+                intent.putExtra(Intent.EXTRA_STREAM,bundle );
+                intent.setType("image/*");
+                Intent chooser = Intent.createChooser(intent, "Share screen shot");
+                startActivity(chooser);*/
+                ScrollView scrollView=(ScrollView)findViewById(R.id.edit_scrollview);
+                ScreenShot.sharePhoto(this,scrollView);
 
                 break;
             case R.id.textcolor:
@@ -309,7 +322,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             values.put("textsize", textsizef);
             values.put("linespace", linespace);
             values.put("content", data);
-            values.put("time", getcurrenttime());
+           // values.put("time", getcurrenttime());
+            values.put("time", TimeUtil.getYeraMonthHourMinuteSecond());
             values.put("bgcolor", bg_color);
             db.insert("Notes", null, values);
             db.close();

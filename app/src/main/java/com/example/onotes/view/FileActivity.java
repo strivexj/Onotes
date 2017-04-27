@@ -1,11 +1,14 @@
 package com.example.onotes.view;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,10 +17,13 @@ import android.provider.MediaStore;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -25,6 +31,7 @@ import com.example.onotes.R;
 
 import com.example.onotes.utils.LogUtil;
 
+import com.example.onotes.utils.ScreenShot;
 import com.example.onotes.utils.ToastUtil;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
@@ -46,6 +53,8 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -89,15 +98,15 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
 
         mImageView = (ImageView) findViewById(R.id.imageview);
+
+
         takephote = (Button) findViewById(R.id.takephoto);
-
-
         choosephoto = (Button) findViewById(R.id.choosephoto);
 
         takephote.setOnClickListener(this);
         choosephoto.setOnClickListener(this);
 
-        new Thread(new Runnable() {
+      /*  new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -111,26 +120,131 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
 
             }
 
-        }).start();
+        }).start();*/
     }
+    public final static String FORMAT_DATE_TIME_SECOND = "yyyy-MM-dd HH:mm:ss";
+  //  String timeStamp = new SimpleDateFormat(FORMAT_DATE_TIME_SECOND).format(new Date());
+
+
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.takephoto:
+
+                sharePhoto();
+
                 //拍照选择
-                chooseFromCamera();
+               // chooseFromCamera();
                 break;
             case R.id.choosephoto:
+                String timeStamp = new SimpleDateFormat(FORMAT_DATE_TIME_SECOND).format(new Date());
+                ToastUtil.showToast(timeStamp,Toast.LENGTH_LONG);
                 //从相册选取
-               // chooseFromGallery();
-                bottonsheet();
+                chooseFromGallery();
+             //   bottonsheet();
                 break;
         }
     }
-private void popupwindow(){
 
-}
+    private void sharePhoto() {
+        try{
+            File image=createImageFile();
+          String path=  image.getAbsolutePath();
+         //   ScreenShot.getScrollViewBitmap()
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        Intent intent  = new Intent(Intent.ACTION_SEND);
+        File file = new File("sds");
+       // intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        Bundle bundle = new Bundle();
+        //把Bitmap对象放到bundle中
+        bundle.putParcelable("bitmap", ScreenShot.takeScreenShot(this));
+
+        intent.putExtra(Intent.EXTRA_STREAM,bundle );
+
+        intent.setType("image/*");
+        Intent chooser = Intent.createChooser(intent, "Share screen shot");
+        if(intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(chooser);
+        }
+    }
+
+
+
+    private String mCurrentPhotoPath;
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    static final int REQUEST_TAKE_PHOTO = 1;
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                //...
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = mImageView.getWidth();
+        int targetH = mImageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        mImageView.setImageBitmap(bitmap);
+    }
+
+
+
+
+
 private void bottonsheet(){
     BottomSheetDialog dialog = new BottomSheetDialog(this);
     View view =this.getLayoutInflater().inflate(R.layout.edit_setting_sheet, null);
@@ -160,10 +274,15 @@ private void bottonsheet(){
      */
     private void chooseFromGallery() {
         //构建一个内容选择的Intent
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+       // Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+      //  Intent intent = new Intent(Intent.ACTION_PICK, null);
+      //  intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+      //          "image/*");
         //设置选择类型为图片类型
-        intent.setType("image/*");
+       // intent.setType("image/*");
         //打开图片选择
+
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_CODE);
     }
 
@@ -171,6 +290,7 @@ private void bottonsheet(){
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
             case CAMERA_CODE:
+
                 //用户点击了取消
                 if(data == null){
                     return;
@@ -193,13 +313,16 @@ private void bottonsheet(){
                     //用户从图库选择图片后会返回所选图片的Uri
                     Uri uri;
                     //获取到用户所选图片的Uri
-                    uri = data.getData();
+                    //uri = data.getData();
                     //返回的Uri为content类型的Uri,不能进行复制等操作,需要转换为文件Uri
-                    uri = convertUri(uri);
+                    uri = convertUri(data.getData());
                     startImageZoom(uri);
+
                 }
                 break;
             case CROP_CODE:
+
+
                 if (data == null){
                     return;
                 }else{

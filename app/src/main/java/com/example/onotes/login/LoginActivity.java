@@ -192,9 +192,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     password.setSelection(spassword.length());
                 }
             });
-
-            Log.d("aa", "sd");
-            //password.setSelection(password.getSelectionEnd());
+    //password.setSelection(password.getSelectionEnd());
         }
         if (SharedPreferenesUtil.isRemember_password_checkbox()) {
             rememeberpassword.setChecked(true);

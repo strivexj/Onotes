@@ -1,6 +1,7 @@
 package com.example.onotes.view;
 
 
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,8 +13,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -148,6 +151,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 list.remove(position);
                 adapter.notifyItemRemoved(position);
 
+
             }
 
             @Override
@@ -168,8 +172,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                     //获取系统震动服务
                     //Vibrator vib = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
                     //震动70毫秒
-                    //vib.vibrate(70);
+                  //  vib.vibrate(70);
                     //viewHolder.itemView.setBackgroundColor(Color.LTGRAY);
+
                 }
                 //当选中Item时候会调用该方法，重写此方法可以实现选中时候的一些动画逻辑
                 Log.v("cwj", "onSelectedChanged");
@@ -178,7 +183,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                // viewHolder.itemView.setBackgroundColor(0);
+               //  viewHolder.itemView.setBackgroundColor();
                 //当动画已经结束的时候调用该方法，重写此方法可以实现恢复Item的初始状态
                 Log.v("cwj", "clearView");
             }
