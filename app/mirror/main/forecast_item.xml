@@ -1,0 +1,17 @@
+<!-- [ Mirror metadata ] generatedAt: 1493301629176 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/forecast_item">
+        <!-- TextView Examples:
+        <date_text text="@string/string_resource" />
+        <date_text text="Text literal" textSize="14sp" /> -->
+        <date_text />
+        <info_text />
+        <max_text />
+        <min_text />
+    </_content>
+</screen>

@@ -1,7 +1,6 @@
 package com.example.onotes.view;
 
 
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,14 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -43,9 +39,9 @@ import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
-import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.about.AboutActivity;
+import com.example.onotes.adapter.MyRecyclerView;
 import com.example.onotes.adapter.NotesAdapter;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Notes;
@@ -59,7 +55,6 @@ import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
-import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.weather.WeatherMainActivity;
 
@@ -87,7 +82,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     private TextView setting;
     private FloatingActionButton fab;
     private List<Notes> list=new ArrayList<>();
-    private RecyclerView mRecyclerView;
+    private MyRecyclerView mRecyclerView;
     private NotesAdapter adapter;
     private TextView weather_degree;
     private TextView weather_city;
@@ -102,7 +97,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         // String url=DebugDB.getAddressLog();
         // LogUtil.d("debugdb",url);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.activity_main_recycle_view);
+        mRecyclerView = (MyRecyclerView) findViewById(R.id.activity_main_recycle_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -112,7 +107,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        ItemTouchHelper.Callback mCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+      //  ItemTouchHelper.Callback mCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+        ItemTouchHelper.Callback mCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
             /**
              * @param recyclerView
              * @param viewHolder 拖动的ViewHolder
@@ -257,7 +253,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {
-                                        startActivity(new Intent(NotelistActivity.this, FileActivity.class));
+                                        startActivity(new Intent(NotelistActivity.this, PhotoActivity.class));
                                     }
                                 });
                         break;

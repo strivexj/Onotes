@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -127,16 +128,55 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.takephoto:
 
-                sharePhoto();
+                //sharePhoto();
 
                 //拍照选择
-               // chooseFromCamera();
+              //  chooseFromCamera();
+                getAlbumStorageDir("cwj");
                 break;
             case R.id.choosephoto:
                 String timeStamp = new SimpleDateFormat(FORMAT_DATE_TIME_SECOND).format(new Date());
@@ -151,7 +191,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
     private void sharePhoto() {
         try{
             File image=createImageFile();
-          String path=  image.getAbsolutePath();
+            String path=  image.getAbsolutePath();
          //   ScreenShot.getScrollViewBitmap()
         }catch (IOException e){
             e.printStackTrace();
@@ -284,6 +324,16 @@ private void bottonsheet(){
 
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_CODE);
+    }
+
+    public File getAlbumStorageDir(String albumName) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!file.mkdirs()) {
+            LogUtil.e(this, "Directory not created");
+        }
+        return file;
     }
 
     @Override

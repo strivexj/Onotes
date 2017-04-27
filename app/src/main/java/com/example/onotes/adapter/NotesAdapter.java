@@ -3,14 +3,22 @@ package com.example.onotes.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.Notes;
+import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.TimeUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.view.EditTextActivity;
 import java.util.List;
 
@@ -47,12 +55,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         //此处设置Item中view的数据
-        holder.mTextView.setText(mList.get(position).getContent());
-        holder.time.setText(mList.get(position).getTime());
+        holder.contentTextView.setText(mList.get(position).getContent());
+        String timestamp= TimeUtil.getTime(false,TimeUtil.stringToDate(mList.get(position).getTime(),"yyyy-MM-dd HH:mm:ss").getTime());
+       // holder.time.setText(mList.get(position).getTime());
+        holder.time.setText(timestamp);
         // ViewGroup.LayoutParams lp = holder.mTextView.getLayoutParams();
         // lp.height = mHeight.get(position);
 
-        holder.mTextView.setOnClickListener(new View.OnClickListener() {
+      /*  holder.contentTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 gotoeditactivity(view, position);
@@ -63,8 +73,27 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             public void onClick(View view) {
                 gotoeditactivity(view, position);
             }
+        });*/
+        holder.content_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoeditactivity(v, position);
+            }
         });
 
+
+        holder.deleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             //   ToastUtil.showToast("delete", Toast.LENGTH_LONG);
+                NotesDbHelper notesDbHelper = new NotesDbHelper(App.getContext());
+                SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+                db.delete("Notes", "id=?", new String[]{mList.get(position).getId()+""});
+                mList.remove(position);
+                notifyDataSetChanged();
+                db.close();
+            }
+        });
     }
 
     private void gotoeditactivity(View view, int position) {
@@ -90,12 +119,27 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     //Item的ViewHolder以及Item内部布局控件的id绑定
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
+        public TextView contentTextView;
+
         public TextView time;
+
+        public LinearLayout layout;
+
+        public LinearLayout content_date;
+
+        public TextView deleteTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView) itemView.findViewById(R.id.recycle_textview);
+
+            layout = (LinearLayout)itemView.findViewById(R.id.item_layout);
+
+            content_date = (LinearLayout)itemView.findViewById(R.id.content_date);
+
+            contentTextView = (TextView) itemView.findViewById(R.id.recycle_textview);
+
+            deleteTextView = (TextView)itemView.findViewById(R.id.content_delete);
+
             time = (TextView) itemView.findViewById(R.id.notetime);
 
         }

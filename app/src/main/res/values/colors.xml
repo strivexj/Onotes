@@ -41,6 +41,8 @@
     <color name="indicator_selected">@android:color/white</color>
     <color name="indicator_unselected">#4D000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="red">#f22d2d</color>
 <!--
     <color name="accent">#40C4FF</color>
 

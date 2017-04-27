@@ -25,7 +25,8 @@
         </android.support.design.widget.AppBarLayout>
 
 
-        <android.support.v7.widget.RecyclerView
+     <!--   <android.support.v7.widget.RecyclerView-->
+        <com.example.onotes.adapter.MyRecyclerView
             android:id="@+id/activity_main_recycle_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

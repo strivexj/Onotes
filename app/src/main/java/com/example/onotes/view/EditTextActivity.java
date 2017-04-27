@@ -69,7 +69,12 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     private ImageView textcolor;
     private ImageView setting_more;
     private View settingview;
+    private Toolbar toolbar;
 
+    public void showTextCopied(View v) {
+        //Snackbar.make(imageView, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(toolbar, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +139,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
 
     private void initView() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
@@ -544,10 +549,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    public void showTextCopied(View v) {
-        //Snackbar.make(imageView, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
-        Snackbar.make(v, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
-    }
+
    /* public void addToOrDeleteFromBookmarks() {
         String tmpTable = "";
         String tmpId = "";

@@ -1,0 +1,18 @@
+<!-- [ Mirror metadata ] generatedAt: 1493301629182 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/activity_edit_text">
+        <!-- ImageView Examples:
+        <edit_bg src="@drawable/image_resource" />
+        <edit_bg src="relative_path/image.jpg" /> -->
+        <edit_bg />
+        <bold />
+        <italic />
+        <textcolor />
+        <setting_more />
+    </_content>
+</screen>

@@ -9,62 +9,60 @@
     android:fitsSystemWindows="true"
     tools:context=".view.FileActivity">
 
-<LinearLayout
-    android:id="@+id/activity_file"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/activity_file"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-    <ImageView
-        android:id="@+id/imageview"
-        android:layout_width="wrap_content"
-               android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/takephoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="takephoto"
-    />
-    <Button
-        android:id="@+id/choosephoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="choosephoto"/>
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"/>
+        <Button
+            android:id="@+id/takephoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="takephoto"
+        />
+        <Button
+            android:id="@+id/choosephoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="choosephoto"/>
 
-</LinearLayout>
+    </LinearLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
+        style="?attr/bottomSheetStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:behavior_hideable="true"
         app:behavior_peekHeight="0dp"
-        style="?attr/bottomSheetStyle"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
     >
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+
+        >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="50dp"
                 android:background="@color/colorPrimary"
+                android:padding="50dp"
                 android:text="人不会死在绝境，却往往栽在十字路口"
                 android:textColor="@android:color/white"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
-
-
-
-

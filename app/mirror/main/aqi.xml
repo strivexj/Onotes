@@ -1,0 +1,15 @@
+<!-- [ Mirror metadata ] generatedAt: 1493301629143 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/aqi">
+        <!-- TextView Examples:
+        <aqi_text text="@string/string_resource" />
+        <aqi_text text="Text literal" textSize="14sp" /> -->
+        <aqi_text />
+        <pm25_text />
+    </_content>
+</screen>

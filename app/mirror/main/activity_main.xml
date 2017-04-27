@@ -1,0 +1,20 @@
+<!-- [ Mirror metadata ] generatedAt: 1493301629163 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/activity_main">
+        <!-- ImageView Examples:
+        <settingimg src="@drawable/image_resource" />
+        <settingimg src="relative_path/image.jpg" /> -->
+        <settingimg />
+        <!-- TextView Examples:
+        <setting text="@string/string_resource" />
+        <setting text="Text literal" textSize="14sp" /> -->
+        <setting />
+        <weather_degree />
+        <weather_city />
+    </_content>
+</screen>

@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Onotes</string>
-    
+
     <string name="double_click_exit">Please click again to exit</string>
 
-    
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -149,13 +149,11 @@
 
     <!--weatheractivity-->
     <string name="loading_weather_failed">Loading weather infomation falied.</string>
-    <string name="comfort">Comfort: </string>
-    <string name="carwash">Carwash: </string>
-    <string name="sport_suggestion">Sport suggestion: </string>
+    <string name="comfort">Comfort:</string>
+    <string name="carwash">Carwash:</string>
+    <string name="sport_suggestion">Sport suggestion:</string>
     <!--end-->
 
 
-    <!--editactivity-->
-
-    <!--end-->
+   <string name="delete">delete</string>
 </resources>

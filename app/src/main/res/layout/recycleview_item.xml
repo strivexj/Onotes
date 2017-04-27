@@ -8,33 +8,63 @@
     android:layout_marginRight="10dp"
     android:layout_marginTop="5dp"
     app:cardCornerRadius="15dp">
-    
     <LinearLayout
+        android:id="@+id/item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/notetime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"/>
-        <TextView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/recycle_textview"
+
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/content_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
             android:foreground="?android:attr/selectableItemBackground"
-            android:maxLines="4"
-            android:minHeight="40dp"
-            android:textSize="20sp"/>
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/recycle_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:minHeight="40dp"
+                android:textSize="20sp"/>
+            <!--android:foreground="?android:attr/selectableItemBackground"-->
+
+
+            <TextView
+                android:id="@+id/notetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+
+
+        <TextView
+            android:id="@+id/content_delete"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+
+            android:layout_gravity="center"
+            android:gravity="center"
+
+            android:background="@color/red"
+            android:text="@string/delete"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+           />
     </LinearLayout>
 </android.support.v7.widget.CardView>
 

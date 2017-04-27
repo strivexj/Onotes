@@ -129,7 +129,6 @@
         <activity
             android:name=".view.NotelistActivity"
             android:launchMode="singleTask">
-
         </activity>
         <activity
             android:name=".view.Main2Activity"
@@ -138,9 +137,10 @@
         </activity>
         <activity android:name=".view.FileActivity">
         </activity>
-        <activity android:name=".ui.onboarding.OnboardingActivity"
-                  android:noHistory="true"
-                  android:theme="@style/AppTheme.Onboarding">
+        <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.Onboarding">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -156,11 +156,24 @@
 
         <activity android:name=".ui.PopUpActivity">
         </activity>
-
-        <activity android:name=".about.AboutActivity"
-                  android:label="@string/about"
-                  android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".about.AboutActivity"
+            android:label="@string/about"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".view.PhotoActivity">
+        </activity>
+
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.onotes.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 
