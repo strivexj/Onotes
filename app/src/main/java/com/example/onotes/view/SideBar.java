@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 
 import com.example.onotes.R;
+import com.example.onotes.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ public class SideBar extends View {
     private List<String> letterList;
     private int choose = -1;
     private Paint paint = new Paint();
-    private TextView mTextDialog;
+    private static TextView mTextDialog;
 
     public SideBar(Context context) {
         this(context, null);
@@ -96,6 +97,7 @@ public class SideBar extends View {
                     if (c >= 0 && c < letterList.size()) {
                         if (listener != null) {
                             listener.onTouchingLetterChanged(letterList.get(c));
+                            LogUtil.d("whynot","add "+letterList.get(c));
                         }
                         if (mTextDialog != null) {
                             mTextDialog.setText(letterList.get(c));
@@ -109,6 +111,11 @@ public class SideBar extends View {
 
         }
         return true;
+    }
+
+
+    public static void hidedialog(){
+        mTextDialog.setVisibility(View.INVISIBLE);
     }
 
     public void setIndexText(ArrayList<String> indexStrings) {

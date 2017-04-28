@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="30dp"
-    tools:context="example.com.map.example.com.furtherstudy.SignUpActivity">
+    tools:context="com.example.onotes.login.SignUpActivity">
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="horizontal">
@@ -15,12 +15,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="Username:"/>
+            android:text="@string/text_username"/>
         <com.example.onotes.view.EditTextWithDel
             android:id="@+id/signupusername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Please input your username"/>
+            android:hint="@string/hint_username"/>
 
     </LinearLayout>
     <LinearLayout
@@ -30,12 +30,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Password:"/>
+            android:text="@string/text_password"/>
         <com.example.onotes.view.EditTextWithDel
             android:id="@+id/signuppassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Please input your Password:"/>
+            android:hint="@string/hint_password"/>
 
     </LinearLayout>
 
@@ -46,7 +46,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email:"/>
+            android:text="@string/text_email"/>
 
         <com.example.onotes.view.EditTextWithDel
             android:id="@+id/signupemail"
@@ -54,12 +54,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="textWebEmailAddress"
-            android:hint="Please input your Email:"/>
+            android:hint="@string/hint_email"/>
         <Button
             android:id="@+id/sendverifycode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send verify code"
+            android:text="@string/send_verify_code"
             android:textSize="10sp"
             android:textAllCaps="false"/>
 
@@ -71,12 +71,12 @@
         android:layout_width="match_parent"
         android:layout_height="50sp"
         android:textSize="13sp"
-        android:hint="Please input verify code which have been sent to your email here."/>
+        android:hint="@string/hint_verify_code"/>
     <Button
         android:id="@+id/signupbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirm"
+        android:text="@string/confirm"
         android:textAllCaps="false"
         android:layout_gravity="center"
     />

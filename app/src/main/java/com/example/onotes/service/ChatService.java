@@ -21,7 +21,7 @@ import com.example.onotes.R;
 import com.example.onotes.bean.Chat;
 import com.example.onotes.datebase.ChatDbHelper;
 import com.example.onotes.utils.LogUtil;
-import com.example.onotes.view.Main2Activity;
+import com.example.onotes.view.ChatActivity;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,9 +116,9 @@ public class ChatService extends Service {
     }
     private void buildNotification(String content) {
 
-        Intent intent=new Intent(this,Main2Activity.class);
+        Intent intent=new Intent(this,ChatActivity.class);
         TaskStackBuilder taskStackBuilder= TaskStackBuilder.create(this);
-        taskStackBuilder.addParentStack(Main2Activity.class);
+        taskStackBuilder.addParentStack(ChatActivity.class);
         taskStackBuilder.addNextIntent(intent);
         PendingIntent pendingIntent=taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 

@@ -1,159 +1,165 @@
 <resources>
     <string name="app_name">Onotes</string>
-
-    <string name="double_click_exit">Please click again to exit</string>
-
-
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="double_click_exit">再点击一次退出</string>
+    <string name="prompt_email">电子邮件</string>
+    <string name="prompt_password">密码 （可选）</string>
+    <string name="action_sign_in">登录或注册</string>
+    <string name="action_sign_in_short">登录</string>
+    <string name="error_invalid_email">此电子邮件地址无效</string>
+    <string name="error_invalid_password">密码太短</string>
+    <string name="error_incorrect_password">此密码不正确</string>
+    <string name="error_field_required">此字段是必需的</string>
+    <string name="permission_rationale">"联系人权限需要提供电子邮件完成"。</string>
     <string name="title_activity_on_boarding">OnBoardingActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="action_settings">设置</string>
+    <string name="section_format">你好世界从科: %1$ d</string>
+    <string name="onboarding_next_button_description">下一个</string>
+    <string name="onboarding_finish_button_description">完成</string>
+    <string name="onboarding_pre_button_description">上一个</string>
+    <string name="onboarding_section_1">欢迎来到 Onotes ~ ！</string>
+    <string name="onboarding_intro_1">此应用程序中有一些令人兴奋的功能。</string>
+    <string name="onboarding_section_2">它为您设计了强大的编辑功能。如 balalalala。</string>
 
+    <string name="onboarding_intro_2">如 balalalala。</string>
+    <string name="onboarding_section_3">它还有一个智能机器人</string>
+    <string name="onboarding_intro_3">当您太无聊时，它不仅可以与您聊天，也可以帮助您查找一些东西，包括天气，您的快递，等等。</string>
 
-    <!--onboarding-->
-    <string name="onboarding_next_button_description">Next</string>
-    <string name="onboarding_finish_button_description">Finish</string>
-    <string name="onboarding_pre_button_description">Pre</string>
-    <string name="onboarding_section_1">Welcome to Onotes~!</string>
-    <string name="onboarding_intro_1">There are some exciting functions in this application.
-    </string>
-    <string name="onboarding_section_2">Powerfully editable fuctions designed for you to write
-        notes. such as balalalala.
-    </string>
-    <string name="onboarding_intro_2">such as balalalala.</string>
-    <string name="onboarding_section_3">It also have a smart robot</string>
-    <string name="onboarding_intro_3">which not only can chat with you when you are bored,but also
-        can help you look up something, including weather,your express and so on.
-    </string>
-    <string name="onboarding_finish_button_description_wait">Preparing, please wait…</string>
-    <!--onboarding end-->
-
-    <!--pref_about-->
-    <string name="about">About</string>
-
-    <string name="version">Version: V1.0.0</string>
-
-    <string name="rate">Rate</string>
-    <string name="rate_description">If you like the Onotes app, please do rate it</string>
-
-    <string name="feedback">Report Bugs</string>
-    <string name="feedback_description">Help me to improve the Onotes app</string>
-
-    <string name="author">Author</string>
-    <string name="author_name">Cheng Wenjie</string>
-    <string name="author_description">Guangdong, China</string>
-
-    <string name="follow_me_on_github">Follow Me on GitHub</string>
+    <string name="about">关于</string>
+    <string name="version">版本︰ V1.0.0</string>
+    <string name="rate">评分</string>
+    <string name="rate_description">如果您喜欢 Onotes，评一下分吧</string>
+    <string name="feedback">反馈BUG</string>
+    <string name="feedback_description">帮助我改善 Onotes 吧</string>
+    <string name="author">作者</string>
+    <string name="author_name">成文杰</string>
+    <string name="author_description">中国 广东省</string>
+    <string name="follow_me_on_github">在 GitHub 上关注我</string>
     <string name="github_url">https://github.com/strivexj</string>
-
-    <string name="addqqgroup">Add QQ Group</string>
+    <string name="addqqgroup">加入 QQ 群</string>
     <string name="qqgroupnumber">311357701</string>
-
-    <string name="support">Support</string>
-
+    <string name="support">支持</string>
     <string name="sendto">mailto:strivexj@gmail.com</string>
-    <string name="mail_topic">Onotes Feedback / Advice</string>
-
-    <string name="device_model">Device Version:</string>
-    <string name="sdk_version">SDK Version:</string>
-    <string name="no_mail_app">No Mail App Installed</string>
-    <string name="no_app_store_found">No App Store Installed</string>
-    <string name="no_browser_found">No Browser Installed</string>
-
-    <string name="follow_me_on_zhihu">Follow Me on ZhiHu</string>
+    <string name="mail_topic">Onotes 反馈 / 建议</string>
+    <string name="device_model">设备版本︰</string>
+    <string name="sdk_version">SDK 版本︰</string>
+    <string name="no_mail_app">没有检测到邮件程序</string>
+    <string name="no_app_store_found">没有检测到应用商店程序</string>
+    <string name="no_browser_found">没有检测到浏览器</string>
+    <string name="follow_me_on_zhihu">在知乎上关注我</string>
     <string name="zhihu_url">https://www.zhihu.com/people/cheng-wen-jie-37</string>
-    <string name="zhihu_account">\@Cheng Wenjie</string>
-    <string name="contactme">Contact Me</string>
-    <!--pref_about end-->
+    <string name="zhihu_account">成文杰</string>
+    <string name="contactme">与我联系</string>
+    <string name="copied_to_clipboard">复制到剪贴板</string>
+    <string name="copied_to_clipboard_failed">复制失败</string>
+    <string name="added_to_bookmarks">添加到书签</string>
+    <string name="deleted_from_bookmarks">删除书签</string>
+    <string name="search_bookmarks">搜索书签</string>
+    <string name="check_bookmarks">书签</string>
+    <string name="action_add_to_bookmarks">添加到书签</string>
+    <string name="action_delete_from_bookmarks">删除书签</string>
+    <string name="action_copy_text">复制文本</string>
+    <string name="action_share_as_text">以纯文本分享</string>
+    <string name="share_to">分享到</string>
+    <string name="share_extra">     -----     分享于Onotes</string>
+    <string name="color_or_picture">选择颜色或背景图片</string>
+    <string name="reset_password_sussesfully">您的密码已重置成功 ~ ！</string>
+    <string name="reset_password_failed">失败</string>
+    <string name="verify_code_wrong">您输入的验证码错了</string>
+    <string name="sign_in_successfully">登录成功</string>
+    <string name="username_or_password_wrong">您输入的用户名或密码可能错了</string>
+    <string name="authorize_successfully">授权成功</string>
+    <string name="authorize_failed">授权失败</string>
+    <string name="authorize_canceled">授权取消</string>
+    <string name="sign_in_progress">请等待一段时间</string>
 
-
-    <string name="copied_to_clipboard">Copied to clipboard</string>
-    <string name="copied_to_clipboard_failed">Copy to clipboard failed</string>
-    <string name="added_to_bookmarks">Added to bookmarks</string>
-    <string name="deleted_from_bookmarks">Deleted from bookmarks</string>
-    <string name="search_bookmarks">Search bookmarks</string>
-    <string name="check_bookmarks">Bookmarks</string>
-
-
-    <!--bottom sheet list-->
-    <string name="action_add_to_bookmarks">Add to bookmarks</string>
-    <string name="action_delete_from_bookmarks">Delete from bookmarks</string>
-    <string name="action_copy_text">Copy text</string>
-    <string name="action_share_as_text">Share as Text</string>
-    <string name="share_to">Share to</string>
-
-    <string name="share_extra">------- share from Onotes</string>
-    <string name="color_or_picture">Choose color or picture for background</string>
-
-
-    <!--forgetpassword -->
-    <string name="reset_password_sussesfully">Your password have been reset successfully~!</string>
-    <string name="reset_password_failed">Failed</string>
-
-    <string name="verify_code_wrong">your verify code is wrong</string>
-    <!--end-->
-
-    <!--loginactivity-->
-    <string name="sign_in_successfully">Sign in successfully</string>
-    <string name="username_or_password_wrong">Your username or password maybe wrong</string>
-    <string name="authorize_successfully">Authorize successfully</string>
-    <string name="authorize_failed">Authorization was failed</string>
-    <string name="authorize_canceled">Authorization was canceled</string>
-
-    <string name="sign_in_progress">Please wait for a while</string>
-    <!--end-->
-
-    <!--signupactivity-->
-    <string name="verify_email_hi">Hi</string>
-    <string name="verify_email_welcome">Welcome to sign up Onotes application. Here is your verify
-        code :
+    <string name="subject">验证码</string>
+    <string name="verify_email_hi">你好</string>
+    <string name="verify_email_welcome">/n  欢迎注册 Onotes。您的验证码为︰</string>
+    <string name="verify_email_end">/n  如果不是您申请的，请您忽略它。/n  请不要回复此电子邮件。谢谢您的合作！
     </string>
-    <string name="verify_email_end">\n If it is not your sign up action, please ignore it. \n Please
-        don\'t reply to this email. Thank you!
-    </string>
-    <string name="username_registered">Your username have been registered.</string>
-    <string name="signup_failed">failed</string>
-    <!--end-->
 
-    <!--sendemail-->
-    <string name="subject">Verify code</string>
+    <string name="username_registered">您的用户名已被注册。</string>
+    <string name="signup_failed">失败</string>
+
     <string name="myemail">strivexj@gmail.com</string>
     <string name="mypassword">strivexj</string>
-    <string name="progressDialog1">Sending email</string>
-    <string name="progressDialog2">Please wait...</string>
-    <string name="sending_successfully">Verify code have been sent.</string>
+    <string name="progressDialog1">发送电子邮件中</string>
+    <string name="progressDialog2">请稍候。。。</string>
+    <string name="sending_successfully">验证码已发送。</string>
+    <string name="writing_nothing">你还没有写东西喔 ！</string>
+    <string name="dialog_title">删除</string>
+    <string name="dialog_content">是否删除所有的笔记？</string>
+    <string name="dialog_positive_button">是的</string>
+    <string name="dialog_negative_button">取消</string>
+    <string name="click_me_select_city">点击我选择一个城市吧</string>
+    <string name="loading_weather_failed">加载天气信息失败。</string>
+    <string name="comfort">舒适度︰</string>
+    <string name="carwash">洗车指数︰</string>
+    <string name="sport_suggestion">运动建议︰</string>
+    <string name="delete">删除</string>
+
+
+    <!--forget_password_xml-->
+    <string name="your_email">您的电子邮箱:</string>
+    <string name="send_verfiy_code">发送验证码</string>
+    <string name="input_verify_code_hint">请在这里输入验证码
+    </string>
+    <string name="reset_password">您的密码：</string>
+
+    <string name="confirm">确定</string>
+
     <!--end-->
 
-    <!--editactivity-->
-    <string name="writing_nothing">You haven\'t written anything!</string>
+    <!--login_xml-->
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="recheck_box_rememeber_password">记住密码</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="buttom_sign_in">登录</string>
+    <string name="new_user_sign_up">如果您没有注册，那就注册一个账号吧</string>
+    <string name="other_account">其他登录方式</string>
+    <string name="add_qq_group">加入QQ群</string>
     <!--end-->
 
-    <!--notelistactivity-->
-    <string name="dialog_title">Delete</string>
-    <string name="dialog_content">Are you sure to delete all notes?</string>
-    <string name="dialog_positive_button">Yes</string>
-    <string name="dialog_negative_button">Cancel</string>
-    <string name="click_me_select_city">Click me to select a city</string>
-    <!--end-->
-
-    <!--weatheractivity-->
-    <string name="loading_weather_failed">Loading weather infomation falied.</string>
-    <string name="comfort">Comfort:</string>
-    <string name="carwash">Carwash:</string>
-    <string name="sport_suggestion">Sport suggestion:</string>
+    <!--main_xml-->
+    <string name="settings">设置</string>
     <!--end-->
 
 
-   <string name="delete">delete</string>
+    <!--chat_xml-->
+    <string name="edit_text_hint">在这里写东西吧</string>
+    <string name="buttom_send">发送</string>
+    <!--end-->
+
+
+    <string name="log_out">退出登录</string>
+    <string name="text_username">用户名：</string>
+    <string name="hint_username">请输入您的用户名</string>
+    <string name="text_password">密码：</string>
+    <string name="hint_password">请输入您的密码：</string>
+    <string name="text_email">邮箱：</string>
+    <string name="hint_email">请输入您的邮箱：</string>
+    <string name="send_verify_code">发送验证码</string>
+    <string name="hint_verify_code">请在这里输入您的验证码
+    </string>
+
+    <string name="air_quality">空气质量</string>
+    <string name="air_quality_index">空气质量指数</string>
+    <string name="pm2_5_index">PM2.5指数</string>
+    <string name="textsize">字体大小:</string>
+    <string name="linespace">行距:</string>
+    <string name="forecast">天气预报</string>
+    <string name="personalized_signatures">点击我设置个性签名吧～</string>
+    <string name="life_suggestion">生活建议</string>
+
+    <string name="weather">天气</string>
+    <string name="chat">聊天</string>
+    <string name="file">文件</string>
+    <string name="exercise">练习测试</string>
+
+    <string name="chinese">简体中文</string>
+    <string name="english">英语</string>
+    <string name="traditional_chinese">繁体中文</string>
+
+
 </resources>

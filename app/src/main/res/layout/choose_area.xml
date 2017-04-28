@@ -26,9 +26,18 @@
             android:layout_centerInParent="true"
             android:textColor="#fff"
             android:textSize="20sp"
+            android:visibility="gone"
             android:fitsSystemWindows="true"/>
 
     </RelativeLayout>
+
+    <android.support.v7.widget.SearchView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchView"
+        android:layout_marginRight="20dp"
+        app:queryHint="Search Cities here~!"
+        android:layout_gravity="end"/>
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">

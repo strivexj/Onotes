@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Textsize:   "/>
+            android:text="@string/textsize"/>
         <SeekBar
             android:id="@+id/textsize"
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Linespace:"/>
+            android:text="@string/linespace"/>
         <SeekBar
             android:id="@+id/linespacing"
             android:layout_width="match_parent"

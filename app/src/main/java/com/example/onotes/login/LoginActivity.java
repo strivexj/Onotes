@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         forgetpassword = (TextView) findViewById(R.id.forgetpassword);
         rememeberpassword = (CheckBox) findViewById(R.id.rememeberpassword);
         qq = (TextView) findViewById(R.id.qq);
-        addgroup = (TextView) findViewById(R.id.addgroup);
+        //addgroup = (TextView) findViewById(R.id.addgroup);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         userpicture = (CircleImageView) findViewById(R.id.userpicture);
 
@@ -202,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         sign_in_button.setOnClickListener(this);
         forgetpassword.setOnClickListener(this);
         qq.setOnClickListener(this);
-        addgroup.setOnClickListener(this);
+       // addgroup.setOnClickListener(this);
 
         userpicture.setOnClickListener(this);
         qqpicture = (CircleImageView) findViewById(R.id.qqpicture);

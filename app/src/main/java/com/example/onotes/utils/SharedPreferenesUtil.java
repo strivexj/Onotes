@@ -1,6 +1,7 @@
 package com.example.onotes.utils;
 
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.example.onotes.App;
 
@@ -39,6 +40,13 @@ public class SharedPreferenesUtil {
     private static String bing_pic;
     private static String weatherresponseText;
 
+    private static String cityEn;
+
+
+    private static String cityZh;
+
+    private static String language;
+
     private static SharedPreferences.Editor qqaccount_editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
 
     private static SharedPreferences qqaccount_pref = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
@@ -54,6 +62,40 @@ public class SharedPreferenesUtil {
     private static SharedPreferences weather_pref = App.getContext().getSharedPreferences("weather", MODE_PRIVATE);
 
     private static SharedPreferences.Editor weather_editor = App.getContext().getSharedPreferences("weather", MODE_PRIVATE).edit();
+
+    public static String getCityZh() {
+        return weather_pref.getString("cityZh","");
+    }
+
+    public static void setCityZh(String cityZh) {
+        weather_editor.putString("cityZh", cityZh);
+        weather_editor.apply();
+    }
+
+    public static String getCityEn() {
+        return weather_pref.getString("cityEn","");
+    }
+
+    public static void setCityEn(String cityEn) {
+        weather_editor.putString("cityEn", cityEn);
+        weather_editor.apply();
+    }
+
+
+    public static String getLanguage() {
+        return app_pref.getString("language","default");
+    }
+
+    public static void setLanguage(String language) {
+        app_editor.putString("language", language);
+        app_editor.apply();
+        //ToastUtil.showToast(language, Toast.LENGTH_LONG);
+        //App.getContext()
+    }
+
+
+
+
 
     public static String getBing_pic() {
         return weather_pref.getString("bing_pic",null);

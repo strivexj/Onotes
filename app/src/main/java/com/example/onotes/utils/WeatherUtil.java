@@ -69,14 +69,17 @@ public class WeatherUtil {
 
         if (!TextUtils.isEmpty(response)) {
             try {
+                String cityEn;
                 JSONArray allCitys = new JSONArray(response);
                 CityDbHelper cityDbHelper = new CityDbHelper(context);
                 SQLiteDatabase db = cityDbHelper.getWritableDatabase();
                 for (int i = 0; i < allCitys.length(); i++) {
                     JSONObject cityObject = allCitys.getJSONObject(i);
                     ContentValues values = new ContentValues();
+                    cityEn= cityObject.getString("cityEn");
                     values.put("cityid", cityObject.getString("id"));
-                    values.put("cityEn", cityObject.getString("cityEn"));
+                   // values.put("cityEn", cityObject.getString("cityEn"));
+                    values.put("cityEn", cityEn.substring(0,1).toUpperCase()+cityEn.substring(1,cityEn.length()));
                     values.put("cityZh", cityObject.getString("cityZh"));
                     values.put("provinceEn", cityObject.getString("provinceEn"));
                     values.put("provinceZh", cityObject.getString("provinceZh"));

@@ -53,6 +53,7 @@ import com.example.onotes.setting.SettingActivity;
 import com.example.onotes.ui.PopUpActivity;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
+import com.example.onotes.utils.LanguageUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.utils.WeatherUtil;
@@ -91,6 +92,11 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
+
         setContentView(R.layout.activity_main);
         initView();
 
@@ -243,7 +249,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {
-                                        startActivity(new Intent(NotelistActivity.this, Main2Activity.class));
+                                        startActivity(new Intent(NotelistActivity.this, ChatActivity.class));
                                     }
                                 });
                         break;
@@ -548,11 +554,22 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
                 final Weather weather = WeatherUtil.handleWeatherResponse(responseText);
+
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
-                            weather_city.setText(weather.basic.cityName);
+                         //   weather_city.setText(weather.basic.cityName);
+
+                            SharedPreferenesUtil.setWeatherresponseText(responseText);
+
+                            if(SharedPreferenesUtil.getLanguage().equals("en")){
+                                weather_city.setText(SharedPreferenesUtil.getCityEn());
+                            }
+                            else {
+                                weather_city.setText(SharedPreferenesUtil.getCityZh());
+                            }
                             weather_degree.setText(weather.now.temperature+"°C");
                         } else {
                             weather_city.setTextSize(15);

@@ -131,7 +131,7 @@
             android:launchMode="singleTask">
         </activity>
         <activity
-            android:name=".view.Main2Activity"
+            android:name=".view.ChatActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize">
         </activity>

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="15dp"
-        android:text="Forecast"
+        android:text="@string/forecast"
         android:textColor="#fff"
         android:textSize="20sp" />
 

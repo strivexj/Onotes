@@ -24,6 +24,7 @@ import com.example.onotes.gson.Forecast;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
+import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.utils.WeatherUtil;
@@ -64,8 +65,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //ChooseAreaFragment chooseAreaFragment=(ChooseAreaFragment)getFragmentManager().findFragmentById(R.id.choose_area_fragment);
-        //chooseAreaFragment.search();
+
+
         super.onResume();
     }
 
@@ -77,11 +78,7 @@ public class WeatherActivity extends AppCompatActivity {
     private SideBar mSideBar;
     private TextView dialog;
 
-    public static String[] INDEX_STRING = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
-            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-            "W", "X", "Y", "Z"};
 
-    public static int[] indexposition = new int[26];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,12 +162,19 @@ public class WeatherActivity extends AppCompatActivity {
         navButton = (Button) findViewById(R.id.nav_button);
         mSideBar = (SideBar) findViewById(R.id.sidebar);
         dialog = (TextView) findViewById(R.id.dialog);
+
         mSideBar.setTextView(dialog);
+
         mSideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
             @Override
             public void onTouchingLetterChanged(String s) {
                 // dialog.setVisibility(View.VISIBLE);
                 //dialog.setText(s);
+
+                ChooseAreaFragment chooseAreaFragment=(ChooseAreaFragment)getFragmentManager().findFragmentById(R.id.choose_area_fragment);
+                chooseAreaFragment.update(s);
+               // SideBar.hidedialog();
+                LogUtil.d("whynot","onWeatheractivity");
             }
         });
     }

@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="点击我设置个性签名吧～"
+        android:text="@string/personalized_signatures"
         android:textColor="#c8f156"
         android:textSize="15sp"/>
 

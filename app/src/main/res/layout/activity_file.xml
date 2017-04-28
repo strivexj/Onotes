@@ -36,6 +36,17 @@
             android:layout_height="wrap_content"
             android:text="choosephoto"/>
 
+        <CheckBox
+            android:id="@+id/checkBox"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+
+            android:button="@drawable/custom_checkbox"
+
+
+        />
     </LinearLayout>
 
     <android.support.v4.widget.NestedScrollView
@@ -64,5 +75,8 @@
                 android:textColor="@android:color/white"/>
 
         </LinearLayout>
+
+
+
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

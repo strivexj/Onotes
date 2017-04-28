@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/primary"
-    android:layout_height="match_parent">
+
+>
 
     <ImageView
-        android:scaleType="centerCrop"
         android:id="@+id/backgroud"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerCrop"
     />
 
 
@@ -22,73 +24,73 @@
             android:id="@+id/userpicture"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:src="@drawable/icon"
-            android:layout_gravity="center"/>
+            android:src="@drawable/icon"/>
 
         <android.support.v7.widget.CardView
-            android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="40dp"
             app:cardCornerRadius="15dp">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:orientation="vertical">
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <AutoCompleteTextView
-                android:id="@+id/signinusername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Username"
-                android:inputType="text"
-                android:imeOptions="actionNext"
-                android:maxLines="1"/>
+                    <AutoCompleteTextView
+                        android:id="@+id/signinusername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/username"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"/>
 
-        </android.support.design.widget.TextInputLayout>
+                </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <com.example.onotes.view.EditTextWithDel
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
+                    <com.example.onotes.view.EditTextWithDel
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/password"
 
-                android:inputType="textPassword"
-                android:imeOptions="actionDone"
-                android:maxLines="1"/>
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:maxLines="1"/>
 
-        </android.support.design.widget.TextInputLayout>
-        <RelativeLayout android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                </android.support.design.widget.TextInputLayout>
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
 
-            <CheckBox
-                android:id="@+id/rememeberpassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="Rememeber password"
-            />
-            <TextView
-                android:id="@+id/forgetpassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:text="Forget password"
-                android:textSize="16sp"/>
-        </RelativeLayout>
+                    <CheckBox
+                        android:id="@+id/rememeberpassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="@string/recheck_box_rememeber_password"
+                    />
+                    <TextView
+                        android:id="@+id/forgetpassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:text="@string/forget_password"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
             </LinearLayout>
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -106,7 +108,7 @@
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sign in"
+                android:text="@string/buttom_sign_in"
                 android:textAllCaps="false"
                 android:textSize="25sp"
                 android:textStyle="bold"/>
@@ -119,7 +121,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
 
-            android:text="If you don't have an account,sign up now."
+            android:text="@string/new_user_sign_up"
             android:textColor="@color/light_blue_500"
             android:textSize="16sp"/>
 
@@ -128,17 +130,17 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-               android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10dp"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
                 w
                 <TextView
                     android:id="@+id/qq"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Other account"
+                    android:text="@string/other_account"
                     android:textColor="@color/light_blue_500"
                     android:textSize="16sp"/>
 
@@ -146,19 +148,21 @@
                     android:id="@+id/qqpicture"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:layout_gravity="center"
                     android:layout_marginTop="5dp"
-                    android:src="@drawable/qq"
-                    android:layout_gravity="center"/>
-                <TextView
+                    android:src="@drawable/qq"/>
+
+              <!--  <TextView
                     android:id="@+id/addgroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="10dp"
-                    android:text="Add QQ Group"
-                    android:visibility="gone"
+                    android:text="@string/add_qq_group"
                     android:textColor="@color/light_blue_500"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
+                    -->
             </LinearLayout>
         </RelativeLayout>
 
@@ -166,4 +170,4 @@
     </LinearLayout>
 
 
-    </FrameLayout>
+</FrameLayout>

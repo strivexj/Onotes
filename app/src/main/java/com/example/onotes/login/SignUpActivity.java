@@ -68,9 +68,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.sendverifycode:
                 verfiycode = 100000 + (int) (Math.random() * 800000);
-                String message = R.string.verify_email_hi + signupusername.getText().toString()
+               /* String message =getResources().getString( R.string.verify_email_hi)  R.string.verify_email_hi + signupusername.getText().toString()
                         + R.string.verify_email_welcome + verfiycode
                         + R.string.verify_email_end;
+*/
+                String message =getResources().getString( R.string.verify_email_hi)+ signupusername.getText().toString()
+                    +getResources().getString( R.string.verify_email_welcome) + verfiycode
+                    + getResources().getString(R.string.verify_email_end);
 
                 SendMail sm = new SendMail(this, signupemail.getText().toString(), message);
                 sm.execute();

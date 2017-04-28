@@ -45,6 +45,15 @@ public class OnboardingActivity extends AppCompatActivity {
         final SharedPreferences sp = App.getContext().getSharedPreferences("app", MODE_PRIVATE);
 
         if (SharedPreferenesUtil.getIs_first_lanuch()) {
+
+            if (Build.VERSION.SDK_INT >= 21) {
+                View decorView = getWindow().getDecorView();
+                decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+            }
+
+
             setContentView(R.layout.activity_on_boarding);
 
             initViews();

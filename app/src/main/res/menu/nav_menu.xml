@@ -7,24 +7,24 @@
     <item
         android:id="@+id/weather"
         android:icon="@drawable/weather"
-        android:title="Weather"/>
+        android:title="@string/weather"/>
     <item
         android:id="@+id/chat"
         android:icon="@drawable/chat"
-        android:title="Chat"/>
+        android:title="@string/chat"/>
     <item
         android:id="@+id/file"
         android:icon="@drawable/filefolder"
-        android:title="File"/>
+        android:title="@string/file"/>
     <item
         android:id="@+id/popupexercise"
         android:icon="@drawable/icon"
-        android:title="popupexercise"/>
+        android:title="@string/exercise"/>
 
     <item
         android:id="@+id/about"
         android:icon="@drawable/about"
-        android:title="About"/>
+        android:title="@string/about"/>
 
 
 </group>
