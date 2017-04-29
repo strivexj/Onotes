@@ -11,6 +11,7 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.example.onotes.App;
 import com.example.onotes.datebase.CityDbHelper;
+import com.example.onotes.view.EditTextActivity;
 
 /**
  * Created by cwj on 4/29/17.
@@ -21,7 +22,6 @@ public class LocationUtil {
     private static AMapLocationClient locationClient = null;
     private static AMapLocationClientOption locationOption = null;
 
-    public static final String REFRESH = "com.example.onotes.refresh";
 
     private String city;
     private static boolean islocated=false;
@@ -101,7 +101,7 @@ public class LocationUtil {
 
                                 islocated=true;
 
-                                Intent intent = new Intent(REFRESH);
+                                Intent intent = new Intent(EditTextActivity.REFRESH);
                                 App.getContext().sendBroadcast(intent);
 
                                 destroyLocation();

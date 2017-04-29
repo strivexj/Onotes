@@ -20,6 +20,18 @@ public class Notes {
     private float textsize;
     private float linespace;
     private int bgcolor;
+    private int type;
+
+
+    public boolean isCheckbox_delete() {
+        return checkbox_delete;
+    }
+
+    public void setCheckbox_delete(boolean checkbox_delete) {
+        this.checkbox_delete = checkbox_delete;
+    }
+
+    private boolean checkbox_delete;
 
     public int getType() {
         return type;
@@ -29,7 +41,7 @@ public class Notes {
         this.type = type;
     }
 
-    private int type;
+
 
     public int getBgcolor() {
         return bgcolor;

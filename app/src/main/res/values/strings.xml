@@ -172,5 +172,10 @@
 
     <string name="top_to_authorise_locate">点击我设置定位权限吧</string>
 
+    <string name="select_all">全选</string>
+    <string name="cancel">取消</string>
+    <string name="unselected_all">全不选</string>
+    <string name="checked_hint">已选择0项</string>
+
 
 </resources>

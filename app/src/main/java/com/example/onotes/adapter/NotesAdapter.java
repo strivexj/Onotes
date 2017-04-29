@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private List<Notes> mList;
     private List<Integer> mHeight;
 
+    private static final int Type_without_checkbox=0;
+    private static final int Type_with_checkbox=1;
+
     public NotesAdapter(Context context, List<Notes> list) {
         mContext = context;
         mList = list;
@@ -47,13 +51,26 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //此处动态加载ViewHolder的布局文件并返回holder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleview_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        if(viewType==Type_with_checkbox){
+            ViewHolder viewHolder = new ViewHolder(view);
+            viewHolder.mCheckBox_delete.setVisibility(View.VISIBLE);
+            return viewHolder;
+
+        }else {
+            ViewHolder viewHolder = new ViewHolder(view);
+            viewHolder.mCheckBox_delete.setVisibility(View.GONE);
+            return viewHolder;
+        }
     }
 
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public int getItemViewType(int position) {
+        return mList.get(position).getType();
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         //此处设置Item中view的数据
         holder.contentTextView.setText(mList.get(position).getContent());
         String timestamp= TimeUtil.getTime(false,TimeUtil.stringToDate(mList.get(position).getTime(),"yyyy-MM-dd HH:mm:ss").getTime());
@@ -62,18 +79,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         // ViewGroup.LayoutParams lp = holder.mTextView.getLayoutParams();
         // lp.height = mHeight.get(position);
 
-      /*  holder.contentTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoeditactivity(view, position);
-            }
-        });
-        holder.time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoeditactivity(view, position);
-            }
-        });*/
+
+        holder.mCheckBox_delete.setChecked(mList.get(position).isCheckbox_delete());
+
         holder.content_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +89,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             }
         });
 
+
+        holder.mCheckBox_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.mCheckBox_delete.isChecked()){
+                    mList.get(position).setCheckbox_delete(true);
+                }else {
+                    mList.get(position).setCheckbox_delete(false);
+                }
+
+                Intent intent = new Intent(EditTextActivity.REFRESH);
+                intent.putExtra("selectedsize",getSelectedSize());
+                App.getContext().sendBroadcast(intent);
+            }
+        });
 
         holder.deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +119,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         });
     }
 
+    private int getSelectedSize(){
+        int j=0;
+        for(int i=0;i<mList.size();i++){
+            if(mList.get(i).isCheckbox_delete()){
+                j++;
+            }
+        }
+        return j;
+    }
     private void gotoeditactivity(View view, int position) {
         Intent intent = new Intent(view.getContext(), EditTextActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -117,8 +149,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         return mList.size();
     }
 
+    public void checkbox_delete(){
+        for(int i=0;i<mList.size();i++){
+            if(mList.get(i).isCheckbox_delete()){
+                NotesDbHelper notesDbHelper = new NotesDbHelper(App.getContext());
+                SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+                db.delete("Notes", "id=?", new String[]{mList.get(i).getId()+""});
+                mList.remove(i);
+                notifyDataSetChanged();
+                db.close();
+            }
+        }
+    }
     //Item的ViewHolder以及Item内部布局控件的id绑定
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         public TextView contentTextView;
 
         public TextView time;
@@ -128,6 +173,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         public LinearLayout content_date;
 
         public TextView deleteTextView;
+
+        public CheckBox mCheckBox_delete;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -141,6 +188,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             deleteTextView = (TextView)itemView.findViewById(R.id.content_delete);
 
             time = (TextView) itemView.findViewById(R.id.notetime);
+
+            mCheckBox_delete=(CheckBox)itemView.findViewById(R.id.checkbox_note);
 
         }
 

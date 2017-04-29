@@ -298,7 +298,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             case R.id.setting_more:
                 final PopupWindow popupWindow = new PopupWindow(settingview, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                 popupWindow.showAtLocation(settingview, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-             //   Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show();
+
+                //   Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show();
                /* final BottomSheetDialog dialog = new BottomSheetDialog(this);
                 dialog.setContentView(settingview);
                 dialog.show();*/

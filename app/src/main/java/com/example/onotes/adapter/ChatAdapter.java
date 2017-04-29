@@ -69,6 +69,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.mImageView.setVisibility(View.VISIBLE);
             holder.mTextView.setVisibility(View.GONE);
         } else if (viewType == TYPE_PICTURE_RIGHT) {
+
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_right, parent, false);
             holder = new ViewHolder(view);
             Glide.with(App.getContext()).load(R.drawable.back).into(holder.mImageView);

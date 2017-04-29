@@ -16,11 +16,14 @@ import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -35,9 +38,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +70,7 @@ import com.example.onotes.utils.LanguageUtil;
 import com.example.onotes.utils.LocationUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.weather.WeatherMainActivity;
 
@@ -94,6 +104,15 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     private TextView weather_city;
     private TextView saying;
     boolean serviceBound = false;
+    private  PopupWindow popupWindow;
+    private float fabY;
+    private boolean select_all=false;
+
+    private  TextView tv=null;
+
+    private static final int Type_without_checkbox=0;
+    private static final int Type_with_checkbox=1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -340,6 +359,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
          requestWeather();
         register_refresh();
 
+
+
     }
 
     private void initData() {
@@ -367,6 +388,10 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 notes.setTextsize(textsize);
                 notes.setLinespace(linespace);
                 notes.setBgcolor(bgcolor);
+
+                notes.setType(Type_without_checkbox);
+                notes.setCheckbox_delete(false);
+
                 list.add(notes);
 
                 LogUtil.d("aonsaveread "+i,content);
@@ -415,6 +440,11 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onPause() {
         super.onPause();
+    if(popupWindow!=null&&popupWindow.isShowing()){
+    popupWindow.setFocusable(true);
+    popupWindow.dismiss();
+}
+
         LogUtil.d("cwj","aonpause");
     }
 
@@ -478,6 +508,159 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 break;
             }
             case R.id.delete: {
+                for (int i = 0; i < list.size(); i++) {
+                    list.get(i).setType(Type_with_checkbox);
+                }
+                adapter.notifyDataSetChanged();
+              /*  Snackbar snackbar=Snackbar.make(fab,"",Snackbar.LENGTH_LONG);
+                View snackbarview=snackbar.getView();
+
+                Snackbar.SnackbarLayout snackbarLayout=(Snackbar.SnackbarLayout)snackbarview;
+
+                snackbarview.setBackgroundColor(getResources().getColor(R.color.transparent_black));
+                View add_view= LayoutInflater.from(snackbarview.getContext()).inflate(R.layout.check_sheet,null);
+                LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                p.gravity=Gravity.CENTER_VERTICAL;
+
+                snackbarLayout.addView(add_view,0,p);
+
+                snackbar.show();
+*/
+                final View check_view = LayoutInflater.from(NotelistActivity.this).inflate(R.layout.check_sheet, null);
+
+                popupWindow = new PopupWindow(check_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+                popupWindow.setFocusable(false);
+                popupWindow.setOutsideTouchable(false);
+
+
+                popupWindow.showAtLocation(check_view, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+               /* final BottomSheetDialog dialog = new BottomSheetDialog(this);
+                dialog.setContentView(check_view);
+                dialog.show();
+
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        fab.animate().y(fabY).setDuration(400).start();
+                        for (int i = 0; i < list.size(); i++) {
+                            list.get(i).setType(Type_without_checkbox);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });*/
+               // popupWindow.getHeight();
+               // fab.getHeight();
+               // ToastUtil.showToast(fab.getY()+"a"+popupWindow.getHeight(),Toast.LENGTH_LONG);
+                LogUtil.d("fab",fab.getY()+"a");
+
+                tv= (TextView) check_view.findViewById(R.id.select_hint);
+
+                final String checked_hint=getResources().getString(R.string.checked_hint);
+                tv.setText(checked_hint);
+
+                fabY=fab.getY();
+                fab.animate().y(fab.getY()-140).setDuration(400).start();
+
+
+
+
+
+                final Button select=(Button) check_view.findViewById(R.id.select_all);
+
+               select.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        if(select_all){
+                            for (int i = 0; i < list.size(); i++) {
+                                list.get(i).setCheckbox_delete(false);
+
+                                if(!list.get(i).isCheckbox_delete()) {
+                                    LogUtil.d("adelete_unselect", i + "id " + list.get(i).getId());
+                                }
+                                // popupWindow.showAtLocation(check_view, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            }
+                            adapter.notifyDataSetChanged();
+                            select.setText(R.string.select_all);
+                            select_all=false;
+                            tv.setText(checked_hint);
+                        }else {
+                            for (int i = 0; i < list.size(); i++) {
+                                list.get(i).setCheckbox_delete(true);
+
+                                if(list.get(i).isCheckbox_delete()){
+                                    LogUtil.d("adelete_select",i+"id "+list.get(i).getId());
+                                }
+
+                                // popupWindow.showAtLocation(check_view, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            }
+
+                            adapter.notifyDataSetChanged();
+                            select.setText(R.string.unselected_all);
+                            select_all=true;
+                            tv.setText(checked_hint.replace("0",list.size()+""));
+                        }
+
+                    }
+                });
+
+
+                check_view.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
+                                SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+
+                             //   int size=;
+                                for (int i = 0; i < list.size(); i++) {
+                                    if(list.get(i).isCheckbox_delete()){
+                                        LogUtil.d("adelete",i+"id"+list.get(i).getId());
+                                        db.delete("Notes","id=?",new String[]{list.get(i).getId()+""});
+                                    }
+
+                                    // popupWindow.showAtLocation(check_view, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                }
+
+                                db.close();
+                                initData();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adapter.notifyDataSetChanged();
+                                        popupWindow.setFocusable(true);
+                                        popupWindow.dismiss();
+                                    }
+                                });
+
+                            }
+                        }).start();
+
+
+                    }
+                });
+
+               popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        fab.animate().y(fabY).setDuration(400).start();
+                        for (int i = 0; i < list.size(); i++) {
+                            list.get(i).setType(Type_without_checkbox);
+                           // popupWindow.showAtLocation(check_view, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+
+
+                /*
                 AlertDialog.Builder dialog=new AlertDialog.Builder(NotelistActivity.this);
                 dialog.setTitle(R.string.dialog_title);
                 dialog.setMessage(R.string.dialog_content);
@@ -495,13 +678,13 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                         adapter.notifyDataSetChanged();
                     }
                 });
+
                 dialog.setNegativeButton(R.string.dialog_negative_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
-                dialog.show();
-
+                dialog.show();*/
 
                 break;
             }
@@ -519,12 +702,30 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         return true;
     }
 
+   /* @Override
+    public boolean dispatchTouchEvent(MotionEvent event){
+        if(popupWindow!=null&&popupWindow.isShowing()){
+            return false;
+        }
+        return super.dispatchTouchEvent(event);
+    }*/
     private BroadcastReceiver refresh = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             LogUtil.d("textlocation","onreceive");
-            initData();
-            requestWeather();
+
+
+            if( intent.getIntExtra("selectedsize",-1)!=-1){
+                if(tv!=null){
+                    String hint=getResources().getString(R.string.checked_hint);
+                    String size=intent.getIntExtra("selectedsize",-1)+"";
+                    tv.setText(hint.replace("0",size));
+                }
+            }else {
+                initData();
+                requestWeather();
+            }
+
         }
     };
 
@@ -538,7 +739,11 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        if(keyCode == KeyEvent.KEYCODE_BACK &&popupWindow!=null&& popupWindow.isShowing()){
+            popupWindow.setFocusable(true);
+            popupWindow.dismiss();
+            return true;
+        }else if (keyCode == KeyEvent.KEYCODE_BACK && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
             mDrawerLayout.closeDrawers();
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
