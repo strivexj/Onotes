@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.example.onotes.R;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.ActivityCollector;
+import com.example.onotes.utils.KeyboardUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.ScreenShot;
 import com.example.onotes.utils.TimeUtil;
@@ -57,7 +58,9 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     private SeekBar linespacing;
     private SeekBar textsize;
     private EditText edittext;
+
     public static final String REFRESH = "com.example.onotes.refresh";
+
     private String notesid;
     private float linespace = 0;
     private float textsizef = 25;
@@ -285,8 +288,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                 intent.setType("image/*");
                 Intent chooser = Intent.createChooser(intent, "Share screen shot");
                 startActivity(chooser);*/
-                ScrollView scrollView=(ScrollView)findViewById(R.id.edit_scrollview);
-                ScreenShot.sharePhoto(this,scrollView);
+
+
 
                 break;
             case R.id.textcolor:
@@ -322,7 +325,9 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             NotesDbHelper notesDbHelper = new NotesDbHelper(this);
             SQLiteDatabase db = notesDbHelper.getWritableDatabase();
             db.delete("Notes", "id=?", new String[]{notesid});
+
             LogUtil.d("delete", notesid + "");
+
             ContentValues values = new ContentValues();
             values.put("textsize", textsizef);
             values.put("linespace", linespace);
@@ -336,6 +341,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             LogUtil.d("textsavesize", edittext.getTextSize() + "");
             LogUtil.d("textsavespace", "" + linespace);
         }
+
         Intent intent = new Intent(REFRESH);
         sendBroadcast(intent);
     }
@@ -386,7 +392,15 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_more) {
+/*
+            public static void hideSoftInput(Context context, View view) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm == null) return;
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }*/
 
+            KeyboardUtil.hideSoftInput(this,edittext);
+            //save(edittext.getText().toString());
 
             // final BottomSheetDialog dialog = new BottomSheetDialog(this);
             // View view =this.getLayoutInflater().inflate(R.layout.edit_actions_sheet, null);
@@ -420,6 +434,17 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                     popupWindow.dismiss();
                 }
             });
+
+            view.findViewById(R.id.layout_share_pic).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ScrollView scrollView=(ScrollView)findViewById(R.id.edit_scrollview);
+
+                    ScreenShot.sharePhoto(EditTextActivity.this,scrollView);
+                    popupWindow.dismiss();
+                }
+            });
+
 
             // shareAsText the content as text
             view.findViewById(R.id.layout_share_text).setOnClickListener(new View.OnClickListener() {
@@ -459,9 +484,15 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
+
+
                     WindowManager.LayoutParams lp = getWindow().getAttributes();
                     lp.alpha = 1f;
                     getWindow().setAttributes(lp);
+
+                    KeyboardUtil.showSoftInput(edittext);
+
+
                 }
             });
         }
@@ -481,10 +512,11 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND).setType("text/plain");
             String shareText = text;
 
-            shareText = shareText + "\t\t\t" + this.getString(R.string.share_extra);
+            //shareText = shareText ;
 
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
             this.startActivity(Intent.createChooser(shareIntent, this.getString(R.string.share_to)));
+
         } catch (ActivityNotFoundException ex) {
             //  showLoadingError();
         }

@@ -1,6 +1,7 @@
 package com.example.onotes.view;
 
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
@@ -16,6 +18,8 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -54,6 +58,7 @@ import com.example.onotes.ui.PopUpActivity;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.LanguageUtil;
+import com.example.onotes.utils.LocationUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.utils.WeatherUtil;
@@ -98,6 +103,10 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
 
         setContentView(R.layout.activity_main);
+
+
+
+
         initView();
 
         // String url=DebugDB.getAddressLog();
@@ -433,14 +442,23 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.weather_degree:
             case R.id.weather_city:
-                CircularAnim.fullActivity(NotelistActivity.this, weather_city)
-                        .colorOrImageRes(R.color.primary)
-                        .go(new CircularAnim.OnAnimationEndListener() {
-                            @Override
-                            public void onAnimationEnd() {
-                                startActivity(new Intent(NotelistActivity.this, WeatherMainActivity.class));
-                            }
-                        });
+
+                if (ContextCompat.checkSelfPermission(NotelistActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED&&TextUtils.isEmpty( SharedPreferenesUtil.getWeatherid())) {
+                    ActivityCompat.requestPermissions(NotelistActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                }else if(TextUtils.isEmpty( SharedPreferenesUtil.getWeatherid())) {
+                    LocationUtil.startLocation();
+                }else
+                    {
+                        CircularAnim.fullActivity(NotelistActivity.this, weather_city)
+                                .colorOrImageRes(R.color.primary)
+                                .go(new CircularAnim.OnAnimationEndListener() {
+                                    @Override
+                                    public void onAnimationEnd() {
+                                        startActivity(new Intent(NotelistActivity.this, WeatherMainActivity.class));
+                                    }
+                                });
+                    }
+
                 break;
             case R.id.saying:
                 Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show();
@@ -504,7 +522,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     private BroadcastReceiver refresh = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            LogUtil.d("textlocation","onreceive");
             initData();
+            requestWeather();
         }
     };
 
@@ -571,9 +591,16 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 weather_city.setText(SharedPreferenesUtil.getCityZh());
                             }
                             weather_degree.setText(weather.now.temperature+"°C");
+
                         } else {
+
                             weather_city.setTextSize(15);
-                            weather_city.setText(R.string.click_me_select_city);
+                            if(!LocationUtil.startLocation()){
+                                weather_city.setText(R.string.top_to_authorise_locate);
+                            }
+
+                           // weather_city.setText(R.string.click_me_select_city);
+                            //weather_city.setText(R.string.click_me_select_city);
                             //Toast.makeText(NotelistActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }
 
@@ -588,7 +615,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void run() {
                         weather_city.setTextSize(15);
-                        weather_city.setText(R.string.click_me_select_city);
+                      //  weather_city.setText(R.string.click_me_select_city);
+                        weather_city.setText(R.string.loading_weather_failed);
                         //Toast.makeText(NotelistActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -600,6 +628,36 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0) {
+                    for (int result : grantResults) {
+                        if (result != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(this, "必须同意该权限才能定位喔", Toast.LENGTH_SHORT).show();
+
+                            CircularAnim.fullActivity(NotelistActivity.this, weather_city)
+                                    .colorOrImageRes(R.color.primary)
+                                    .go(new CircularAnim.OnAnimationEndListener() {
+                                        @Override
+                                        public void onAnimationEnd() {
+                                            startActivity(new Intent(NotelistActivity.this, WeatherMainActivity.class));
+                                        }
+                                    });
+                           // finish();
+                            return;
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "发生未知错误", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+            default:
+        }
     }
 }
 

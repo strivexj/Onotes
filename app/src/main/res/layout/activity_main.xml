@@ -88,6 +88,7 @@
                     android:id="@+id/weather_degree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text=""
                     android:layout_toStartOf="@+id/weather_city"
                     android:textColor="@color/light_blue_500"
 
@@ -99,13 +100,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:text=""
                     android:textColor="@color/light_blue_500"
-                    android:textSize="20dp"
-                />
-
+                    android:textSize="20dp"/>
 
             </LinearLayout>
-
 
         </RelativeLayout>
     </android.support.design.widget.NavigationView>

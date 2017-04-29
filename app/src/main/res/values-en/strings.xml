@@ -220,4 +220,11 @@
     <string name="chinese">Simplified Chinese</string>
     <string name="english">English</string>
     <string name="traditional_chinese">Traditional Chinese</string>
+
+    <string name="send_as_pic">Share as picture</string>
+
+    <string name="locate_city_failed">Locate failed</string>
+
+    <string name="top_to_authorise_locate">Tap me to locate your city</string>
+
 </resources>

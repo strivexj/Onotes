@@ -49,7 +49,7 @@
     <string name="zhihu_url">https://www.zhihu.com/people/cheng-wen-jie-37</string>
     <string name="zhihu_account">成文傑</string>
     <string name="contactme">與我聯系</string>
-    <string name="copied_to_clipboard">復制到剪貼板</string>
+    <string name="copied_to_clipboard">已经復制到剪貼板</string>
     <string name="copied_to_clipboard_failed">復制失敗</string>
     <string name="added_to_bookmarks">添加到書簽</string>
     <string name="deleted_from_bookmarks">刪除書簽</string>
@@ -58,7 +58,7 @@
     <string name="action_add_to_bookmarks">添加到書簽</string>
     <string name="action_delete_from_bookmarks">刪除書簽</string>
     <string name="action_copy_text">復制文本</string>
-    <string name="action_share_as_text">以純文本分享</string>
+    <string name="action_share_as_text">純文字分享</string>
     <string name="share_to">分享到</string>
     <string name="share_extra">     -----     分享於Onotes</string>
     <string name="color_or_picture">選擇顏色或背景圖片</string>
@@ -161,5 +161,10 @@
     <string name="english">英語</string>
     <string name="traditional_chinese">繁體中文</string>
 
+    <string name="send_as_pic">生成圖片分享</string>
+
+    <string name="locate_city_failed">定位失敗</string>
+
+    <string name="top_to_authorise_locate">點擊我設置定位權限吧</string>
 
 </resources>

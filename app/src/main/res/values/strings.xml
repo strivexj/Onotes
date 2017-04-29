@@ -49,7 +49,7 @@
     <string name="zhihu_url">https://www.zhihu.com/people/cheng-wen-jie-37</string>
     <string name="zhihu_account">成文杰</string>
     <string name="contactme">与我联系</string>
-    <string name="copied_to_clipboard">复制到剪贴板</string>
+    <string name="copied_to_clipboard">已经复制到剪贴板</string>
     <string name="copied_to_clipboard_failed">复制失败</string>
     <string name="added_to_bookmarks">添加到书签</string>
     <string name="deleted_from_bookmarks">删除书签</string>
@@ -58,7 +58,9 @@
     <string name="action_add_to_bookmarks">添加到书签</string>
     <string name="action_delete_from_bookmarks">删除书签</string>
     <string name="action_copy_text">复制文本</string>
-    <string name="action_share_as_text">以纯文本分享</string>
+
+    <string name="action_share_as_text">纯文字分享</string>
+
     <string name="share_to">分享到</string>
     <string name="share_extra">     -----     分享于Onotes</string>
     <string name="color_or_picture">选择颜色或背景图片</string>
@@ -91,7 +93,11 @@
     <string name="dialog_content">是否删除所有的笔记？</string>
     <string name="dialog_positive_button">是的</string>
     <string name="dialog_negative_button">取消</string>
+
     <string name="click_me_select_city">点击我选择一个城市吧</string>
+
+    <string name="locate_city_failed">定位失败</string>
+
     <string name="loading_weather_failed">加载天气信息失败。</string>
     <string name="comfort">舒适度︰</string>
     <string name="carwash">洗车指数︰</string>
@@ -160,6 +166,11 @@
     <string name="chinese">简体中文</string>
     <string name="english">英语</string>
     <string name="traditional_chinese">繁体中文</string>
+
+
+    <string name="send_as_pic">生成图片分享</string>
+
+    <string name="top_to_authorise_locate">点击我设置定位权限吧</string>
 
 
 </resources>

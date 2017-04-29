@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -37,23 +39,36 @@ import java.util.Date;
 
 public class ScreenShot {
     private static String path;
+
     public static void sharePhoto(Activity activity, ScrollView scrollView) {
         try{
             File image=createImageFile();
-            path =  image.getAbsolutePath();
-            ToastUtil.showToast(path, Toast.LENGTH_LONG);
-            LogUtil.d("sharephote",path);
-           // ScreenShot.getScrollViewBitmap(scrollView,path);
 
-            captureScreen(activity,path);
+           // path =  image.getAbsolutePath();
+           // path=getAlbumStorageDir("cwj").getAbsolutePath();
+
+            path=createImageFile().getAbsolutePath();
+          //  ToastUtil.showToast(path, Toast.LENGTH_LONG);
+
+            LogUtil.d("sharephote",path);
+
+           // savePic(getScrollViewBitmap(scrollView,path));
+           // getScrollViewBitmap(scrollView,path);
+          //  ScreenShot.getScrollViewBitmap(scrollView,path);
+
+            //captureScreen(activity,path);
+            savePic(takeScreenShot(activity),path);
         }catch (IOException e){
             e.printStackTrace();
         }
 
 
         Intent intent  = new Intent(Intent.ACTION_SEND);
+
         File file = new File(path);
+
         intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+
         intent.setType("image/*");
 
         Intent chooser = Intent.createChooser(intent, "Share screen shot");
@@ -63,6 +78,119 @@ public class ScreenShot {
         }
     }
 
+    public static Bitmap getViewBitmap(View v) {
+
+        v.clearFocus(); //
+
+        v.setPressed(false); //
+
+        // 能画缓存就返回false
+
+        boolean willNotCache = v.willNotCacheDrawing();
+
+        v.setWillNotCacheDrawing(false);
+
+        int color = v.getDrawingCacheBackgroundColor();
+
+        v.setDrawingCacheBackgroundColor(0);
+
+        if (color != 0) {
+
+            v.destroyDrawingCache();
+
+        }
+
+        v.buildDrawingCache();
+
+        Bitmap cacheBitmap = v.getDrawingCache();
+
+        if (cacheBitmap == null) {
+
+            return null;
+
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+
+        // Restore the view
+
+        v.destroyDrawingCache();
+
+        v.setWillNotCacheDrawing(willNotCache);
+
+        v.setDrawingCacheBackgroundColor(color);
+
+        return bitmap;
+
+    }
+
+    // 保存到sdcard
+    public static void savePic(Bitmap b, String strFileName) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(strFileName);
+            if (null != fos) {
+                b.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                fos.flush();
+                fos.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+
+     * 保存Bitmap图片为本地文件
+
+     */
+
+    public static void saveFile(Bitmap bitmap, String filename) {
+
+        FileOutputStream fileOutputStream = null;
+
+        try {
+
+            fileOutputStream = new FileOutputStream(filename);
+
+            if (fileOutputStream != null) {
+
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
+
+                fileOutputStream.flush();
+
+                fileOutputStream.close();
+
+            }
+
+        } catch (FileNotFoundException e) {
+
+            LogUtil.d("a","Exception:FileNotFoundException");
+
+            e.printStackTrace();
+
+        } catch (IOException e) {
+
+            LogUtil.d("a","IOException:IOException");
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public static File getAlbumStorageDir(String albumName) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!file.mkdirs()) {
+           LogUtil.d("a", "Directory not created");
+        }
+        return file;
+    }
+
+
 
 
     private static String mCurrentPhotoPath;
@@ -70,9 +198,10 @@ public class ScreenShot {
     private static File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = timeStamp + "_";
        // File storageDir = App.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File storageDir = App.getContext().getExternalCacheDir();
+        //File storageDir = App.getContext().getExternalCacheDir();
+         File storageDir = getAlbumStorageDir("cwj");
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -83,6 +212,8 @@ public class ScreenShot {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
+
 
     /**
 
@@ -198,6 +329,8 @@ public class ScreenShot {
 
     }
 
+
+    //This work
     // 获取指定Activity的截屏，保存到png文件
     public static Bitmap takeScreenShot(Activity activity) {
         // View是你需要截图的View
@@ -209,42 +342,47 @@ public class ScreenShot {
         // 获取状态栏高度
         Rect frame = new Rect();
         activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+
         int statusBarHeight = frame.top;
+
         System.out.println(statusBarHeight);
+
+       /* int contentTop =  activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();
+
+        //statusBarHeight是上面状态栏的高度
+        int titleBarHeight = contentTop - statusBarHeight;*/
+
 
         // 获取屏幕长和高
         int width = activity.getWindowManager().getDefaultDisplay().getWidth();
-        int height = activity.getWindowManager().getDefaultDisplay()
-                .getHeight();
-        // 去掉标题栏
-        // Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
-        Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height
-                - statusBarHeight);
-        view.destroyDrawingCache();
-        return b;
+        int height = activity.getWindowManager().getDefaultDisplay().getHeight();
+
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (App.getContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            //方法一
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, App.getContext().getResources().getDisplayMetrics());
+            LogUtil.d("nani PopupListView", "tv.data=" + tv.data + ",actionBarHeight=" + actionBarHeight);
+        }
+
+            LogUtil.d("nani", "statusBarHeight " + statusBarHeight + "  width " + width + "   height " + height + "  actionBarHeight " + actionBarHeight);
+            // 去掉标题栏
+            // Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
+            Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight+actionBarHeight, width, height - actionBarHeight-statusBarHeight);
+
+            view.destroyDrawingCache();
+
+       return b;
     }
 
-    // 保存到sdcard
-    public static void savePic(Bitmap b, String strFileName) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(strFileName);
-            if (null != fos) {
-                b.compress(Bitmap.CompressFormat.PNG, 90, fos);
-                fos.flush();
-                fos.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     // 程序入口 截取当前屏幕
     public static void shootLoacleView(Activity a, String picpath) {
         savePic(takeScreenShot(a), picpath);
     }
+
+
 
     /** * 截取scrollview的屏幕 * **/
     public static Bitmap getScrollViewBitmap(ScrollView scrollView, String picpath) {
@@ -278,6 +416,8 @@ public class ScreenShot {
         }
         return bitmap;
     }
+
+
 
     private static String TAG = "Listview and ScrollView item 截图:";
 

@@ -40,6 +40,15 @@ public class SharedPreferenesUtil {
     private static String bing_pic;
     private static String weatherresponseText;
 
+    public static String getWeatherCity() {
+        return weatherCity;
+    }
+
+    public static void setWeatherCity(String weatherCity) {
+        SharedPreferenesUtil.weatherCity = weatherCity;
+    }
+
+    private static String weatherCity;
     private static String cityEn;
 
 

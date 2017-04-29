@@ -9,8 +9,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,23 +66,6 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView carWashText;
 
     @Override
-    protected void onResume() {
-
-
-        super.onResume();
-    }
-
-    private TextView sportText;
-
-    private ImageView bingPicImg;
-
-    private String weatherId;
-    private SideBar mSideBar;
-    private TextView dialog;
-
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityCollector.addActivity(this);
@@ -112,16 +97,39 @@ public class WeatherActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
+        try{
        // String bingPic = prefs.getString("bing_pic", null);
         String bingPic=SharedPreferenesUtil.getBing_pic();
         if (bingPic != null) {
-            Glide.with(this).load(bingPic).into(bingPicImg);
+
+                Glide.with(this).load(bingPic).into(bingPicImg);
+
+
         } else {
             loadBingPic();
         }
 
-
+        }catch (IllegalArgumentException e){
+        e.printStackTrace();
+        }
     }
+
+    @Override
+    protected void onResume() {
+
+
+        super.onResume();
+    }
+
+    private TextView sportText;
+
+    private ImageView bingPicImg;
+
+    private String weatherId;
+    private SideBar mSideBar;
+    private TextView dialog;
+
 
     private void showWeatherInfo() {
 
@@ -242,7 +250,12 @@ public class WeatherActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Glide.with(WeatherActivity.this).load(bingPic).into(bingPicImg);
+                        try{
+                            Glide.with(WeatherActivity.this).load(bingPic).into(bingPicImg);
+                         }catch (IllegalArgumentException e){
+                        e.printStackTrace();
+                    }
+
                     }
                 });
             }

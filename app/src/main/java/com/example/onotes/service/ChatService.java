@@ -127,9 +127,9 @@ public class ChatService extends Service {
                 R.drawable.icon);
         NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setShowWhen(true)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+               // .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setLargeIcon(largeIcon)
-                .setPriority(PRIORITY_MAX)
+               // .setPriority(PRIORITY_MAX)
                 //.setUsesChronometer(true)
                 .setSmallIcon(R.drawable.icon)
                 //.setContentText("You have received a new messages~!")
@@ -137,9 +137,14 @@ public class ChatService extends Service {
                 .setContentTitle("A new message")
                 //.setContentInfo(activeAudio.getTitle())
                 .setContentIntent(pendingIntent);
+
             final Notification notification = notificationBuilder.build();
             //notification.flags= Notification.FLAG_NO_CLEAR;
-            startForeground(NOTIFICATION_ID, notification);
+           // startForeground(NOTIFICATION_ID, notification);
+         NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+         mNotificationManager.notify(NOTIFICATION_ID, notification);
     }
 
     private void initdata() {

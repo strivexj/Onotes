@@ -80,10 +80,12 @@ public class SideBar extends View {
         final float y = event.getY();// 点击y坐标
         final int oldChoose = choose;
         final OnTouchingLetterChangedListener listener = onTouchingLetterChangedListener;
+
         final int c = (int) (y / getHeight() * letterList.size());// 点击y坐标所占总高度的比例*b数组的长度就等于点击b中的个数.
 
         switch (action) {
             case MotionEvent.ACTION_UP:
+
                 setBackgroundColor(Color.parseColor("#33000000"));
                 choose = -1;
                 invalidate();
@@ -115,7 +117,9 @@ public class SideBar extends View {
 
 
     public static void hidedialog(){
-        mTextDialog.setVisibility(View.INVISIBLE);
+        if (mTextDialog != null) {
+            mTextDialog.setVisibility(View.GONE);
+        }
     }
 
     public void setIndexText(ArrayList<String> indexStrings) {
