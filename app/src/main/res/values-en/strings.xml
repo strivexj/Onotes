@@ -227,4 +227,13 @@
 
     <string name="top_to_authorise_locate">Tap me to locate your city</string>
 
+    <string name="select_all">Select all</string>
+
+    <string name="cancel">Cancel</string>
+
+    <string name="unselected_all">Unselect all</string>
+
+    <string name="checked_hint">selected 0 items</string>
+
+    <string name="locating">Locating...</string>
 </resources>

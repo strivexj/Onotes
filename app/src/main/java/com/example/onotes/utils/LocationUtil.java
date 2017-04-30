@@ -83,6 +83,7 @@ public class LocationUtil {
 
                     LogUtil.d("location",sb.toString());
 
+
                     CityDbHelper cityDbHelper = new CityDbHelper(App.getContext());
                     SQLiteDatabase db = cityDbHelper.getWritableDatabase();
                     Cursor cursor = db.query("City", null, null, null, null, null, "CityEn ASC");
@@ -94,9 +95,13 @@ public class LocationUtil {
                             String CityZh = cursor.getString(cursor.getColumnIndex("cityZh"));
 
                             if(location.getCity().contains(CityZh)){
+
                                 SharedPreferenesUtil.setCityZh(CityZh);
                                 SharedPreferenesUtil.setWeatherid(cityid);
                                 SharedPreferenesUtil.setCityEn(CityEn);
+
+                                SharedPreferenesUtil.setLocated_city(CityZh);
+
                                 LogUtil.d("location","find"+CityZh);
 
                                 islocated=true;

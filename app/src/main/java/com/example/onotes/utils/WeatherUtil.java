@@ -1,10 +1,13 @@
 package com.example.onotes.utils;
 
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +16,7 @@ import com.example.onotes.App;
 
 import com.example.onotes.datebase.CityDbHelper;
 import com.example.onotes.gson.Weather;
+import com.example.onotes.view.NotelistActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -93,6 +97,11 @@ public class WeatherUtil {
                 db.close();
 
                 SharedPreferenesUtil.setIscityadd(true);
+
+                if (ContextCompat.checkSelfPermission(App.getContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    LocationUtil.startLocation();
+                }
 
                 return true;
             } catch (JSONException e) {

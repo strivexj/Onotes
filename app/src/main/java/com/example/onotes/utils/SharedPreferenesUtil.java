@@ -56,6 +56,12 @@ public class SharedPreferenesUtil {
 
     private static String language;
 
+    private static int recyclerview_category;
+
+
+
+    private static String located_city;
+
     private static SharedPreferences.Editor qqaccount_editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
 
     private static SharedPreferences qqaccount_pref = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
@@ -71,6 +77,28 @@ public class SharedPreferenesUtil {
     private static SharedPreferences weather_pref = App.getContext().getSharedPreferences("weather", MODE_PRIVATE);
 
     private static SharedPreferences.Editor weather_editor = App.getContext().getSharedPreferences("weather", MODE_PRIVATE).edit();
+
+
+    public static String getLocated_city() {
+     return weather_pref.getString("located_city","");
+    }
+
+    public static void setLocated_city(String located_city) {
+        weather_editor.putString("located_city",located_city);
+        weather_editor.apply();
+    }
+
+
+    public static int getRecyclerview_category() {
+        return app_pref.getInt("recyclerview_category",-1);
+    }
+
+    public static void setRecyclerview_category(int recyclerview_category) {
+        app_editor.putInt("recyclerview_category",recyclerview_category);
+        app_editor.apply();
+    }
+
+
 
     public static String getCityZh() {
         return weather_pref.getString("cityZh","");

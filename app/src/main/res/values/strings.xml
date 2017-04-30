@@ -177,5 +177,7 @@
     <string name="unselected_all">全不选</string>
     <string name="checked_hint">已选择0项</string>
 
+    <string name="locating">定位中...</string>
+
 
 </resources>

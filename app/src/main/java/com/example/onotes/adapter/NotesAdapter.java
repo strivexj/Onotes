@@ -34,8 +34,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private List<Notes> mList;
     private List<Integer> mHeight;
 
-    private static final int Type_without_checkbox=0;
-    private static final int Type_with_checkbox=1;
+
+    private static final int Type_without_checkbox = -2;
+    private static final int Type_with_checkbox = -3;
+
+    private static final int Close_popupwindow = -4;
 
     public NotesAdapter(Context context, List<Notes> list) {
         mContext = context;
@@ -85,7 +88,31 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.content_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoeditactivity(v, position);
+                if(mList.get(position).getType()==Type_without_checkbox){
+                    LogUtil.d("click","without_");
+                    gotoeditactivity(v, position);
+                }
+                else {
+                    if( mList.get(position).isCheckbox_delete()){
+                        mList.get(position).setCheckbox_delete(false);
+                    }else {
+                        mList.get(position).setCheckbox_delete(true);
+                    }
+                    LogUtil.d("click","with_");
+
+                    notifyItemChanged(position);
+                    //notifyDataSetChanged();
+                }
+
+            }
+        });
+
+        holder.content_date.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mList.get(position).setCheckbox_delete(true);
+                switch_type(mList.get(position).getType());
+                return true;
             }
         });
 
@@ -100,7 +127,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 }
 
                 Intent intent = new Intent(EditTextActivity.REFRESH);
-                intent.putExtra("selectedsize",getSelectedSize());
+                intent.putExtra("from_adapter",getSelectedSize());
                 App.getContext().sendBroadcast(intent);
             }
         });
@@ -115,11 +142,36 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 mList.remove(position);
                 notifyDataSetChanged();
                 db.close();
+
+                if(mList.size()==0){
+                    Intent intent = new Intent(EditTextActivity.REFRESH);
+                    intent.putExtra("from_adapter",Close_popupwindow);
+                    App.getContext().sendBroadcast(intent);
+                }
             }
         });
     }
 
-    private int getSelectedSize(){
+
+    public void switch_type(int type_now){
+        int switchto;
+        if(type_now==Type_with_checkbox){
+           switchto=Type_without_checkbox;
+        }else {
+           switchto=Type_with_checkbox;
+        }
+        for (int i = 0; i < mList.size(); i++) {
+            mList.get(i).setType(switchto);
+        }
+        notifyDataSetChanged();
+
+        Intent intent = new Intent(EditTextActivity.REFRESH);
+        intent.putExtra("from_adapter",switchto);
+        App.getContext().sendBroadcast(intent);
+
+    }
+
+    public int getSelectedSize(){
         int j=0;
         for(int i=0;i<mList.size();i++){
             if(mList.get(i).isCheckbox_delete()){
@@ -161,6 +213,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             }
         }
     }
+
     //Item的ViewHolder以及Item内部布局控件的id绑定
     public class ViewHolder extends RecyclerView.ViewHolder {
 
