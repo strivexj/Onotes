@@ -113,6 +113,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     private TextView tv = null;
 
     private Toolbar toolbar = null;
+
+    private Button select=null;
     private static final int Type_without_checkbox = -2;
     private static final int Type_with_checkbox = -3;
 
@@ -554,16 +556,18 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         int layout=SharedPreferenesUtil.getRecyclerview_category();
 
         if(layout==Staggered_Grid_Layout){
-            menu.findItem(R.id.list).setVisible(false);
-            menu.findItem(R.id.category).setVisible(true);
-        }else {
             menu.findItem(R.id.list).setVisible(true);
             menu.findItem(R.id.category).setVisible(false);
+        }else {
+            menu.findItem(R.id.list).setVisible(false);
+            menu.findItem(R.id.category).setVisible(true);
         }
 
 
         return super.onPrepareOptionsMenu(menu);
     }
+
+
     public boolean onOptionsItemSelected(MenuItem item) {
 
 
@@ -724,7 +728,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         fab.animate().y(fab.getY() - 140).setDuration(400).start();
 
 
-        final Button select = (Button) check_view.findViewById(R.id.select_all);
+         select = (Button) check_view.findViewById(R.id.select_all);
 
         select.setOnClickListener(new View.OnClickListener() {
 
@@ -875,6 +879,15 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                         if (tv != null) {
                             String hint = getResources().getString(R.string.checked_hint);
                             int size = intent.getIntExtra("from_adapter", -1);
+
+                            LogUtil.d("onreceive",""+size);
+                            if(list.size()==size&&select!=null){
+                                select.setText(R.string.unselected_all);
+                                select_all=true;
+                            }else {
+                                select.setText(R.string.select_all);
+                                select_all=false;
+                            }
 
                             //如果只有0或者1项，去掉英文中的s
 

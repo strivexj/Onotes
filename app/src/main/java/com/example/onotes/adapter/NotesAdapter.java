@@ -100,6 +100,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                     }
                     LogUtil.d("click","with_");
 
+                    sendBroadcastToNotesActivity();
+
                     notifyItemChanged(position);
                     //notifyDataSetChanged();
                 }
@@ -112,6 +114,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             public boolean onLongClick(View v) {
                 mList.get(position).setCheckbox_delete(true);
                 switch_type(mList.get(position).getType());
+
+                sendBroadcastToNotesActivity();
+
                 return true;
             }
         });
@@ -126,9 +131,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                     mList.get(position).setCheckbox_delete(false);
                 }
 
-                Intent intent = new Intent(EditTextActivity.REFRESH);
-                intent.putExtra("from_adapter",getSelectedSize());
-                App.getContext().sendBroadcast(intent);
+                sendBroadcastToNotesActivity();
             }
         });
 
@@ -150,6 +153,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 }
             }
         });
+    }
+
+    private void sendBroadcastToNotesActivity() {
+        Intent intent = new Intent(EditTextActivity.REFRESH);
+        intent.putExtra("from_adapter",getSelectedSize());
+        App.getContext().sendBroadcast(intent);
     }
 
 
