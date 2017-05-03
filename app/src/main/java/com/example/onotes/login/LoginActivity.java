@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Key;
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
@@ -35,6 +36,7 @@ import com.example.onotes.bean.QqUser;
 import com.example.onotes.service.CityDownloadSerivce;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
+import com.example.onotes.utils.KeyboardUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.utils.ToastUtil;
@@ -214,6 +216,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.sign_in_button: {
 
+                KeyboardUtil.hideSoftInput(this);
+
                 progressBar.setVisibility(View.VISIBLE);
                 // 收缩按钮
                 CircularAnim.hide(sign_in_button).go();
@@ -257,6 +261,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 progressBar.setVisibility(View.GONE);
                                 CircularAnim.show(sign_in_button).go();
 
+                                KeyboardUtil.showSoftInput(password);
                                 ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
                                 //Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
                             }
@@ -264,8 +269,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         } else {
                             progressBar.setVisibility(View.GONE);
                             CircularAnim.show(sign_in_button).go();
-
                             ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
+                            KeyboardUtil.showSoftInput(password);
                           //  Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
                             Log.d("cwj", "query failed");
                         }

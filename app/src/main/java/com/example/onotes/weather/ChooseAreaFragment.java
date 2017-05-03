@@ -52,8 +52,11 @@ public class ChooseAreaFragment extends Fragment{
     public static String[] INDEX_STRING = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
             "W", "X", "Y", "Z"};
-
+    //可能存在的索引
     public static int[]indexposition=new int[26];
+
+    //真实存在的索引
+    public static int[]realIndex=new int[26];
 
     private SideBar mSideBar;
 
@@ -142,6 +145,8 @@ public class ChooseAreaFragment extends Fragment{
 
                     indexposition[index++]=dataList.size()-1;
 
+                    //realIndex[i]=dataList.size()-1;
+
                     LogUtil.d("whynot","indexposition "+ type.getSortLetters()+indexposition[index-1]);
 
                 }else if(!cityList.get(i-1).getSortLetters().equals(cityList.get(i).getSortLetters())){
@@ -163,20 +168,42 @@ public class ChooseAreaFragment extends Fragment{
 
                     indexposition[index++]=dataList.size()-1;
 
+                   // realIndex[i]=dataList.size()-1;
+
                     LogUtil.d("whynot","indexposition "+ type.getSortLetters()+indexposition[index-1]);
                 }
 
 
                 i++;
+
                 LogUtil.d("sortletter",city.getSortLetters());
 
                 if(language.equals("en"))
                 {
+                    //如果出现同名的城市，加上省份名
+                    if(j>1&&dataList.get(dataList.size()-1).contains(cityList.get(j).getCityEn())){
+                        dataList.remove(dataList.size()-1);
+                        dataList.add(cityList.get(j-1).getCityEn()+" , "+cityList.get(j-1).getProvinceEn());
+                        dataList.add(cityList.get(j).getCityEn()+" , "+cityList.get(j).getProvinceEn());
+                        LogUtil.d("same",dataList.get(dataList.size()-1));
+                    }
 
-                    dataList.add(cityList.get(j).getCityEn());
+                    else {
+                        dataList.add(cityList.get(j).getCityEn());
+                    }
                 }else {
-                    dataList.add(cityList.get(j).getCityZh());
+
+                    if(j>1&&dataList.get(dataList.size()-1).contains(cityList.get(j).getCityZh())){
+                        dataList.remove(dataList.size()-1);
+                        dataList.add(cityList.get(j-1).getCityZh()+" , "+cityList.get(j-1).getProvinceZh());
+                        dataList.add(cityList.get(j).getCityZh()+" , "+cityList.get(j).getProvinceZh());
+                        LogUtil.d("same",dataList.get(dataList.size()-1));
+                    }else {
+                        dataList.add(cityList.get(j).getCityZh());
+                    }
+
                 }
+
 
 
                 adapter.notifyDataSetChanged();
@@ -242,7 +269,9 @@ public class ChooseAreaFragment extends Fragment{
                         if( cityList.get(i).getCityZh().contains(newText)){
 
                             filcityList.add(cityList.get(i));
+
                             fildataList.add(cityList.get(i).getCityZh());
+
                             LogUtil.d("rrr",cityList.get(i).getCityZh());
 
                         }else if(cityList.get(i).getCityEn().toLowerCase().contains(newText)){
@@ -251,6 +280,21 @@ public class ChooseAreaFragment extends Fragment{
                         }
 
                     }
+
+                //出现同名就加上省份
+                    for (int i = 1; i < fildataList.size(); i++) {
+
+                        if(fildataList.get(i-1).contains(fildataList.get(i))){
+
+                                fildataList.remove(i-1);
+
+                                fildataList.add(filcityList.get(i-1).getCityEn()+" , "+filcityList.get(i-1).getProvinceEn());
+                                fildataList.add(filcityList.get(i).getCityEn()+" , "+filcityList.get(i).getProvinceEn());
+
+                                LogUtil.d("same",dataList.get(dataList.size()-1));
+                            }
+                        }
+
 
                     listView.setAdapter(filadapter);
                     filadapter.notifyDataSetChanged();
@@ -314,16 +358,22 @@ public void update(String s){
 
                     int realposition=1;
 
+                    int withoutIndexNumber=0;
+
                     for(int i=0;i<26;i++){
+                        if(indexposition[i]==-1){
+                            withoutIndexNumber++;
+                        }
+
                         if(i<25) {
                             if(indexposition[i]==position||indexposition[i+1]==position)return;
 
                             if(indexposition[i]<position&&indexposition[i+1]>position){
-                                realposition=position-i-1;
+                                realposition=position-i-1+withoutIndexNumber;
                                 break;
                             }
                         }else{
-                            realposition=position-i-1;
+                            realposition=position-i-1+withoutIndexNumber;
                             break;
                         }
                     }

@@ -487,7 +487,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         Intent intentService = new Intent(this, ChatService.class);
 
-        //bindService(intentService, serviceConnection, Context.BIND_AUTO_CREATE);
+        bindService(intentService, serviceConnection, Context.BIND_AUTO_CREATE);
         startService(intentService);
     }
 
@@ -576,9 +576,6 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             case R.id.category: {
 
                 switchToolBarMenu(SharedPreferenesUtil.getRecyclerview_category());
-
-                // a=true;
-
                 break;
             }
             case R.id.delete: {
@@ -629,8 +626,6 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 invalidateOptionsMenu();
 
                 SharedPreferenesUtil.setRecyclerview_category(Linear_Layout);*/
-
-
 
                 break;
             }
@@ -812,9 +807,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void delete_selected() {
-        /*new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
-            public void run() {*/
+            public void run() {
         NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
         SQLiteDatabase db = notesDbHelper.getWritableDatabase();
 
@@ -830,9 +825,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         db.close();
 
-        //  runOnUiThread(new Runnable() {
-        //     @Override
-        //     public void run() {
+          runOnUiThread(new Runnable() {
+            @Override
+             public void run() {
 
         initData();
         adapter.notifyDataSetChanged();
@@ -840,11 +835,11 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         popupWindow.setFocusable(true);
         popupWindow.dismiss();
-               /*     }
+                    }
                 });
 
             }
-        }).start();*/
+        }).start();
     }
 
     /* @Override
@@ -873,8 +868,6 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                         LogUtil.d("switch", "without_checkbox");
                         closePopupwindow();
                         break;
-
-
                     default:
                         if (tv != null) {
                             String hint = getResources().getString(R.string.checked_hint);
