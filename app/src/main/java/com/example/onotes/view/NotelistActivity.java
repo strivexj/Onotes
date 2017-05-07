@@ -54,6 +54,7 @@ import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.onotes.R;
 import com.example.onotes.about.AboutActivity;
 import com.example.onotes.adapter.MyRecyclerView;
@@ -76,6 +77,7 @@ import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.weather.WeatherMainActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,6 +87,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static com.example.onotes.utils.ScreenShot.getAlbumStorageDir;
 
 /**
  * Created by cwj Apr.09.2017 1:38 PM
@@ -301,6 +305,12 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         icon_image = (CircleImageView) headerLayout.findViewById(R.id.icon_image);
         saying = (TextView) headerLayout.findViewById(R.id.saying);
 
+        icon_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(NotelistActivity.this,AvatorActivity.class));
+            }
+        });
         saying.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -333,7 +343,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {
-                                        startActivity(new Intent(NotelistActivity.this, PhotoActivity.class));
+                                        startActivity(new Intent(NotelistActivity.this, AvatorActivity.class));
                                     }
                                 });
                         break;
@@ -371,7 +381,14 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         //  LogUtil.d("ccwj", pictureurl);
         username.setText(SharedPreferenesUtil.getNickname());
 
-        if (!TextUtils.isEmpty(SharedPreferenesUtil.getFigureurl_qq_2())) {
+        File file=new File(getAlbumStorageDir("cwj"), "avator.jpg");
+        if(file.exists()){
+               Glide.with(this)
+                    .load(file)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(icon_image);
+        }else if (!TextUtils.isEmpty(SharedPreferenesUtil.getFigureurl_qq_2())) {
             Glide.with(this).load(SharedPreferenesUtil.getFigureurl_qq_2()).into(icon_image);
         }
 

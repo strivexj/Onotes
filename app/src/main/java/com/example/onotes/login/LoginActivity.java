@@ -3,8 +3,6 @@ package com.example.onotes.login;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
@@ -12,7 +10,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
@@ -20,15 +17,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Key;
-import com.example.onotes.App;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.Person;
@@ -47,19 +40,18 @@ import com.tencent.connect.common.Constants;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.io.File;
 import java.util.List;
-
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.example.onotes.utils.ScreenShot.getAlbumStorageDir;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -70,8 +62,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView signup;
     private TextView forgetpassword;
     private CheckBox rememeberpassword;
+
     private static final String TAG = "LoginActivity";
     private static final String APP_ID = "1106087728";//官方获取的APPID
+
     private Tencent mTencent;
     private BaseUiListener mIUiListener;
     private UserInfo mUserInfo;
@@ -118,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         forgetpassword = (TextView) findViewById(R.id.forgetpassword);
         rememeberpassword = (CheckBox) findViewById(R.id.rememeberpassword);
         qq = (TextView) findViewById(R.id.qq);
-        //addgroup = (TextView) findViewById(R.id.addgroup);
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         userpicture = (CircleImageView) findViewById(R.id.userpicture);
 
@@ -126,11 +120,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
 
         //默认弹出英文输入法
-     //   password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
         username.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
-
-       // password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-      //  password.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         password.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         /**
@@ -147,13 +137,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                   // LoginActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
                     View view =  LoginActivity.this.getCurrentFocus();
                     if (view != null) {
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
-
 
                     /* 打开输入法
                         InputMethodManagerinputMethodManager=(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -163,13 +152,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 return true;
             }
-
         });
 
 
-
         String pictureurl=SharedPreferenesUtil.getFigureurl_qq_2();
-        if (!TextUtils.isEmpty(pictureurl)) {
+
+        File file=new File(getAlbumStorageDir("cwj"), "avator.jpg");
+        if(file.exists()){
+            Glide.with(this)
+                    .load(file)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .load(file).into(userpicture);
+        }else if (!TextUtils.isEmpty(pictureurl)) {
             Glide.with(this).load(pictureurl).into(userpicture);
         }
 
@@ -180,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             username.setText(susername);
             password.requestFocus();
         }
-        ;
+
         //Search from stackoverflow
         //You may have to use et.post( new Runnable({... et.setSel... to get in the queue.
         // This is because android waits to do some layout stuff until a better time by posting so if you try to
@@ -196,6 +191,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             });
     //password.setSelection(password.getSelectionEnd());
         }
+
         if (SharedPreferenesUtil.isRemember_password_checkbox()) {
             rememeberpassword.setChecked(true);
         }
@@ -204,7 +200,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         sign_in_button.setOnClickListener(this);
         forgetpassword.setOnClickListener(this);
         qq.setOnClickListener(this);
-       // addgroup.setOnClickListener(this);
 
         userpicture.setOnClickListener(this);
         qqpicture = (CircleImageView) findViewById(R.id.qqpicture);
@@ -218,9 +213,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 KeyboardUtil.hideSoftInput(this);
 
+
                 progressBar.setVisibility(View.VISIBLE);
+
                 // 收缩按钮
                 CircularAnim.hide(sign_in_button).go();
+
 
                 BmobQuery<Person> query = new BmobQuery<Person>();
                 query.addWhereEqualTo("username", username.getText().toString());
@@ -301,9 +299,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
                 break;
-            case R.id.qq:
 
-                break;
+            case R.id.qq:
             case R.id.qqpicture: {
                 /**通过这句代码，SDK实现了QQ的登录，这个方法有三个参数，第一个参数是context上下文，第二个参数SCOPO 是一个String类型的字符串，表示一些权限
                  官方文档中的说明：应用需要获得哪些API的权限，由“，”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
@@ -311,11 +308,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 showProgressDialog();
 
                 mIUiListener = new BaseUiListener();
+
                 //all表示获取所有权限
                 mTencent.login(LoginActivity.this, "all", mIUiListener);
                 //Intent intent=new Intent(LoginActivity.this,ForgetPasswordActivity.class);
                 // startActivity(intent);
                 //closeProgressDialog();
+
                 break;
             }
 

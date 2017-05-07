@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.Chat;
@@ -83,11 +84,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ChatAdapter.ViewHolder holder, int position) {
         holder.mTextView.setText(mList.get(position).getContent());
+
         String pictureurl = mList.get(position).getPictureurl();
 
         if(!TextUtils.isEmpty(pictureurl)){
 
-            Glide.with(App.getContext()).load(pictureurl).into(holder.mCircleImageView);
+               Glide.with(App.getContext())
+                    .load(pictureurl)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(holder.mCircleImageView);
         }
     }
 

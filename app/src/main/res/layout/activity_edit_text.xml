@@ -44,11 +44,15 @@
         android:orientation="vertical">
         <ScrollView
             android:id="@+id/edit_scrollview"
+
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:cacheColorHint="@null"
             android:layout_margin="15dp"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+
+            android:overScrollMode="never"
+           >
             <EditText
                 android:id="@+id/edittext"
                 android:focusable="true"

@@ -62,7 +62,7 @@
     <string name="action_share_as_text">纯文字分享</string>
 
     <string name="share_to">分享到</string>
-    <string name="share_extra">     -----     分享于Onotes</string>
+    <string name="share_extra">----- 分享于Onotes</string>
     <string name="color_or_picture">选择颜色或背景图片</string>
     <string name="reset_password_sussesfully">您的密码已重置成功 ~ ！</string>
     <string name="reset_password_failed">失败</string>
@@ -76,8 +76,8 @@
 
     <string name="subject">验证码</string>
     <string name="verify_email_hi">你好</string>
-    <string name="verify_email_welcome">/n  欢迎注册 Onotes。您的验证码为︰</string>
-    <string name="verify_email_end">/n  如果不是您申请的，请您忽略它。/n  请不要回复此电子邮件。谢谢您的合作！
+    <string name="verify_email_welcome">/n 欢迎注册 Onotes。您的验证码为︰</string>
+    <string name="verify_email_end">/n 如果不是您申请的，请您忽略它。/n 请不要回复此电子邮件。谢谢您的合作！
     </string>
 
     <string name="username_registered">您的用户名已被注册。</string>
@@ -178,6 +178,9 @@
     <string name="checked_hint">已选择0项</string>
 
     <string name="locating">定位中...</string>
+    <string name="username_existed">Your username has existed.</string>
+    <string name="email_registered">Your email has been registered.</string>
+    <string name="email_invaild">Your email is invaild.</string>
 
 
 </resources>

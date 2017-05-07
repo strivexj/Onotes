@@ -9,7 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
@@ -18,9 +20,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,6 +80,9 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     private View settingview;
     private Toolbar toolbar;
 
+    private ScrollView scrollView;
+
+
     public void showTextCopied(View v) {
         //Snackbar.make(imageView, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
         Snackbar.make(toolbar, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
@@ -87,7 +96,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
 
         LogUtil.d("time", System.currentTimeMillis() + "");
 
-        LogUtil.d("time", getcurrenttime());
+       // LogUtil.d("time", getcurrenttime());
 
         // this work
         // this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -155,6 +164,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
 
 
         settingview = LayoutInflater.from(EditTextActivity.this).inflate(R.layout.edit_setting_sheet, null);
+
         // copy the text content to clipboard
         linespacing = (SeekBar) settingview.findViewById(R.id.linespacing);
         textsize = (SeekBar) settingview.findViewById(R.id.textsize);
@@ -271,15 +281,43 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
         textcolor.setOnClickListener(this);
         setting_more = (ImageView) findViewById(R.id.setting_more);
         setting_more.setOnClickListener(this);
+
+        scrollView=(ScrollView)findViewById(R.id.edit_scrollview);
+
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bold:
-                edittext.getPaint().setFakeBoldText(true);
+
+                //edittext.getPaint().setFakeBoldText(true);
+                int position_bold=edittext.getSelectionEnd();
+                SpannableString spannableString_B = new SpannableString(edittext.getText());
+                StyleSpan styleSpan_B  = new StyleSpan(Typeface.BOLD);
+                spannableString_B.setSpan(styleSpan_B, edittext.getSelectionStart(), edittext.getSelectionEnd(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                edittext.setText(spannableString_B);
+                //edittext.setSelection(edittext.getText().toString().length());
+                edittext.setSelection(position_bold);
+
                 break;
             case R.id.italic:
+                int position_italic=edittext.getSelectionEnd();
+                SpannableString spannableString_I = new SpannableString(edittext.getText());
+                StyleSpan styleSpan_I  = new StyleSpan(Typeface.ITALIC);
+
+                Drawable drawable = getResources().getDrawable(R.drawable.back);
+                drawable.setBounds(0, 0, 1420, 1420);
+                ImageSpan imageSpan = new ImageSpan(drawable);
+                spannableString_I.setSpan(imageSpan, 6, 8, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+                spannableString_I.setSpan(styleSpan_I, edittext.getSelectionStart(), edittext.getSelectionEnd(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                edittext.setText(spannableString_I);
+                //edittext.setSelection(edittext.getText().toString().length());
+                edittext.setSelection(position_italic);
+
+
                /* Intent intent  = new Intent(Intent.ACTION_SEND);
                 Bundle bundle = new Bundle();
                 //把Bitmap对象放到bundle中
@@ -288,8 +326,6 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                 intent.setType("image/*");
                 Intent chooser = Intent.createChooser(intent, "Share screen shot");
                 startActivity(chooser);*/
-
-
 
                 break;
             case R.id.textcolor:
@@ -439,7 +475,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             view.findViewById(R.id.layout_share_pic).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ScrollView scrollView=(ScrollView)findViewById(R.id.edit_scrollview);
+
 
                     ScreenShot.sharePhoto(EditTextActivity.this,scrollView);
                     popupWindow.dismiss();
@@ -574,6 +610,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
             ToastUtil.showToast(R.string.writing_nothing,Toast.LENGTH_SHORT);
             return;
         }
+
         ClipboardManager manager = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
         ClipData clipData = ClipData.newPlainText("text", text);
 
@@ -581,92 +618,5 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
         showTextCopied(v);
     }
 
-
-
-   /* public void addToOrDeleteFromBookmarks() {
-        String tmpTable = "";
-        String tmpId = "";
-        switch (type) {
-            case TYPE_ZHIHU:
-                tmpTable = "Zhihu";
-                tmpId = "zhihu_id";
-                break;
-            case TYPE_GUOKR:
-                tmpTable = "Guokr";
-                tmpId = "guokr_id";
-                break;
-            case TYPE_DOUBAN:
-                tmpTable = "Douban";
-                tmpId = "douban_id";
-                break;
-            default:
-                break;
-        }
-
-        if (queryIfIsBookmarked()) {
-            // delete
-            // update Zhihu set bookmark = 0 where zhihu_id = id
-            ContentValues values = new ContentValues();
-            values.put("bookmark", 0);
-            dbHelper.getWritableDatabase().update(tmpTable, values, tmpId + " = ?", new String[]{String.valueOf(id)});
-            values.clear();
-
-            view.showDeletedFromBookmarks();
-        } else {
-            // add
-            // update Zhihu set bookmark = 1 where zhihu_id = id
-
-            ContentValues values = new ContentValues();
-            values.put("bookmark", 1);
-            dbHelper.getWritableDatabase().update(tmpTable, values, tmpId + " = ?", new String[]{String.valueOf(id)});
-            values.clear();
-
-            view.showAddedToBookmarks();
-        }
-    }
-
-    public boolean queryIfIsBookmarked() {
-        if (id == 0 || type == null) {
-            view.showLoadingError();
-            return false;
-        }
-
-        String tempTable = "";
-        String tempId = "";
-
-        switch (type) {
-            case TYPE_ZHIHU:
-                tempTable = "Zhihu";
-                tempId = "zhihu_id";
-                break;
-            case TYPE_GUOKR:
-                tempTable = "Guokr";
-                tempId = "guokr_id";
-                break;
-            case TYPE_DOUBAN:
-                tempTable = "Douban";
-                tempId = "douban_id";
-                break;
-            default:
-                break;
-        }
-
-        String sql = "select * from " + tempTable + " where " + tempId + " = ?";
-        Cursor cursor = dbHelper.getReadableDatabase()
-                .rawQuery(sql, new String[]{String.valueOf(id)});
-
-        if (cursor.moveToFirst()) {
-            do {
-                int isBookmarked = cursor.getInt(cursor.getColumnIndex("bookmark"));
-                if (isBookmarked == 1) {
-                    return true;
-                }
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-
-        return false;
-    }*/
 
 }

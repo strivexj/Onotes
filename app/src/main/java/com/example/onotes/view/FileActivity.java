@@ -75,6 +75,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
 
     private final File outputImage2 = new File(Environment.
             getExternalStorageDirectory(), "tempImage2.jpg");
+
     private ImageView imageview;
 
     private Button takephote;
@@ -217,6 +218,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private String mCurrentPhotoPath;
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -285,7 +287,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-private void bottonsheet(){
+    private void bottonsheet(){
     BottomSheetDialog dialog = new BottomSheetDialog(this);
     View view =this.getLayoutInflater().inflate(R.layout.edit_setting_sheet, null);
     dialog.setContentView(view);

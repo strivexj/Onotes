@@ -236,4 +236,7 @@
     <string name="checked_hint">selected 0 items</string>
 
     <string name="locating">Locating...</string>
+    <string name="username_existed">Your username has existed.</string>
+    <string name="email_registered">Your email has been registered.</string>
+    <string name="email_invaild">Your email is invaild.</string>
 </resources>

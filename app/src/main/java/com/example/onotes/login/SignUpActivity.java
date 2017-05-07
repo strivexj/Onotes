@@ -13,15 +13,19 @@ import android.widget.Toast;
 
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
+import com.example.onotes.bean.MyUser;
 import com.example.onotes.bean.Person;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
+import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SendMail;
 import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.utils.ToastUtil;
+import com.example.onotes.view.NotelistActivity;
 import com.example.onotes.weather.WeatherActivity;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.SaveListener;
@@ -67,17 +71,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sendverifycode:
+
+                //获得一个六位随机数
                 verfiycode = 100000 + (int) (Math.random() * 800000);
-               /* String message =getResources().getString( R.string.verify_email_hi)  R.string.verify_email_hi + signupusername.getText().toString()
-                        + R.string.verify_email_welcome + verfiycode
-                        + R.string.verify_email_end;
-*/
-                String message =getResources().getString( R.string.verify_email_hi)+ signupusername.getText().toString()
-                    +getResources().getString( R.string.verify_email_welcome) + verfiycode
-                    + getResources().getString(R.string.verify_email_end);
+
+                String message = getResources().getString(R.string.verify_email_hi) + signupusername.getText().toString()
+                        + getResources().getString(R.string.verify_email_welcome) + verfiycode
+                        + getResources().getString(R.string.verify_email_end);
 
                 SendMail sm = new SendMail(this, signupemail.getText().toString(), message);
                 sm.execute();
+
                 break;
             case R.id.signupbutton:
 
@@ -86,7 +90,76 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private boolean isexist() {
+    private void register() {
+       // if (verifycode.getText().toString().equals("" + verfiycode)) {
+
+        //if(true){
+            sendverifycode.setClickable(false);
+            signupbutton.setClickable(false);
+
+            final BmobUser user = new BmobUser();
+            user.setUsername(signupusername.getText().toString());
+            user.setPassword(signuppassword.getText().toString());
+            user.setEmail(signupemail.getText().toString());
+
+            user.signUp(new SaveListener<Object>() {
+                @Override
+                public void done(Object o, BmobException e) {
+                    if (e == null) {
+
+                        //ToastUtil.makeText(SignUpActivity.this, "succeed", Toast.LENGTH_SHORT).show();
+
+                        ToastUtil.showToast("succeed", Toast.LENGTH_SHORT);
+
+                        SharedPreferenesUtil.setUsername(signupusername.getText().toString());
+                        SharedPreferenesUtil.setPassword(signuppassword.getText().toString());
+
+                        user.login(new SaveListener<Object>() {
+                            @Override
+                            public void done(Object o, BmobException e) {
+                                if(e==null){
+                                    CircularAnim.fullActivity(SignUpActivity.this, signupbutton)
+                                            .colorOrImageRes(R.color.accent)
+                                            .go(new CircularAnim.OnAnimationEndListener() {
+                                                @Override
+                                                public void onAnimationEnd() {
+                                                    startActivity(new Intent(SignUpActivity.this, NotelistActivity.class));
+                                                }
+                                            });
+                                    ActivityCollector.finishAll();
+                                }
+                            }
+                        });
+                    } else {
+                       switch (e.getErrorCode()){
+                               case 202:
+                                   ToastUtil.showToast(getString(R.string.username_existed), Toast.LENGTH_SHORT);
+                                   break;
+                               case 203:
+                                   ToastUtil.showToast(getString(R.string.email_registered), Toast.LENGTH_SHORT);
+                                   break;
+                               case 301:
+                                   ToastUtil.showToast(getString(R.string.email_invaild), Toast.LENGTH_SHORT);
+                                   break;
+                               default:
+                                   ToastUtil.showToast(R.string.signup_failed, Toast.LENGTH_SHORT);
+                                   break;
+                           }
+                        }
+                        LogUtil.d("login",e+"");
+                        signupbutton.setClickable(true);
+                        ToastUtil.showToast(R.string.signup_failed, Toast.LENGTH_SHORT);
+                    }
+
+            });
+      /*  }else{
+            ToastUtil.showToast(R.string.signup_failed, Toast.LENGTH_SHORT);
+        }*/
+    }
+}
+
+
+   /* private boolean isexist() {
 
         BmobQuery<Person> query = new BmobQuery<Person>();
         query.addWhereEqualTo("username", signupusername.getText().toString());
@@ -95,8 +168,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void done(Integer count, BmobException e) {
                 if (e == null) {
                     if (count != 0) {
-                       // Toast.makeText(SignUpActivity.this, , Toast.LENGTH_SHORT).show();
-                        ToastUtil.showToast(R.string.username_registered,Toast.LENGTH_SHORT);
+                        // Toast.makeText(SignUpActivity.this, , Toast.LENGTH_SHORT).show();
+                        ToastUtil.showToast(R.string.username_registered, Toast.LENGTH_SHORT);
                         isexist = true;
                     } else isexist = false;
 
@@ -116,7 +189,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             person.setPassword(signuppassword.getText().toString());
             person.setEmail(signupemail.getText().toString());
             if (isexist()) {
-                ToastUtil.showToast(R.string.username_registered,Toast.LENGTH_SHORT);
+                ToastUtil.showToast(R.string.username_registered, Toast.LENGTH_SHORT);
                 signupbutton.setClickable(true);
             } else {
                 person.save(new SaveListener<String>() {
@@ -138,11 +211,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                     });
                             finish();
                         } else {
-                            ToastUtil.showToast(R.string.signup_failed,Toast.LENGTH_SHORT);
+                            ToastUtil.showToast(R.string.signup_failed, Toast.LENGTH_SHORT);
                         }
                     }
                 });
-            }
+            }*/
 
              /*_User user = new _User();
              user.setUsername(signupusername.getText().toString());
@@ -160,12 +233,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                  }
              });*/
 
-            sendverifycode.setClickable(false);
+         /*   sendverifycode.setClickable(false);
 
         } else {
-            ToastUtil.showToast(R.string.verify_code_wrong,Toast.LENGTH_SHORT);
+            ToastUtil.showToast(R.string.verify_code_wrong, Toast.LENGTH_SHORT);
         }
     }
+}*/
 
-
-}

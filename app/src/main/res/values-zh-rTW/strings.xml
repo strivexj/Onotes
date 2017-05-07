@@ -173,5 +173,8 @@
     <string name="checked_hint">已選擇0項</string>
 
     <string name="locating">定位中...</string>
+    <string name="username_existed">Your username has existed.</string>
+    <string name="email_registered">Your email has been registered.</string>
+    <string name="email_invaild">Your email is invaild.</string>
 
 </resources>
