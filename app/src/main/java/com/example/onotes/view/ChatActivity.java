@@ -110,7 +110,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFail(int i, String s) {
-                adddata(TYPE_MSG_LEFT, "sending failed");
+                adddata(TYPE_MSG_LEFT, "sending failed","");
             }
         });
 
@@ -177,12 +177,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void adddata(int type, String content) {
+    private void adddata(int type, String content,String pictureUrl) {
         LogUtil.d("cwj", "adddata");
         if (type == TYPE_MSG_LEFT) {
             Chat chat = new Chat();
             chat.setContent(content);
             chat.setType(TYPE_MSG_LEFT);
+            chat.setPictureurl(pictureUrl);
             data.add(chat);
             adapter.notifyDataSetChanged();
             mRecyclerView.smoothScrollToPosition(data.size() - 1);
@@ -240,7 +241,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         mTuringManager.requestTuring(send.replaceFirst("@", ""));
                     }
                     sendMsg(name, send, false);
-                    adddata(TYPE_MSG_RIGHT, send);
+                    adddata(TYPE_MSG_RIGHT, send,"");
                     write.setText("");
                 }
                 break;
@@ -272,7 +273,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         //SharedPreferences.Editor editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
                         //editor.putString("otherpicture",contentdata.optString("pictureurl"));
                        // editor.apply();
-                        adddata(TYPE_MSG_LEFT,contentdata.optString("content"));
+                        adddata(TYPE_MSG_LEFT,contentdata.optString("content"),contentdata.optString("pictureurl"));
                     }
 
                     Log.d("bmob",contentdata.optString("name")+" "+contentdata.optString("content")+ contentdata.optString("pictureurl"));

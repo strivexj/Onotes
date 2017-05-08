@@ -81,7 +81,8 @@
     </string>
 
     <string name="username_registered">您的用户名已被注册。</string>
-    <string name="signup_failed">失败</string>
+
+    <string name="signup_failed">注册失败</string>
 
     <string name="myemail">strivexj@gmail.com</string>
     <string name="mypassword">strivexj</string>
@@ -142,12 +143,15 @@
     <string name="text_username">用户名：</string>
     <string name="hint_username">请输入您的用户名</string>
     <string name="text_password">密码：</string>
-    <string name="hint_password">请输入您的密码：</string>
-    <string name="text_email">邮箱：</string>
-    <string name="hint_email">请输入您的邮箱：</string>
+    <string name="hint_password">请输入您的密码</string>
+    <string name="text_email">邮箱：   </string>
+    <string name="hint_email">请输入您的邮箱</string>
     <string name="send_verify_code">发送验证码</string>
-    <string name="hint_verify_code">请在这里输入您的验证码
-    </string>
+    <string name="hint_verify_code">请在这里输入您的验证码</string>
+    <string name="username_existed">您的用户名已经存在了。</string>
+    <string name="email_registered">您的邮箱已经被注册了</string>
+    <string name="email_invaild">您填写的邮箱无效。</string>
+    <string name="confirmPassword">请再次输入您的密码</string>
 
     <string name="air_quality">空气质量</string>
     <string name="air_quality_index">空气质量指数</string>
@@ -178,9 +182,15 @@
     <string name="checked_hint">已选择0项</string>
 
     <string name="locating">定位中...</string>
-    <string name="username_existed">Your username has existed.</string>
-    <string name="email_registered">Your email has been registered.</string>
-    <string name="email_invaild">Your email is invaild.</string>
+    <string name="passwordCantMatch">您输入的两次密码不一样。</string>
+    <string name="usernameOrPasswordNull">您还没有填写用户名或者密码</string>
+
+    <string name="registerSuccessfully">Register successfully</string>
+    <string name="takepicture">拍照</string>
+    <string name="choosepicture">从相册选取照片</string>
+    <string name="setAvator">设置头像</string>
+    <string name="private_information">个人信息</string>
+    <string name="save_information">保存信息中...</string>
 
 
 </resources>

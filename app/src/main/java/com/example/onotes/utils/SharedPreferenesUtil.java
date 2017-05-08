@@ -40,13 +40,11 @@ public class SharedPreferenesUtil {
     private static String bing_pic;
     private static String weatherresponseText;
 
-    public static String getWeatherCity() {
-        return weatherCity;
-    }
 
-    public static void setWeatherCity(String weatherCity) {
-        SharedPreferenesUtil.weatherCity = weatherCity;
-    }
+
+
+
+
 
     private static String weatherCity;
     private static String cityEn;
@@ -78,10 +76,35 @@ public class SharedPreferenesUtil {
 
     private static SharedPreferences.Editor weather_editor = App.getContext().getSharedPreferences("weather", MODE_PRIVATE).edit();
 
+    private static SharedPreferences myUser_pref = App.getContext().getSharedPreferences("myUser", MODE_PRIVATE);
+
+    private static SharedPreferences.Editor myUser_editor = App.getContext().getSharedPreferences("myUser", MODE_PRIVATE).edit();
+
+    public static  String getPersonalizeSignature() {
+        return myUser_pref.getString("personalizeSignature","");
+    }
+
+    public static  void setPersonalizeSignature(String personalizeSignature) {
+        myUser_editor.putString("personalizeSignature",personalizeSignature);
+        myUser_editor.apply();
+    }
+
+    private String personalizeSignature;
+
+
+   /* public static String getWeatherCity() {
+        return weatherCity;
+    }
+
+    public static void setWeatherCity(String weatherCity) {
+        SharedPreferenesUtil.weatherCity = weatherCity;
+    }*/
 
     public static String getLocated_city() {
      return weather_pref.getString("located_city","");
     }
+
+
 
     public static void setLocated_city(String located_city) {
         weather_editor.putString("located_city",located_city);

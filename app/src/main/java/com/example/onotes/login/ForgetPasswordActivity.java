@@ -74,6 +74,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
     private void resetPassword() {
 
         if (forgetverifycode.getText().toString().equals("" + verfiycode)) {
+
             BmobQuery<Person> query = new BmobQuery<Person>();
             query.addWhereEqualTo("email", forgetpasswordemail.getText().toString());
             query.findObjects(new FindListener<Person>() {

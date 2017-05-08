@@ -75,6 +75,7 @@ public class ChooseAreaFragment extends Fragment{
     private List<City> filcityList = new ArrayList<>();
 
 
+
     private ArrayAdapter<String> filadapter;
 
     private ArrayAdapter<String> adapter;
@@ -100,6 +101,7 @@ public class ChooseAreaFragment extends Fragment{
         SQLiteDatabase db = cityDbHelper.getWritableDatabase();
         Log.d("bbb", "search");
         Cursor cursor = db.query("City", null, null, null, null, null, "CityEn ASC");
+       // Cursor cursor = db.query("City", null, null, null, null, null, "CityEn DESC");
 
         int j = 0;
         int i=0;

@@ -8,59 +8,79 @@ import cn.bmob.v3.BmobUser;
  */
 
 public class MyUser extends BmobUser {
-    private String username;
-    private String password;
-    private String email;
-    private String mobilePhoneNumber;
 
-    private Boolean mobilePhoneNumberVerified;
-    private Boolean emailVerified;
+    private Boolean sex; //0为女 1为男  /斜眼笑
+    private String nickname;
+    private String location;
+    private String birthday;
+    private String personalizeSignature;
+    private String avatarUrl;
+    private String wrok;
 
-    public Boolean getMobilePhoneNumberVerified() {
-        return mobilePhoneNumberVerified;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setMobilePhoneNumberVerified(Boolean mobilePhoneNumberVerified) {
-        this.mobilePhoneNumberVerified = mobilePhoneNumberVerified;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
-    public Boolean getEmailVerified() {
-        return emailVerified;
+    private  String introduction;
+
+
+    public Boolean getSex() {
+        return sex;
     }
 
-    public void setEmailVerified(Boolean emailVerified) {
-        this.emailVerified = emailVerified;
+    public void setSex(Boolean sex) {
+        this.sex = sex;
     }
 
-    public String getPassword() {
-        return password;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLocation() {
+        return location;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public String getEmail() {
-        return email;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
-    public String getMobilePhoneNumber() {
-        return mobilePhoneNumber;
+    public String getPersonalizeSignature() {
+        return personalizeSignature;
     }
 
-    public void setMobilePhoneNumber(String mobilePhoneNumber) {
-        this.mobilePhoneNumber = mobilePhoneNumber;
+    public void setPersonalizeSignature(String personalizeSignature) {
+        this.personalizeSignature = personalizeSignature;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getWrok() {
+        return wrok;
+    }
+
+    public void setWrok(String wrok) {
+        this.wrok = wrok;
     }
 }

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
+import com.example.onotes.bean.MyUser;
 import com.example.onotes.login.LoginActivity;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.LanguageUtil;
@@ -86,7 +87,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                                 startActivity(new Intent(SettingActivity.this, LoginActivity.class));
                             }
                         });
-
+                MyUser.logOut();
                 SharedPreferenesUtil.setIssignin(false);
                 LogUtil.d(this, "cwji");
                 break;

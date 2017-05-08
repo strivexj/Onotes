@@ -17,6 +17,7 @@ public class Notes {
     private String picture;
     private String content;
     private String location;
+
     private float textsize;
     private float linespace;
     private int bgcolor;

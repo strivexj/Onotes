@@ -57,11 +57,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder = new ViewHolder(view);
             holder.mImageView.setVisibility(View.GONE);
             holder.mTextView.setVisibility(View.VISIBLE);
-        } else if (viewType == TYPE_PICTURE_LEFT) {
-            holder.mImageView.setVisibility(View.GONE);
-            holder.mTextView.setVisibility(View.VISIBLE);
-        }
-        else if(viewType==TYPE_PICTURE_LEFT){
+        } else  if(viewType==TYPE_PICTURE_LEFT){
 
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_left, parent, false);
             holder = new ViewHolder(view);
@@ -88,7 +84,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         String pictureurl = mList.get(position).getPictureurl();
 
         if(!TextUtils.isEmpty(pictureurl)){
-
                Glide.with(App.getContext())
                     .load(pictureurl)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)

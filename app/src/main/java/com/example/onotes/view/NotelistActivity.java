@@ -16,14 +16,11 @@ import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -37,17 +34,14 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +54,7 @@ import com.example.onotes.about.AboutActivity;
 import com.example.onotes.adapter.MyRecyclerView;
 import com.example.onotes.adapter.NotesAdapter;
 import com.example.onotes.anim.CircularAnim;
+import com.example.onotes.bean.MyUser;
 import com.example.onotes.bean.Notes;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.gson.Weather;
@@ -69,11 +64,9 @@ import com.example.onotes.setting.SettingActivity;
 import com.example.onotes.ui.PopUpActivity;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.HttpUtil;
-import com.example.onotes.utils.LanguageUtil;
 import com.example.onotes.utils.LocationUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
-import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.weather.WeatherMainActivity;
 
@@ -83,6 +76,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DownloadFileListener;
+import cn.bmob.v3.listener.QueryListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -256,6 +255,18 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         initData();
         requestWeather();
+
+        File file=new File(getAlbumStorageDir("cwj"), "avator.jpg");
+        if(file.exists()){
+            Glide.with(this)
+                    .load(file)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(icon_image);
+        }else if (!TextUtils.isEmpty(SharedPreferenesUtil.getFigureurl_qq_2())) {
+            Glide.with(this).load(SharedPreferenesUtil.getFigureurl_qq_2()).into(icon_image);
+        }
+
         LogUtil.d("cwj", "aonresumeinit");
         super.onResume();
     }
@@ -304,13 +315,14 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         username = (TextView) headerLayout.findViewById(R.id.username);
         icon_image = (CircleImageView) headerLayout.findViewById(R.id.icon_image);
         saying = (TextView) headerLayout.findViewById(R.id.saying);
-
-        icon_image.setOnClickListener(new View.OnClickListener() {
+        icon_image.setOnClickListener(this);
+        /*icon_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(NotelistActivity.this,AvatorActivity.class));
+                startActivity(new Intent(NotelistActivity.this,UserDetailActivity.class));
             }
-        });
+        });*/
+
         saying.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -343,7 +355,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                 .go(new CircularAnim.OnAnimationEndListener() {
                                     @Override
                                     public void onAnimationEnd() {
-                                        startActivity(new Intent(NotelistActivity.this, AvatorActivity.class));
+                                        startActivity(new Intent(NotelistActivity.this, UserDetailActivity.class));
                                     }
                                 });
                         break;
@@ -381,16 +393,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         //  LogUtil.d("ccwj", pictureurl);
         username.setText(SharedPreferenesUtil.getNickname());
 
-        File file=new File(getAlbumStorageDir("cwj"), "avator.jpg");
-        if(file.exists()){
-               Glide.with(this)
-                    .load(file)
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(icon_image);
-        }else if (!TextUtils.isEmpty(SharedPreferenesUtil.getFigureurl_qq_2())) {
-            Glide.with(this).load(SharedPreferenesUtil.getFigureurl_qq_2()).into(icon_image);
-        }
+
 
 
         setting = (TextView) findViewById(R.id.setting);
@@ -452,6 +455,38 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 
+
+        BmobUser bmobUser=BmobUser.getCurrentUser(MyUser.class);
+        BmobQuery<MyUser> query = new BmobQuery<MyUser>();
+
+        query.getObject(bmobUser.getObjectId(), new QueryListener<MyUser>() {
+            @Override
+            public void done(MyUser user, BmobException e) {
+                if(e==null){
+                   String avatorUrl=user.getAvatarUrl();
+                    if(avatorUrl!=null){
+                        BmobFile download=new BmobFile("avator.jpg","",avatorUrl);
+                        final  File file = new File(getAlbumStorageDir("cwj"), "avator.jpg");
+                            if (!file.exists()) {
+                                download.download(file, new DownloadFileListener() {
+                                @Override
+                                public void done(String s, BmobException e) {
+                                    LogUtil.d("download","successfully");
+                                    Glide.with(NotelistActivity.this).load(file.getAbsoluteFile()).into(icon_image);
+                                }
+                                @Override
+                                public void onProgress(Integer integer, long l) {
+
+                                }
+                                });
+                            }
+
+                    }
+
+                }
+
+            }
+        });
     }
 
     private void closePopupwindow() {
@@ -506,6 +541,10 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         bindService(intentService, serviceConnection, Context.BIND_AUTO_CREATE);
         startService(intentService);
+        String personalizeSignature=SharedPreferenesUtil.getPersonalizeSignature();
+        if(!TextUtils.isEmpty(personalizeSignature))
+            saying.setText(personalizeSignature);
+
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -525,6 +564,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.setting:
                 CircularAnim.fullActivity(NotelistActivity.this, setting)
                         .colorOrImageRes(R.color.primary)
@@ -557,7 +597,10 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.saying:
-                Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show();
+            case R.id.icon_image:
+                startActivity(new Intent(NotelistActivity.this,UserDetailActivity.class));
+
+                //Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show();
         }
 
     }

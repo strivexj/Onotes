@@ -181,6 +181,7 @@
             android:authorities="com.example.onotes.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
+
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
@@ -194,7 +195,8 @@
             android:value="82debbf5c079d6006624ebf9616084cb">
         </meta-data>
 
-        <activity android:name=".view.AvatorActivity">
+        <activity android:name=".view.UserDetailActivity">
+
         </activity>
     </application>
 

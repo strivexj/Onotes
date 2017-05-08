@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
+import com.example.onotes.bean.MyUser;
 import com.example.onotes.bean.Person;
 import com.example.onotes.bean.QqUser;
 import com.example.onotes.service.CityDownloadSerivce;
@@ -45,9 +46,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.List;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,7 +59,7 @@ import static com.example.onotes.utils.ScreenShot.getAlbumStorageDir;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ProgressDialog progressDialog;
-    private AutoCompleteTextView username;
+    private EditText username;
     private EditText password;
     private Button sign_in_button;
     private TextView signup;
@@ -104,8 +107,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
+
         backgroud = (ImageView) findViewById(R.id.backgroud);
-        username = (AutoCompleteTextView) findViewById(R.id.signinusername);
+        username = (EditText) findViewById(R.id.signinusername);
         password = (EditText) findViewById(R.id.password);
         sign_in_button = (Button) findViewById(R.id.sign_in_button);
         signup = (TextView) findViewById(R.id.signup);
@@ -121,7 +125,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //默认弹出英文输入法
         username.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
+
         password.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+
 
         /**
          *
@@ -219,8 +226,50 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // 收缩按钮
                 CircularAnim.hide(sign_in_button).go();
 
+                MyUser.loginByAccount(username.getText().toString(), password.getText().toString(), new LogInListener<MyUser>() {
 
-                BmobQuery<Person> query = new BmobQuery<Person>();
+                    @Override
+                    public void done(MyUser user, BmobException e) {
+                        if(user!=null){
+                            ToastUtil.showToast( R.string.sign_in_successfully, Toast.LENGTH_SHORT);
+                            Log.d("cwj", "Sign in succeed");
+
+                            SharedPreferenesUtil.setUsername(username.getText().toString());
+
+                            if (rememeberpassword.isChecked()) {
+
+                                SharedPreferenesUtil.setPassword(password.getText().toString());
+                                SharedPreferenesUtil.setRemember_password_checkbox(true);
+
+                            } else {
+
+                                SharedPreferenesUtil.setRemember_password_checkbox(false);
+                                SharedPreferenesUtil.setPassword("");
+
+                            }
+
+                            CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
+                                    .colorOrImageRes(R.color.primary)
+                                    .go(new CircularAnim.OnAnimationEndListener() {
+                                        @Override
+                                        public void onAnimationEnd() {
+                                            startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
+                                        }
+                                    });
+                            SharedPreferenesUtil.setIssignin(true);
+                        } else {
+
+                            progressBar.setVisibility(View.GONE);
+                            CircularAnim.show(sign_in_button).go();
+
+                            KeyboardUtil.showSoftInput(password);
+                            ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
+                        }
+                    }
+
+                });
+
+            /*    BmobQuery<Person> query = new BmobQuery<Person>();
                 query.addWhereEqualTo("username", username.getText().toString());
                 query.findObjects(new FindListener<Person>() {
 
@@ -274,6 +323,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+
+
+
+                */
             }
 
             break;
@@ -336,9 +389,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             JSONObject obj = (JSONObject) response;
             try {
 
+
                 final String openID = obj.getString("openid");
                 final String accessToken = obj.getString("access_token");
                 final String expires = obj.getString("expires_in");
+
+
 
                 mTencent.setOpenId(openID);
                 mTencent.setAccessToken(accessToken, expires);
@@ -435,6 +491,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     }
                 });
+                
+                BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth("qq",accessToken, expires,openID);
+                BmobUser.loginWithAuthData(authInfo, new LogInListener<JSONObject>() {
+
+                    @Override
+                    public void done(JSONObject userAuth,BmobException e) {
+
+                    }
+                });
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } finally {
