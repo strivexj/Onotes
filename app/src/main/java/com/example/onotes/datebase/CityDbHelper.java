@@ -43,7 +43,7 @@ public class CityDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
         Log.d("db", "Created succeeded");
-        //Toast.makeText(mContext, "Created succeeded", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mContext, "Created succeeded").show();
     }
 
     @Override

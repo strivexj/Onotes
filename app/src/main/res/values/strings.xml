@@ -157,7 +157,7 @@
     <string name="air_quality_index">空气质量指数</string>
     <string name="pm2_5_index">PM2.5指数</string>
     <string name="textsize">字体大小:</string>
-    <string name="linespace">行距:</string>
+    <string name="linespace">行距:   </string>
     <string name="forecast">天气预报</string>
     <string name="personalized_signatures">点击我设置个性签名吧～</string>
     <string name="life_suggestion">生活建议</string>
@@ -186,11 +186,29 @@
     <string name="usernameOrPasswordNull">您还没有填写用户名或者密码</string>
 
     <string name="registerSuccessfully">Register successfully</string>
+
     <string name="takepicture">拍照</string>
     <string name="choosepicture">从相册选取照片</string>
-    <string name="setAvator">设置头像</string>
+    <string name="setavatar">设置头像</string>
     <string name="private_information">个人信息</string>
     <string name="save_information">保存信息中...</string>
 
-
+    <string name="voice_up_tips">手指上滑,取消发送</string>
+    <string name="longclick_speak">长按说话</string>
+    <string name="picture">照片</string>
+    <string name="camera">拍摄</string>
+    <string name="location">位置</string>
+    <string name="voice_cancel_tips">松开手指，取消发送</string>
+    <string name="voice_seconds_tips">还可以说%1$s秒</string>
+    <string name="voice_short_tips">录音时间太短</string>
+    <string name="sendingfailed">sending failed!</string>
+    <string name="authorizefailed">必须同意所有权限才能使用本程序</string>
+    <string name="unknownerror">unknownerror</string>
+    <string name="camerapermissionrefuse">拍照权限被拒绝</string>
+    <string name="SDpermissionrefused">读写内存卡内容权限被拒绝</string>
+    <string name="withoutpicture">找不到照片</string>
+    <string name="locationPermissionRequest">必须同意该权限才能定位喔</string>
+    <string name="day_mode">日间模式</string>
+    <string name="night_mode">夜间模式</string>
+    <string name="pickbgpicture">设置背景图片</string>
 </resources>

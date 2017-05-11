@@ -9,7 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
@@ -26,6 +28,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,10 +45,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -59,7 +61,6 @@ import com.example.onotes.bean.Notes;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.gson.Weather;
 import com.example.onotes.service.ChatService;
-
 import com.example.onotes.setting.SettingActivity;
 import com.example.onotes.ui.PopUpActivity;
 import com.example.onotes.utils.ActivityCollector;
@@ -67,6 +68,7 @@ import com.example.onotes.utils.HttpUtil;
 import com.example.onotes.utils.LocationUtil;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.utils.WeatherUtil;
 import com.example.onotes.weather.WeatherMainActivity;
 
@@ -117,7 +119,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     private Toolbar toolbar = null;
 
-    private Button select=null;
+    private Button select = null;
     private static final int Type_without_checkbox = -2;
     private static final int Type_with_checkbox = -3;
 
@@ -127,7 +129,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     //recyclerview_category
     private static final int Staggered_Grid_Layout = 1;
 
-    private static final int  Linear_Layout = 2;
+    private static final int Linear_Layout = 2;
+    private ImageView mode_image;
+    private TextView mode_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,9 +145,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         mRecyclerView = (MyRecyclerView) findViewById(R.id.activity_main_recycle_view);
 
-        if(SharedPreferenesUtil.getRecyclerview_category()==Staggered_Grid_Layout){
+        if (SharedPreferenesUtil.getRecyclerview_category() == Staggered_Grid_Layout) {
             mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        }else{
+        } else {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
 
@@ -240,7 +244,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         //mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
         //mRecyclerView.setLayoutManager(new GridLayoutManager(this, 5));
         // mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));*/
-
+        LogUtil.d("mode","oncreate");
 
     }
 
@@ -256,14 +260,14 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         initData();
         requestWeather();
 
-        File file=new File(getAlbumStorageDir("cwj"), "avator.jpg");
-        if(file.exists()){
+        File file = new File(getAlbumStorageDir("cwj"), "avatar.jpg");
+        if (file.exists()) {
             Glide.with(this)
                     .load(file)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(icon_image);
-        }else if (!TextUtils.isEmpty(SharedPreferenesUtil.getFigureurl_qq_2())) {
+        } else if (!TextUtils.isEmpty(SharedPreferenesUtil.getFigureurl_qq_2())) {
             Glide.with(this).load(SharedPreferenesUtil.getFigureurl_qq_2()).into(icon_image);
         }
 
@@ -394,8 +398,6 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         username.setText(SharedPreferenesUtil.getNickname());
 
 
-
-
         setting = (TextView) findViewById(R.id.setting);
 
         setting.setOnClickListener(this);
@@ -455,31 +457,31 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 
-
-        BmobUser bmobUser=BmobUser.getCurrentUser(MyUser.class);
+        BmobUser bmobUser = BmobUser.getCurrentUser(MyUser.class);
         BmobQuery<MyUser> query = new BmobQuery<MyUser>();
 
         query.getObject(bmobUser.getObjectId(), new QueryListener<MyUser>() {
             @Override
             public void done(MyUser user, BmobException e) {
-                if(e==null){
-                   String avatorUrl=user.getAvatarUrl();
-                    if(avatorUrl!=null){
-                        BmobFile download=new BmobFile("avator.jpg","",avatorUrl);
-                        final  File file = new File(getAlbumStorageDir("cwj"), "avator.jpg");
-                            if (!file.exists()) {
-                                download.download(file, new DownloadFileListener() {
+                if (e == null) {
+                    String avatarUrl = user.getAvatarUrl();
+                    if (avatarUrl != null) {
+                        BmobFile download = new BmobFile("avatar.jpg", "", avatarUrl);
+                        final File file = new File(getAlbumStorageDir("cwj"), "avatar.jpg");
+                        if (!file.exists()) {
+                            download.download(file, new DownloadFileListener() {
                                 @Override
                                 public void done(String s, BmobException e) {
-                                    LogUtil.d("download","successfully");
+                                    LogUtil.d("download", "successfully");
                                     Glide.with(NotelistActivity.this).load(file.getAbsoluteFile()).into(icon_image);
                                 }
+
                                 @Override
                                 public void onProgress(Integer integer, long l) {
 
                                 }
-                                });
-                            }
+                            });
+                        }
 
                     }
 
@@ -487,13 +489,28 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
+        mode_image = (ImageView) findViewById(R.id.mode_image);
+        mode_image.setOnClickListener(this);
+        mode_text = (TextView) findViewById(R.id.mode_text);
+        mode_text.setOnClickListener(this);
+
+        LogUtil.d("mode","init");
+        if(SharedPreferenesUtil.getThemeMode()==0){
+            mode_image.setImageResource(R.drawable.moon);
+            mode_text.setText(getResources().getString(R.string.night_mode));
+            LogUtil.d("mode","night");
+        }else{
+            mode_image.setImageResource(R.drawable.day);
+            mode_text.setText(getResources().getString(R.string.day_mode));
+            LogUtil.d("mode","day");
+        }
     }
 
     private void closePopupwindow() {
         if (popupWindow != null && popupWindow.isShowing()) {
             popupWindow.setFocusable(true);
             popupWindow.dismiss();
-            popupWindow=null;
+            popupWindow = null;
         }
     }
 
@@ -541,9 +558,13 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         bindService(intentService, serviceConnection, Context.BIND_AUTO_CREATE);
         startService(intentService);
-        String personalizeSignature=SharedPreferenesUtil.getPersonalizeSignature();
-        if(!TextUtils.isEmpty(personalizeSignature))
+        String personalizeSignature = SharedPreferenesUtil.getPersonalizeSignature();
+        if (!TextUtils.isEmpty(personalizeSignature))
             saying.setText(personalizeSignature);
+
+        String nickname = SharedPreferenesUtil.getNickname();
+        if (!TextUtils.isEmpty(nickname))
+            username.setText(nickname);
 
     }
 
@@ -564,7 +585,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     public void onClick(View v) {
         switch (v.getId()) {
-
+            case R.id.settingimg:
             case R.id.setting:
                 CircularAnim.fullActivity(NotelistActivity.this, setting)
                         .colorOrImageRes(R.color.primary)
@@ -596,11 +617,41 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 }
 
                 break;
+
+
+
+            case R.id.mode_image:
+            case R.id.mode_text:
+               // SharedPreferences sp = getSharedPreferences("app", MODE_PRIVATE);
+                if ((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                        == Configuration.UI_MODE_NIGHT_YES) {
+                 //   sp.edit().putInt("theme", 0).apply();
+                    SharedPreferenesUtil.setThemeMode(0);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+                    mode_image.setImageResource(R.drawable.moon);
+                    mode_text.setText(getResources().getString(R.string.night_mode));
+
+                } else {
+                   // sp.edit().putInt("theme", 1).apply();
+                    SharedPreferenesUtil.setThemeMode(1);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+                    mode_image.setImageResource(R.drawable.day);
+                    mode_text.setText(getResources().getString(R.string.day_mode));
+
+                }
+                getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
+                recreate();
+
+                break;
+
             case R.id.saying:
             case R.id.icon_image:
-                startActivity(new Intent(NotelistActivity.this,UserDetailActivity.class));
+                startActivity(new Intent(NotelistActivity.this, UserDetailActivity.class));
 
                 //Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show();
+                break;
         }
 
     }
@@ -613,12 +664,12 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // 动态设置ToolBar状态
-        int layout=SharedPreferenesUtil.getRecyclerview_category();
+        int layout = SharedPreferenesUtil.getRecyclerview_category();
 
-        if(layout==Staggered_Grid_Layout){
+        if (layout == Staggered_Grid_Layout) {
             menu.findItem(R.id.list).setVisible(true);
             menu.findItem(R.id.category).setVisible(false);
-        }else {
+        } else {
             menu.findItem(R.id.list).setVisible(false);
             menu.findItem(R.id.category).setVisible(true);
         }
@@ -631,7 +682,6 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
 
 
-
         switch (item.getItemId()) {
             case R.id.category: {
 
@@ -641,9 +691,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             case R.id.delete: {
 
                 if (popupWindow != null && popupWindow.isShowing()) {
-                    if(select_all||list.size()==adapter.getSelectedSize()){
+                    if (select_all || list.size() == adapter.getSelectedSize()) {
                         showAlertDialog();
-                    }else {
+                    } else {
                         delete_selected();
                     }
                 } else {
@@ -672,7 +722,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 */
 
 
-                   // showAlertDialog();
+                    // showAlertDialog();
                 }
                 break;
             }
@@ -697,11 +747,11 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     private void switchToolBarMenu(int layout) {
 
-        if(layout==Staggered_Grid_Layout){
+        if (layout == Staggered_Grid_Layout) {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             invalidateOptionsMenu();
             SharedPreferenesUtil.setRecyclerview_category(Linear_Layout);
-        }else {
+        } else {
             mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             invalidateOptionsMenu();
             SharedPreferenesUtil.setRecyclerview_category(Staggered_Grid_Layout);
@@ -709,14 +759,13 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void showAlertDialog() {
-        AlertDialog.Builder dialog=new AlertDialog.Builder(NotelistActivity.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(NotelistActivity.this);
         dialog.setTitle(R.string.dialog_title);
         dialog.setMessage(R.string.dialog_content);
         dialog.setCancelable(true);
         dialog.setIcon(R.drawable.warning);
-        dialog.setPositiveButton(R.string.dialog_positive_button,new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog,int which)
-            {
+        dialog.setPositiveButton(R.string.dialog_positive_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
                 NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
                 SQLiteDatabase db = notesDbHelper.getWritableDatabase();
                 String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS Notes";
@@ -772,9 +821,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         tv = (TextView) check_view.findViewById(R.id.select_hint);
 
         final String checked_hint = getResources().getString(R.string.checked_hint);
-        if(checked_hint.contains("items")){
-            tv.setText(checked_hint.substring(0,checked_hint.length()-1));
-        }else{
+        if (checked_hint.contains("items")) {
+            tv.setText(checked_hint.substring(0, checked_hint.length() - 1));
+        } else {
             tv.setText(checked_hint);
         }
 
@@ -783,7 +832,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         fab.animate().y(fab.getY() - 140).setDuration(400).start();
 
 
-         select = (Button) check_view.findViewById(R.id.select_all);
+        select = (Button) check_view.findViewById(R.id.select_all);
 
         select.setOnClickListener(new View.OnClickListener() {
 
@@ -802,12 +851,12 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                     select.setText(R.string.select_all);
                     select_all = false;
 
-                    if(checked_hint.contains("items")){
-                        tv.setText(checked_hint.substring(0,checked_hint.length()-1));
-                    }else{
+                    if (checked_hint.contains("items")) {
+                        tv.setText(checked_hint.substring(0, checked_hint.length() - 1));
+                    } else {
                         tv.setText(checked_hint);
                     }
-                   // tv.setText(checked_hint);
+                    // tv.setText(checked_hint);
                 } else {
                     for (int i = 0; i < list.size(); i++) {
                         list.get(i).setCheckbox_delete(true);
@@ -823,16 +872,15 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                     select.setText(R.string.unselected_all);
                     select_all = true;
 
-                    if(list.size()==1||list.size()==0){
-                        if(checked_hint.contains("items")) {
+                    if (list.size() == 1 || list.size() == 0) {
+                        if (checked_hint.contains("items")) {
                             tv.setText(checked_hint.replace("0", list.size() + ""));
                             String delete_s = tv.getText().toString();
                             tv.setText(delete_s.substring(0, delete_s.length() - 1));
-                        }else{
+                        } else {
                             tv.setText(checked_hint.replace("0", list.size() + ""));
                         }
-                    }
-                    else {
+                    } else {
                         tv.setText(checked_hint.replace("0", list.size() + ""));
                     }
 
@@ -844,9 +892,9 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         check_view.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(select_all||list.size()==adapter.getSelectedSize()){
+                if (select_all || list.size() == adapter.getSelectedSize()) {
                     showAlertDialog();
-                }else {
+                } else {
                     delete_selected();
                 }
 
@@ -870,31 +918,31 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         new Thread(new Runnable() {
             @Override
             public void run() {
-        NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
-        SQLiteDatabase db = notesDbHelper.getWritableDatabase();
+                NotesDbHelper notesDbHelper = new NotesDbHelper(NotelistActivity.this);
+                SQLiteDatabase db = notesDbHelper.getWritableDatabase();
 
-        //   int size=;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).isCheckbox_delete()) {
-                LogUtil.d("adelete", i + "id" + list.get(i).getId());
-                db.delete("Notes", "id=?", new String[]{list.get(i).getId() + ""});
-            }
+                //   int size=;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).isCheckbox_delete()) {
+                        LogUtil.d("adelete", i + "id" + list.get(i).getId());
+                        db.delete("Notes", "id=?", new String[]{list.get(i).getId() + ""});
+                    }
 
-            // popupWindow.showAtLocation(check_view, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
+                    // popupWindow.showAtLocation(check_view, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
 
-        db.close();
+                db.close();
 
-          runOnUiThread(new Runnable() {
-            @Override
-             public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
-        initData();
-        adapter.notifyDataSetChanged();
+                        initData();
+                        adapter.notifyDataSetChanged();
 
 
-        popupWindow.setFocusable(true);
-        popupWindow.dismiss();
+                        popupWindow.setFocusable(true);
+                        popupWindow.dismiss();
                     }
                 });
 
@@ -915,7 +963,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             LogUtil.d("textlocation", "onreceive");
 
             if (intent.getIntExtra("from_adapter", -1) != -1) {
-                int a=intent.getIntExtra("from_adapter", -1);
+                int a = intent.getIntExtra("from_adapter", -1);
 
                 switch (a) {
                     case Type_with_checkbox:
@@ -933,25 +981,24 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                             String hint = getResources().getString(R.string.checked_hint);
                             int size = intent.getIntExtra("from_adapter", -1);
 
-                            LogUtil.d("onreceive",""+size);
-                            if(list.size()==size&&select!=null){
+                            LogUtil.d("onreceive", "" + size);
+                            if (list.size() == size && select != null) {
                                 select.setText(R.string.unselected_all);
-                                select_all=true;
-                            }else {
+                                select_all = true;
+                            } else {
                                 select.setText(R.string.select_all);
-                                select_all=false;
+                                select_all = false;
                             }
 
                             //如果只有0或者1项，去掉英文中的s
 
                             if (size == 1 || size == 0) {
-                                if(hint.contains("items")){
+                                if (hint.contains("items")) {
                                     tv.setText(hint.replace("0", size + ""));
 
                                     String delete_s = tv.getText().toString();
                                     tv.setText(delete_s.substring(0, delete_s.length() - 1));
-                                }
-                                else {
+                                } else {
                                     tv.setText(hint.replace("0", size + ""));
                                 }
                             } else {
@@ -964,7 +1011,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 }
             } else {
 
-                LogUtil.d("onreceive","requestweather");
+                LogUtil.d("onreceive", "requestweather");
                 initData();
                 requestWeather();
             }
@@ -998,7 +1045,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     private void exit() {
         if ((System.currentTimeMillis() - clickTime) > 3000) {
-            Toast.makeText(getApplicationContext(), R.string.double_click_exit, Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getApplicationContext(), R.string.double_click_exit).show();
+            ToastUtil.showToast(getString(R.string.double_click_exit));
             clickTime = System.currentTimeMillis();
         } else {
             ActivityCollector.finishAll();
@@ -1029,7 +1077,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                     public void run() {
                         if (weather != null && "ok".equals(weather.status)) {
                             //   weather_city.setText(weather.basic.cityName);
-                            LogUtil.d("requestweather","succeed");
+                            LogUtil.d("requestweather", "succeed");
                             SharedPreferenesUtil.setWeatherresponseText(responseText);
 
                             if (SharedPreferenesUtil.getLanguage().equals("en")) {
@@ -1048,7 +1096,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 */
                             // weather_city.setText(R.string.click_me_select_city);
                             //weather_city.setText(R.string.click_me_select_city);
-                            //Toast.makeText(NotelistActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(NotelistActivity.this, "获取天气信息失败").show();
                         }
 
                     }
@@ -1064,7 +1112,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                         weather_city.setTextSize(15);
                         //  weather_city.setText(R.string.click_me_select_city);
                         weather_city.setText(R.string.loading_weather_failed);
-                        //Toast.makeText(NotelistActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(NotelistActivity.this, "获取天气信息失败").show();
                     }
                 });
             }
@@ -1079,8 +1127,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 if (grantResults.length > 0) {
                     for (int result : grantResults) {
                         if (result != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(this, "必须同意该权限才能定位喔", Toast.LENGTH_SHORT).show();
-
+                            //Toast.makeText(this, "必须同意该权限才能定位喔").show();
+                            ToastUtil.showToast(getString(R.string.locationPermissionRequest));
                             CircularAnim.fullActivity(NotelistActivity.this, weather_city)
                                     .colorOrImageRes(R.color.primary)
                                     .go(new CircularAnim.OnAnimationEndListener() {
@@ -1091,14 +1139,14 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                     });
                             // finish();
                             return;
-                        }
-                        else if(result == PackageManager.PERMISSION_GRANTED){
+                        } else if (result == PackageManager.PERMISSION_GRANTED) {
                             LocationUtil.startLocation();
                             weather_city.setText(R.string.locating);
                         }
                     }
                 } else {
-                    Toast.makeText(this, "发生未知错误", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "发生未知错误").show();
+                    ToastUtil.showToast(getString(R.string.unknownerror));
                     finish();
                 }
                 break;

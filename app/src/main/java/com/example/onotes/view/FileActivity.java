@@ -181,7 +181,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.choosephoto:
                 String timeStamp = new SimpleDateFormat(FORMAT_DATE_TIME_SECOND).format(new Date());
-                ToastUtil.showToast(timeStamp,Toast.LENGTH_LONG);
+                ToastUtil.showToast(timeStamp);
                 //从相册选取
                 chooseFromGallery();
              //   bottonsheet();
@@ -434,7 +434,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //新建文件存储裁剪后的图片
-        File img = new File(tmpDir.getAbsolutePath() + "/avator.png");
+        File img = new File(tmpDir.getAbsolutePath() + "/.png");
         try {
             //打开文件输出流
             FileOutputStream fos = new FileOutputStream(img);
@@ -490,7 +490,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
                 .setOnColorSelectedListener(new OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int selectedColor) {
-                        Toast.makeText(FileActivity.this, Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(FileActivity.this, Integer.toHexString(selectedColor)).show();
 
                     }
                 })
@@ -683,9 +683,9 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
             public void done(BmobException e) {
                 if(e==null){
                     //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                    Toast.makeText(FileActivity.this, "上传文件成功:"+ bmobFile.getFileUrl(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FileActivity.this, "上传文件成功:"+ bmobFile.getFileUrl()).show();
                 }else{
-                    Toast.makeText(FileActivity.this, "上传文件失败:"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FileActivity.this, "上传文件失败:"+ e.getMessage()).show();
                 }
             }
 
@@ -728,7 +728,7 @@ public class FileActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void done(String s, BmobException e) {
                 if(e==null){
-                    Toast.makeText(FileActivity.this, "succeed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FileActivity.this, "succeed").show();
                 }
             }
         });

@@ -211,8 +211,8 @@ public class WeatherActivity extends AppCompatActivity {
                             showWeatherInfo(weather);
 
                         } else {
-                           // Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
-                            ToastUtil.showToast(R.string.loading_weather_failed,Toast.LENGTH_SHORT);
+                           // Toast.makeText(WeatherActivity.this, "获取天气信息失败").show();
+                            ToastUtil.showToast(getString(R.string.loading_weather_failed));
                         }
 
                         swipeRefresh.setRefreshing(false);
@@ -227,7 +227,7 @@ public class WeatherActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtil.showToast(R.string.loading_weather_failed,Toast.LENGTH_SHORT);
+                        ToastUtil.showToast(getString(R.string.loading_weather_failed));
                         swipeRefresh.setRefreshing(false);
                     }
                 });

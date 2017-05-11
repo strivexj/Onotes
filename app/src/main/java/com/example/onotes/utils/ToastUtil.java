@@ -41,20 +41,19 @@ public class ToastUtil {
      *            {@link Toast#LENGTH_LONG}
      */
   /*  public static void showToast(final String tips){
-        showToast(tips, Toast.LENGTH_SHORT);
+        showToast(tips);
     }
 
     public static void showToast(final int tips){
-        showToast(tips, Toast.LENGTH_SHORT);
+        showToast(tips);
     }*/
     /**
      * 显示Toast，多次调用此函数时，Toast显示的时间不会累计，并且显示内容为最后一次调用时传入的内容
      *
      * @param tips 要显示的内容
-     * @param duration 持续时间，参见{@link Toast#LENGTH_SHORT}和
-     *            {@link Toast#LENGTH_LONG}
+     *
      */
-    public static void showToast(final String tips, final int duration) {
+    public static void showToast(final String tips) {
         if (android.text.TextUtils.isEmpty(tips)) {
             return;
         }
@@ -62,20 +61,20 @@ public class ToastUtil {
             @Override
             public void run() {
                 if (mToast == null) {
-                    mToast = Toast.makeText(App.getContext(), tips, duration);
+                    mToast = Toast.makeText(App.getContext(), tips,Toast.LENGTH_SHORT);
                     mToast.show();
                 } else {
                     //mToast.cancel();
                     //mToast.setView(mToast.getView());
                     mToast.setText(tips);
-                    mToast.setDuration(duration);
+                    mToast.setDuration(Toast.LENGTH_SHORT);
                     mToast.show();
                 }
             }
         });
     }
 
-    public static void showToast(final int tips, final int duration) {
+  /*  public static void showToast(final int tips, final int duration) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -89,5 +88,5 @@ public class ToastUtil {
                 }
             }
         });
-    }
+    }*/
 }

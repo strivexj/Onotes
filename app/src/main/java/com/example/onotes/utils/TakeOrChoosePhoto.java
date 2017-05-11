@@ -49,7 +49,7 @@ public class TakeOrChoosePhoto {
         public static void startCamera(Activity activity) {
 
             /** * 设置拍照得到的照片的储存目录，因为我们访问应用的缓存路径并不需要读写内存卡的申请权限， * 因此，这里为了方便，将拍照得到的照片存在这个缓存目录中 */
-        //    File file = new File(getAlbumStorageDir("cwj"), "avator.jpg");
+        //    File file = new File(getAlbumStorageDir("cwj"), ".jpg");
 
            /* try {
                 if(file.exists()) {
@@ -96,7 +96,7 @@ public class TakeOrChoosePhoto {
             // 设置图片的最终输出目录
             cropPhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                     // photoOutputUri = Uri.parse("file:////sdcard/image_output.jpg"));
-                    photoOutputUri = Uri.fromFile(new File(getAlbumStorageDir("cwj"), "avator.jpg")));
+                    photoOutputUri = Uri.fromFile(new File(getAlbumStorageDir("cwj"), ".jpg")));
            // startActivityForResult(cropPhotoIntent, CROP_PHOTO_REQUEST_CODE);
         }
 
@@ -110,14 +110,14 @@ public class TakeOrChoosePhoto {
                     if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                        // startCamera();
                     } else {
-                        //Toast.makeText(this, "拍照权限被拒绝", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "拍照权限被拒绝").show();
                     }
                     break;
                 // 打开相册选取：
                 case WRITE_SDCARD_PERMISSION_REQUEST_CODE:
                     if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     } else {
-                       // Toast.makeText(this, "读写内存卡内容权限被拒绝", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(this, "读写内存卡内容权限被拒绝").show();
                     }
                     break;
             }
@@ -142,11 +142,11 @@ public class TakeOrChoosePhoto {
                         File file = new File(photoOutputUri.getPath());
                         if(file.exists()) {
                             Bitmap bitmap = BitmapFactory.decodeFile(photoOutputUri.getPath());
-                            LogUtil.d("avator",photoOutputUri.getPath());
+                            LogUtil.d("",photoOutputUri.getPath());
                             pictureImageView.setImageBitmap(bitmap);
 
 */
-                            BmobFile bmobFile = new BmobFile(new File(getAlbumStorageDir("cwj"), "avator.jpg"));
+                            BmobFile bmobFile = new BmobFile(new File(getAlbumStorageDir("cwj"), ".jpg"));
                        /* bmobFile.delete(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
@@ -170,7 +170,7 @@ public class TakeOrChoosePhoto {
 
                             // file.delete(); // 选取完后删除照片
                         } else {
-                            Toast.makeText(this, "找不到照片", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "找不到照片").show();
                         }
                         break;
                 }

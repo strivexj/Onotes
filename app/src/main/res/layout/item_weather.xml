@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+    android:id="@+id/weather_text"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center"
+    android:layout_margin="10dp"
+    android:textColor="@color/textcolor"
+    android:textSize="20sp"
+    xmlns:android="http://schemas.android.com/apk/res/android"/>

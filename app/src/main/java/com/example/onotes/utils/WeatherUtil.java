@@ -126,7 +126,7 @@ public class WeatherUtil {
                     @Override
                     public void run() {
                         // closeProgressDialog();
-                        //Toast.makeText(activity, "loading failed", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(activity, "loading failed").show();
                     }
                 });*/
             }

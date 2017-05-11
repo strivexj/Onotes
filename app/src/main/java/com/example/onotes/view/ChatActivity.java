@@ -31,6 +31,7 @@ import com.example.onotes.bean.Chat;
 import com.example.onotes.datebase.ChatDbHelper;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.ToastUtil;
 import com.turing.androidsdk.HttpRequestListener;
 import com.turing.androidsdk.TuringManager;
 
@@ -237,7 +238,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 //mTuringManager.requestTuring(write.getText().toString());
                 if(!TextUtils.isEmpty(send)) {
                     if (send.charAt(0) == '@') {
-                       // Toast.makeText(this, send.replaceFirst("@", ""), Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(this, send.replaceFirst("@", "")).show();
                         mTuringManager.requestTuring(send.replaceFirst("@", ""));
                     }
                     sendMsg(name, send, false);
@@ -310,9 +311,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void done(String s, BmobException e) {
                 if(e==null){
-                    //Toast.makeText(ChatActivity.this, "succeed", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ChatActivity.this, "succeed").show();
                 }else{
-                    Toast.makeText(ChatActivity.this, "sending failed!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ChatActivity.this, "sending failed!").show();
+                    ToastUtil.showToast(getString(R.string.sendingfailed));
                 }
             }
         });
@@ -325,13 +327,15 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 if (grantResults.length > 0) {
                     for (int result : grantResults) {
                         if (result != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(this, "必须同意所有权限才能使用本程序", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(this, "必须同意所有权限才能使用本程序").show();
+                            ToastUtil.showToast(getString(R.string.authorizefailed));
                             finish();
                             return;
                         }
                     }
                 } else {
-                    Toast.makeText(this, "发生未知错误", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "发生未知错误").show();
+                    ToastUtil.showToast(getString(R.string.unknownerror));
                     finish();
                 }
                 break;

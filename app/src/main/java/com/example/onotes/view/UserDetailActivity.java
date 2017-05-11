@@ -2,6 +2,7 @@ package com.example.onotes.view;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,8 +39,11 @@ import com.example.onotes.R;
 import com.example.onotes.bean.MyUser;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
+import com.example.onotes.utils.ToastUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import cn.bmob.v3.BmobQuery;
@@ -85,8 +89,8 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
     private CheckBox female;
 
     private boolean sex;
-    private  BmobUser bmobUser = BmobUser.getCurrentUser(MyUser.class);
-    private String avatorUrl;
+    private  MyUser bmobUser = BmobUser.getCurrentUser(MyUser.class);
+    private String avatarUrl;
 
 
     @Override
@@ -95,16 +99,31 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
         // setContentView(R.layout.activity_file);
         setContentView(R.layout.user_detail);
 
+        //checkPermission();
 
-        /* * 先判断用户以前有没有对我们的应用程序允许过读写内存卡内容的权限， * 用户处理的结果在 onRequestPermissionResult 中进行处理 */
+        initView();
+
+    }
+
+    private boolean isHavePermission() {
+        boolean a=true;
+        LogUtil.d("detail","check");
+    /* * 先判断用户以前有没有对我们的应用程序允许过读写内存卡内容的权限， * 用户处理的结果在 onRequestPermissionResult 中进行处理 */
         if (ContextCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             // 申请读写内存卡内容的权限
             ActivityCompat.requestPermissions(UserDetailActivity.this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_SDCARD_PERMISSION_REQUEST_CODE);
+            a=false;
         }
-
-        initView();
+        if (ContextCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+                    /* * 下面是对调用相机拍照权限进行申请 */
+            ActivityCompat.requestPermissions(UserDetailActivity.this,
+                    new String[]{Manifest.permission.CAMERA,}, TAKE_PHOTO_PERMISSION_REQUEST_CODE);
+            a=false;
+        }
+        return a;
     }
 
     private void initView() {
@@ -145,7 +164,7 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
 
         toolbar.setTitle(R.string.private_information);
 
-        final File file = new File(getAlbumStorageDir("cwj"), "avator.jpg");
+        final File file = new File(getAlbumStorageDir("cwj"), "avatar.jpg");
         if (file.exists()) {
             Glide.with(this)
                     .load(file)
@@ -172,11 +191,11 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
                     personalizedSignatures.setText(user.getPersonalizeSignature());
                     self_introduction.setText(user.getIntroduction());
                     wrok.setText(user.getWrok());
-                    avatorUrl=user.getAvatarUrl();
+                    avatarUrl=user.getAvatarUrl();
                     if(user.getSex()){
                         male.setChecked(true);
                         female.setChecked(false);
-                    }else{
+                    }else {
                         female.setChecked(true);
                         male.setChecked(false);
                     }
@@ -197,7 +216,7 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
         final String[] items = {getString(R.string.takepicture), getString(R.string.choosepicture)};
         AlertDialog.Builder listDialog =
                 new AlertDialog.Builder(UserDetailActivity.this);
-        listDialog.setTitle(R.string.setAvator);
+        listDialog.setTitle(R.string.setavatar);
         listDialog.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -259,6 +278,7 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
                 sex=false;
                 break;
 
+
         }
     }
 
@@ -276,9 +296,14 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
     /**
      * 拍照
      */
-    private void startCamera() {
+    public void startCamera() {
+
+        if(!isHavePermission()){
+            return;
+        }
+        LogUtil.d("detail","checkfinish");
         /** * 设置拍照得到的照片的储存目录，因为我们访问应用的缓存路径并不需要读写内存卡的申请权限， * 因此，这里为了方便，将拍照得到的照片存在这个缓存目录中 */
-        File file = new File(getAlbumStorageDir("cwj"), "avator.jpg");
+        File file = new File(getAlbumStorageDir("cwj"), "avatar.jpg");
 
         try {
             if (file.exists()) {
@@ -329,7 +354,7 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
         // 设置图片的最终输出目录
         cropPhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                 // photoOutputUri = Uri.parse("file:////sdcard/image_output.jpg"));
-                photoOutputUri = Uri.fromFile(new File(getAlbumStorageDir("cwj"), "avator.jpg")));
+                photoOutputUri = Uri.fromFile(new File(getAlbumStorageDir("cwj"), "avatar.jpg")));
         startActivityForResult(cropPhotoIntent, CROP_PHOTO_REQUEST_CODE);
     }
 
@@ -345,14 +370,16 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCamera();
                 } else {
-                    Toast.makeText(this, "拍照权限被拒绝", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, "拍照权限被拒绝").show();
+                    ToastUtil.showToast(getString(R.string.camerapermissionrefuse));
                 }
                 break;
             // 打开相册选取：
             case WRITE_SDCARD_PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 } else {
-                    Toast.makeText(this, "读写内存卡内容权限被拒绝", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "读写内存卡内容权限被拒绝").show();
+                    ToastUtil.showToast(getString(R.string.SDpermissionrefused));
                 }
                 break;
         }
@@ -372,22 +399,38 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
                     break;
                 // 相册选择
                 case CHOICE_FROM_ALBUM_REQUEST_CODE:
-                    cropPhoto(data.getData());
-                    break;
+                    //cropPhoto(data.getData());
+                    LogUtil.d("path",data.getData().toString());
+
+                    ContentResolver resolver = getContentResolver();
+                    //照片的原始资源地址
+                    Uri originalUri = data.getData();
+                    try {
+                        //使用ContentProvider通过URI获取原始图片
+                        Bitmap photo = MediaStore.Images.Media.getBitmap(resolver, originalUri);
+
+                        savePhotoToSDCard("ablum4.jpg",photo);
+                        setuserpicture.setImageBitmap(photo);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                break;
                 // 裁剪图片
                 case CROP_PHOTO_REQUEST_CODE:
                     File file = new File(photoOutputUri.getPath());
                     if (file.exists()) {
+                        LogUtil.d("path output",photoOutputUri.getPath());
                         Bitmap bitmap = BitmapFactory.decodeFile(photoOutputUri.getPath());
-                        LogUtil.d("avator", photoOutputUri.getPath());
 
-                        // pictureImageView.setImageBitmap(bitmap);
+                        //pictureImageView.setImageBitmap(bitmap);
                         setuserpicture.setImageBitmap(bitmap);
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        final BmobFile bmobFile = new BmobFile(new File(getAlbumStorageDir("cwj"), "avator.jpg"));
+                        final BmobFile bmobFile = new BmobFile(new File(getAlbumStorageDir("cwj"), "avatar.jpg"));
                         bmobFile.upload(new UploadFileListener() {
                             @Override
                             public void done(BmobException e) {
@@ -407,7 +450,7 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
                                     });
 
                                     BmobFile delete=new BmobFile();
-                                    delete.setUrl(avatorUrl);
+                                    delete.setUrl(avatarUrl);
                                     delete.delete(new UpdateListener() {
                                         @Override
                                         public void done(BmobException e) {
@@ -429,12 +472,58 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
 
                         // file.delete(); // 选取完后删除照片
                     } else {
-                        Toast.makeText(this, "找不到照片", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "找不到照片").show();
+                        ToastUtil.showToast(getString(R.string.withoutpicture));
                     }
                     break;
             }
         }
     }
+
+    /**
+     * 保存照片到SDCard
+     *
+     *
+     *            需要保存的路径
+     * @param photoName
+     *            保存的相片名字
+     * @param photoBitmap
+     *            照片的Bitmap对象
+     */
+    private void savePhotoToSDCard( String photoName, Bitmap photoBitmap) {
+        FileOutputStream fileOutputStream = null;
+        /*if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+            File dir = new File(path);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }*/
+            File photoFile =  new File(getAlbumStorageDir("cwj"), photoName);;
+            try {
+                fileOutputStream = new FileOutputStream(photoFile);
+                if (photoBitmap != null) {
+                    if (photoBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fileOutputStream)) {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                photoFile.delete();
+                e.printStackTrace();
+            } catch (IOException e) {
+                photoFile.delete();
+            } finally {
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+// TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+
 
     /**
      * show progress dialog
@@ -462,7 +551,7 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
         showProgressDialog();
 
         MyUser myUser = new MyUser();
-        BmobUser bmobUser = BmobUser.getCurrentUser(MyUser.class);
+        MyUser bmobUser = MyUser.getCurrentUser(MyUser.class);
 
         String nicknameString = nickname.getText().toString();
         String personalizedSignaturesString = personalizedSignatures.getText().toString();
@@ -474,9 +563,10 @@ public class UserDetailActivity extends AppCompatActivity implements View.OnClic
         myUser.setPersonalizeSignature(personalizedSignaturesString);
         myUser.setIntroduction(introduction);
         myUser.setWrok(wrokString);
-        myUser.setSex(sex);
+        myUser.setSex(male.isChecked());
 
         SharedPreferenesUtil.setPersonalizeSignature(personalizedSignaturesString);
+        SharedPreferenesUtil.setNickname(nicknameString);
         //myUser.save(bmobUser.getObjectId(),)
 
         myUser.update(bmobUser.getObjectId(), new UpdateListener() {

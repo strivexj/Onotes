@@ -12,4 +12,6 @@
     <dimen name="timeline_padding_top">20dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="activity_margin_half">8dp</dimen>
+
+    <dimen name="textsize">20dp</dimen>
 </resources>

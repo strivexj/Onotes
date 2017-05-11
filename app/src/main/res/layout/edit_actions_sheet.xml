@@ -17,13 +17,56 @@
         android:layout_height="48dp"
         android:orientation="horizontal">
 
+
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/color"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
+            android:id="@+id/color0"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:src="@color/color0"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/color1"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:src="@color/color1"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/color2"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:src="@color/color2"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/color3"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:src="@color/color3"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/color4"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:src="@color/color4"/>
+        <ImageView
+            android:id="@+id/more_color"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@drawable/setting_more"/>
+
+
         <TextView
             android:id="@+id/bg"
             android:layout_width="match_parent"
@@ -32,6 +75,7 @@
             android:layout_marginRight="16dp"
             android:gravity="center_vertical"
             android:text="@string/color_or_picture"
+            android:visibility="gone"
             android:textColor="@color/textColorPrimary"/>
     </LinearLayout>
 <!--
@@ -72,7 +116,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimaryLight"/>
+        android:background="@color/divider"/>
 
     <LinearLayout
         android:id="@+id/layout_copy_text"
@@ -103,7 +147,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimaryLight"/>
+        android:background="@color/divider"/>
 
     <LinearLayout
         android:id="@+id/layout_share_text"
@@ -134,7 +178,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimaryLight"/>
+        android:background="@color/divider"/>
 
     <LinearLayout
         android:id="@+id/layout_share_pic"

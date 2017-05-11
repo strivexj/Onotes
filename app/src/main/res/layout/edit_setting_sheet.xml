@@ -12,6 +12,7 @@
     android:orientation="vertical"
     app:behavior_hideable="true"
     app:behavior_peekHeight="0dp"
+    android:layout_margin="15dp"
     tools:context="com.example.onotes.view.EditTextActivity"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
@@ -19,10 +20,12 @@
     <LinearLayout
         android:id="@+id/textSizelayout"
         android:layout_width="match_parent"
+        android:layout_margin="10dp"
         android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/textColorPrimary"
             android:text="@string/textsize"/>
         <SeekBar
             android:id="@+id/textsize"
@@ -34,11 +37,13 @@
     <LinearLayout
         android:id="@+id/lineSpacinglayout"
         android:layout_width="match_parent"
+        android:layout_margin="10dp"
         android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/textColorPrimary"
             android:text="@string/linespace"/>
         <SeekBar
             android:id="@+id/linespacing"
@@ -47,4 +52,19 @@
         />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/bottom_pick_picture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:text="@string/pickbgpicture"
+            android:textColor="@color/textColorPrimary"
+
+        />
+    </LinearLayout>
 </LinearLayout>

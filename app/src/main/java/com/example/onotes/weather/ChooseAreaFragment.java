@@ -320,11 +320,18 @@ public class ChooseAreaFragment extends Fragment{
         });
 
 
-        adapter= new ArrayAdapter<>(getActivity().getApplication(), android.R.layout.simple_list_item_1, dataList);
+       // adapter= new ArrayAdapter<>(getActivity().getApplication(), android.R.layout.simple_list_item_1, dataList);
+        adapter= new ArrayAdapter<>(getActivity().getApplication(), R.layout.item_weather, dataList);
+
+       /* 夜间模式ltextview的字体颜色不会跟着改变。。。待改。。
+       View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_weather, null);
+
+        TextView textView=(TextView)v.findViewById(R.id.weather_text);
+        textView.setTextColor(getResources().getColor(R.color.textcolor));*/
 
         listView.setAdapter(adapter);
 
-        filadapter = new ArrayAdapter<>(getActivity().getApplication(), android.R.layout.simple_list_item_1, fildataList);
+        filadapter = new ArrayAdapter<>(getActivity().getApplication(),  R.layout.item_weather, fildataList);
 
         return view;
     }

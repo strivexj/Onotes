@@ -130,7 +130,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private void register() {
         LogUtil.d("register","bbb");
             if(!confirmPassword.getText().toString().equals(signuppassword.getText().toString())){
-                ToastUtil.showToast(getString(R.string.passwordCantMatch),Toast.LENGTH_SHORT);
+                ToastUtil.showToast(getString(R.string.passwordCantMatch));
                 return;
             }
             signupbutton.setClickable(false);
@@ -156,7 +156,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                 }
                             });
                         }
-                        ToastUtil.showToast(getString(R.string.registerSuccessfully), Toast.LENGTH_SHORT);
+                        ToastUtil.showToast(getString(R.string.registerSuccessfully));
 
                         SharedPreferenesUtil.setUsername(signupusername.getText().toString());
                         SharedPreferenesUtil.setPassword(signuppassword.getText().toString());
@@ -179,19 +179,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     } else {
                        switch (e.getErrorCode()){
                                case 202:
-                                   ToastUtil.showToast(getString(R.string.username_existed), Toast.LENGTH_SHORT);
+                                   ToastUtil.showToast(getString(R.string.username_existed));
                                    break;
                                case 203:
-                                   ToastUtil.showToast(getString(R.string.email_registered), Toast.LENGTH_SHORT);
+                                   ToastUtil.showToast(getString(R.string.email_registered));
                                    break;
                                case 301:
-                                   ToastUtil.showToast(getString(R.string.email_invaild), Toast.LENGTH_SHORT);
+                                   ToastUtil.showToast(getString(R.string.email_invaild));
                                    break;
                                 case 304:
-                                    ToastUtil.showToast(getString(R.string.usernameOrPasswordNull), Toast.LENGTH_SHORT);
+                                    ToastUtil.showToast(getString(R.string.usernameOrPasswordNull));
                                     break;
                                default:
-                                    ToastUtil.showToast(getString(R.string.signup_failed), Toast.LENGTH_SHORT);
+                                    ToastUtil.showToast(getString(R.string.signup_failed));
                                    break;
                            }
                             signupbutton.setClickable(true);
@@ -212,8 +212,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void done(Integer count, BmobException e) {
                 if (e == null) {
                     if (count != 0) {
-                        // Toast.makeText(SignUpActivity.this, , Toast.LENGTH_SHORT).show();
-                        ToastUtil.showToast(R.string.username_registered, Toast.LENGTH_SHORT);
+                        // Toast.makeText(SignUpActivity.this, ).show();
+                        ToastUtil.showToast(R.string.username_registered);
                         isexist = true;
                     } else isexist = false;
 
@@ -233,14 +233,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             person.setPassword(signuppassword.getText().toString());
             person.setEmail(signupemail.getText().toString());
             if (isexist()) {
-                ToastUtil.showToast(R.string.username_registered, Toast.LENGTH_SHORT);
+                ToastUtil.showToast(R.string.username_registered);
                 signupbutton.setClickable(true);
             } else {
                 person.save(new SaveListener<String>() {
                     @Override
                     public void done(String s, BmobException e) {
                         if (e == null) {
-                            Toast.makeText(SignUpActivity.this, "succeed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, "succeed").show();
 
                             SharedPreferenesUtil.setUsername(signupusername.getText().toString());
                             SharedPreferenesUtil.setPassword(signuppassword.getText().toString());
@@ -255,7 +255,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                     });
                             finish();
                         } else {
-                            ToastUtil.showToast(R.string.signup_failed, Toast.LENGTH_SHORT);
+                            ToastUtil.showToast(R.string.signup_failed);
                         }
                     }
                 });
@@ -269,10 +269,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                  @Override
                  public void done(String s, BmobException e) {
                      if (e == null) {
-                         Toast.makeText(SignUpActivity.this, "succeed", Toast.LENGTH_SHORT).show();
+                         Toast.makeText(SignUpActivity.this, "succeed").show();
                          finish();
                      } else {
-                         Toast.makeText(SignUpActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                         Toast.makeText(SignUpActivity.this, "failed").show();
                      }
                  }
              });*/
@@ -280,7 +280,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
          /*   sendverifycode.setClickable(false);
 
         } else {
-            ToastUtil.showToast(R.string.verify_code_wrong, Toast.LENGTH_SHORT);
+            ToastUtil.showToast(R.string.verify_code_wrong);
         }
     }
 }*/

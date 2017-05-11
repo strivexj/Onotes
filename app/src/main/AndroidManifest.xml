@@ -129,6 +129,7 @@
         </activity>
         <activity
             android:name=".view.EditTextActivity"
+            android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask">
         </activity>
 
@@ -140,6 +141,7 @@
         </activity>
         <activity
             android:name=".view.NotelistActivity"
+            android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask">
         </activity>
         <activity
@@ -195,7 +197,8 @@
             android:value="82debbf5c079d6006624ebf9616084cb">
         </meta-data>
 
-        <activity android:name=".view.UserDetailActivity">
+        <activity android:name=".view.UserDetailActivity"
+                  android:label="@string/private_information">
 
         </activity>
     </application>

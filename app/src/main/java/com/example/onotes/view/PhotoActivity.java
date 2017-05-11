@@ -130,7 +130,7 @@ public class PhotoActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openAlbum();
                 } else {
-                    ToastUtil.showToast( "You denied the permission", Toast.LENGTH_SHORT);
+                    ToastUtil.showToast( "You denied the permission");
                 }
                 break;
             default:
@@ -263,7 +263,7 @@ public class PhotoActivity extends AppCompatActivity {
             picture.setImageBitmap(bitmap);
 
         } else {
-            Toast.makeText(this, "failed to get image", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast("failed to get image");
         }
     }
 

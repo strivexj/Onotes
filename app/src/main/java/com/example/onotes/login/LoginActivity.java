@@ -96,7 +96,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (SharedPreferenesUtil.issignin()) {
-            startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
+            MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
+            if(userInfo!=null){
+                startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
+            }
+
         }
 
         setContentView(R.layout.activity_login);
@@ -164,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         String pictureurl=SharedPreferenesUtil.getFigureurl_qq_2();
 
-        File file=new File(getAlbumStorageDir("cwj"), "avator.jpg");
+        File file=new File(getAlbumStorageDir("cwj"), ".jpg");
         if(file.exists()){
             Glide.with(this)
                     .load(file)
@@ -231,7 +235,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void done(MyUser user, BmobException e) {
                         if(user!=null){
-                            ToastUtil.showToast( R.string.sign_in_successfully, Toast.LENGTH_SHORT);
+                            ToastUtil.showToast(getString( R.string.sign_in_successfully));
                             Log.d("cwj", "Sign in succeed");
 
                             SharedPreferenesUtil.setUsername(username.getText().toString());
@@ -263,7 +267,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             CircularAnim.show(sign_in_button).go();
 
                             KeyboardUtil.showSoftInput(password);
-                            ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
+                            ToastUtil.showToast(getString(R.string.username_or_password_wrong) );
                         }
                     }
 
@@ -278,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (e == null) {
                             Person person = object.get(0);
                             if (password.getText().toString().equals(person.getPassword())) {
-                                ToastUtil.showToast( R.string.sign_in_successfully, Toast.LENGTH_SHORT);
+                                ToastUtil.showToast( R.string.sign_in_successfully);
 
                                 Log.d("cwj", "Sign in succeed");
 
@@ -309,16 +313,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 CircularAnim.show(sign_in_button).go();
 
                                 KeyboardUtil.showSoftInput(password);
-                                ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
-                                //Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
+                                ToastUtil.showToast(R.string.username_or_password_wrong);
+                                //Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.").show();
                             }
 
                         } else {
                             progressBar.setVisibility(View.GONE);
                             CircularAnim.show(sign_in_button).go();
-                            ToastUtil.showToast(R.string.username_or_password_wrong,Toast.LENGTH_SHORT);
+                            ToastUtil.showToast(R.string.username_or_password_wrong);
                             KeyboardUtil.showSoftInput(password);
-                          //  Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.", Toast.LENGTH_SHORT).show();
+                          //  Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.").show();
                             Log.d("cwj", "query failed");
                         }
                     }
@@ -383,7 +387,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private class BaseUiListener implements IUiListener {
         @Override
         public void onComplete(Object response) {
-           ToastUtil.showToast(R.string.authorize_successfully, Toast.LENGTH_SHORT);
+           ToastUtil.showToast(getString(R.string.authorize_successfully));
             Log.e(TAG, "response:" + response);
 
             JSONObject obj = (JSONObject) response;
@@ -466,17 +470,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
-                                .colorOrImageRes(R.color.colorAccent)
-                                .go(new CircularAnim.OnAnimationEndListener() {
-                                    @Override
-                                    public void onAnimationEnd() {
-                                        startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
-                                    }
-                                });
 
-                        SharedPreferenesUtil.setIssignin(true);
+                        BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth("qq",accessToken, expires,openID);
+                        BmobUser.loginWithAuthData(authInfo, new LogInListener<JSONObject>() {
 
+                            @Override
+                            public void done(JSONObject userAuth,BmobException e) {
+                            if(e==null){
+
+                                CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
+                                        .colorOrImageRes(R.color.colorAccent)
+                                        .go(new CircularAnim.OnAnimationEndListener() {
+                                            @Override
+                                            public void onAnimationEnd() {
+                                                startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
+                                            }
+                                        });
+
+                                SharedPreferenesUtil.setIssignin(true);
+                            }
+                            }
+                        });
                         Log.e(TAG, "登录成功" + response.toString());
                     }
 
@@ -492,14 +506,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
                 
-                BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth("qq",accessToken, expires,openID);
-                BmobUser.loginWithAuthData(authInfo, new LogInListener<JSONObject>() {
 
-                    @Override
-                    public void done(JSONObject userAuth,BmobException e) {
-
-                    }
-                });
 
 
             } catch (JSONException e) {
@@ -512,15 +519,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onError(UiError uiError) {
-           // Toast.makeText(LoginActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
-            ToastUtil.showToast(R.string.authorize_failed, Toast.LENGTH_SHORT);
+           // Toast.makeText(LoginActivity.this, "授权失败").show();
+            ToastUtil.showToast(getString((R.string.authorize_failed)));
             closeProgressDialog();
         }
 
         @Override
         public void onCancel() {
-            //Toast.makeText(LoginActivity.this, "授权取消", Toast.LENGTH_SHORT).show();
-            ToastUtil.showToast(R.string.authorize_canceled, Toast.LENGTH_SHORT);
+            //Toast.makeText(LoginActivity.this, "授权取消").show();
+            ToastUtil.showToast(getString(R.string.authorize_canceled));
             closeProgressDialog();
         }
 

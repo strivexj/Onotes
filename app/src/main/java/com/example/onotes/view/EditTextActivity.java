@@ -13,14 +13,17 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,6 +34,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -42,6 +46,7 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.onotes.R;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.ActivityCollector;
@@ -50,11 +55,13 @@ import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.ScreenShot;
 import com.example.onotes.utils.TimeUtil;
 import com.example.onotes.utils.ToastUtil;
+import com.example.onotes.weather.ChooseAreaFragment;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
+import java.io.File;
 import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -117,6 +124,11 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
         //edittext.setTextSize(25);
 
     }
+
+   /* @Override
+    public void startCamera() {
+        super.startCamera();
+    }*/
 
     private String getcurrenttime() {
         Calendar calendar = Calendar.getInstance();
@@ -233,23 +245,46 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
         edittext.setText(spannableString);
 */
 
+      edittext.setOnTouchListener(new View.OnTouchListener() {
+          @Override
+          public boolean onTouch(View v, MotionEvent event) {
+              switch (event.getAction()) {
+                  case MotionEvent.ACTION_UP:
+                      LogUtil.d("textlistener", "up");
+                      ToastUtil.showToast(edittext.getText().toString().substring(edittext.getSelectionStart(), edittext.getSelectionEnd()));
+                      break;
+                  case MotionEvent.ACTION_MOVE:
+                      LogUtil.d("textlistener", "MOVE");
+                      break;
+                  case MotionEvent.ACTION_HOVER_MOVE:
+                      LogUtil.d("textlistener", "HOVER_MOVE");
+                      break;
+                  case MotionEvent.ACTION_SCROLL:
+                      LogUtil.d("textlistener", "SCROLL");
+                      break;
+              }
+              return EditTextActivity.super.onTouchEvent(event);
+          }
+      });
         edittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                LogUtil.d("textlistener","before");
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Spannable inputStr = (Spannable) s;
+                LogUtil.d("textlistener","onTextChanged");
+                /*Spannable inputStr = (Spannable) s;
                 if (s.equals("草")) {
 
                     inputStr.setSpan(new ForegroundColorSpan(Color.BLUE), start, start + count, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                }*/
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                LogUtil.d("textlistener","afterTextChanged");
                 Spannable inputStr = (Spannable) s;
                 //if(s.equals("草")){
 
@@ -265,6 +300,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
         linespacing.setProgress((int) linespace);
 
         edit_bg = (ImageView) findViewById(R.id.edit_bg);
+
+        Glide.with(this).load(new File(getAlbumStorageDir("cwj"),"ablum.jpg") ).into(edit_bg);
 
         if (bg_color != -1) {
             edit_bg.setBackgroundColor(bg_color);
@@ -286,7 +323,15 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
 
 
     }
-
+    public File getAlbumStorageDir(String albumName) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!file.mkdirs()) {
+            LogUtil.e(this, "Directory not created");
+        }
+        return file;
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -296,6 +341,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                 int position_bold=edittext.getSelectionEnd();
                 SpannableString spannableString_B = new SpannableString(edittext.getText());
                 StyleSpan styleSpan_B  = new StyleSpan(Typeface.BOLD);
+                //StyleSpan styleSpan_B  = new StyleSpan(Typeface.NORMAL);
                 spannableString_B.setSpan(styleSpan_B, edittext.getSelectionStart(), edittext.getSelectionEnd(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 edittext.setText(spannableString_B);
                 //edittext.setSelection(edittext.getText().toString().length());
@@ -303,18 +349,22 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.italic:
+
+
+                //LogUtil.d("store", Html.toHtml(edittext.getText().getSpans();
+
                 int position_italic=edittext.getSelectionEnd();
+
                 SpannableString spannableString_I = new SpannableString(edittext.getText());
                 StyleSpan styleSpan_I  = new StyleSpan(Typeface.ITALIC);
-
                 Drawable drawable = getResources().getDrawable(R.drawable.back);
                 drawable.setBounds(0, 0, 1420, 1420);
                 ImageSpan imageSpan = new ImageSpan(drawable);
-                spannableString_I.setSpan(imageSpan, 6, 8, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+              //  spannableString_I.setSpan(imageSpan, edittext.getSelectionStart(), edittext.getSelectionEnd()+1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
                 spannableString_I.setSpan(styleSpan_I, edittext.getSelectionStart(), edittext.getSelectionEnd(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 edittext.setText(spannableString_I);
-                //edittext.setSelection(edittext.getText().toString().length());
+                edittext.setSelection(edittext.getText().toString().length());
                 edittext.setSelection(position_italic);
 
 
@@ -326,16 +376,75 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                 intent.setType("image/*");
                 Intent chooser = Intent.createChooser(intent, "Share screen shot");
                 startActivity(chooser);*/
-
+                //startCamera();
                 break;
             case R.id.textcolor:
-                Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show();
+
+
+
+                LogUtil.d("store","click");
+                StyleSpan[] mSpans = edittext.getText().getSpans(0, edittext.length(), StyleSpan.class);
+                ImageSpan[]image=edittext.getText().getSpans(0, edittext.length(), ImageSpan.class);
+                for (int i = 0; i <mSpans.length ; i++) {
+                    if (mSpans[i] instanceof StyleSpan) {
+                        int start =edittext.getText().getSpanStart(mSpans[i]);
+                        int end = edittext.getText().getSpanEnd(mSpans[i]);
+                        int flag = edittext.getText().getSpanFlags(mSpans[i]);
+                        int id = mSpans[i].getSpanTypeId();
+                        LogUtil.d("store", "Found StyleSpan at:\n" +
+                                "Start: " + start +
+                                "\n End: " + end +
+                                "\n Flag(s): " + flag+"ID: "+id);
+
+                    }
+                }
+                for (int i = 0; i < image.length; i++) {
+                    if (image[i] instanceof ImageSpan) {
+
+                        int start =edittext.getText().getSpanStart(image[i]);
+                        int end = edittext.getText().getSpanEnd(image[i]);
+                        int flag = edittext.getText().getSpanFlags(image[i]);
+
+                       // int flag = edittext.getText().getSpan(image[i]);
+                        LogUtil.d("store", "Found ImageSpan at:\n" +
+                                "Start: " + start +
+                                "\n End: " + end +
+                                "\n Flag(s): " + flag+"ID: ");
+                    }
+                }
+               // Toast.makeText(this, "aaaa").show();
                 break;
             case R.id.setting_more:
+
+              /*  int position_normal=edittext.getSelectionEnd();
+               // SpannableString spannableString_N = new SpannableString(edittext.getText());
+                SpannableStringBuilder spannableString_N = new SpannableStringBuilder(edittext.getText());
+
+                StyleSpan span=new StyleSpan(Typeface.BOLD);
+                //StyleSpan styleSpan_B  = new StyleSpan(Typeface.NORMAL);
+               // spannableString_N.setSpan(span, edittext.getSelectionStart(), edittext.getSelectionEnd(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+                spannableString_N.removeSpan(span);
+                edittext.setText(spannableString_N );*/
+
+               /* StyleSpan styleSpan_N   = new StyleSpan(Typeface.NORMAL);
+                //StyleSpan styleSpan_B  = new StyleSpan(Typeface.NORMAL);
+
+                String temp=edittext.getText().subSequence(edittext.getSelectionStart(), edittext.getSelectionEnd()).toString();
+
+                spannableString_N.replace(edittext.getSelectionStart(), edittext.getSelectionEnd(),temp);
+                //spannableString_N.clear();
+                spannableString_N.setSpan(styleSpan_N , edittext.getSelectionStart(), edittext.getSelectionEnd(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                edittext.setText(spannableString_N );
+                //edittext.setSelection(edittext.getText().toString().length());
+                edittext.setSelection(position_normal);
+               // LogUtil.d("store",temp);*/
+
                 final PopupWindow popupWindow = new PopupWindow(settingview, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                 popupWindow.showAtLocation(settingview, Gravity.BOTTOM, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                //   Toast.makeText(this, "aaaa", Toast.LENGTH_SHORT).show();
+                KeyboardUtil.hideSoftInput(this);
+                //   Toast.makeText(this, "aaaa").show();
                /* final BottomSheetDialog dialog = new BottomSheetDialog(this);
                 dialog.setContentView(settingview);
                 dialog.show();*/
@@ -400,6 +509,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
+       // save(edittext.getText().toString());
         LogUtil.d("cwj", "edonresume");
     }
 
@@ -494,17 +604,17 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                 }
             });
 
-            CircleImageView color = (CircleImageView) view.findViewById(R.id.color);
+            CircleImageView color = (CircleImageView) view.findViewById(R.id.color0);
             if (bg_color != -1) {
                 color.setBackgroundColor(bg_color);
+               // color.setImageResource(bg_color);
             }
 
-            view.findViewById(R.id.bg).setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.more_color).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    colorpicker();
+                    showColorPicker();
                     popupWindow.dismiss();
-
                 }
             });
 
@@ -540,8 +650,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     public void shareAsText() {
         String text = edittext.getText().toString();
         if (TextUtils.isEmpty(text)) {
-           // Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
-            ToastUtil.showToast(R.string.writing_nothing,Toast.LENGTH_SHORT);
+           // Toast.makeText(this, "").show();
+            ToastUtil.showToast(getString(R.string.writing_nothing));
             return;
         }
 
@@ -560,7 +670,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void colorpicker() {
+    private void showColorPicker() {
 
         ColorPickerDialogBuilder
                 .with(this)
@@ -576,8 +686,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                 .setOnColorSelectedListener(new OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int selectedColor) {
-                        // Toast.makeText(EditTextActivity.this, Integer.to(selectedColor), Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(EditTextActivity.this, Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(EditTextActivity.this, Integer.to(selectedColor)).show();
+                        //Toast.makeText(EditTextActivity.this, Integer.toHexString(selectedColor)).show();
 
                     }
                 })
@@ -587,7 +697,7 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
                     public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
                         //changeBackgroundColor(selectedColor);
                         edit_bg.setBackgroundColor(selectedColor);
-                        //   Toast.makeText(EditTextActivity.this, ""+selectedColor, Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(EditTextActivity.this, ""+selectedColor).show();
 
                         bg_color = selectedColor;
 
@@ -606,8 +716,8 @@ public class EditTextActivity extends AppCompatActivity implements View.OnClickL
     public void copyText(View v) {
         String text = edittext.getText().toString();
         if (TextUtils.isEmpty(text)) {
-            //Toast.makeText(this, "You haven't written anything!", Toast.LENGTH_SHORT).show();
-            ToastUtil.showToast(R.string.writing_nothing,Toast.LENGTH_SHORT);
+            //Toast.makeText(this, "You haven't written anything!").show();
+            ToastUtil.showToast(getString(R.string.writing_nothing));
             return;
         }
 

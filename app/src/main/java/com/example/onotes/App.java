@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -40,7 +41,11 @@ public class App extends Application {
         config.locale = getSetLocale();
         resources.updateConfiguration(config, dm);
 
-
+        if (getSharedPreferences("app",MODE_PRIVATE).getInt("theme", 0) == 0) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
 
     }
     // 得到设置的语言信息

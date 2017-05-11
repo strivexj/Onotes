@@ -87,7 +87,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                             @Override
                             public void done(BmobException e) {
                                 if (e == null) {
-                                    ToastUtil.showToast(R.string.reset_password_sussesfully, Toast.LENGTH_SHORT);
+                                    ToastUtil.showToast( getString(R.string.reset_password_sussesfully));
 
                                     SharedPreferenesUtil.setPassword(resetpassword.getText().toString());
                                     SharedPreferenesUtil.setUsername(person.getUsername());
@@ -101,7 +101,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                                             });
                                     finish();
                                 } else {
-                                    ToastUtil.showToast(R.string.reset_password_failed, Toast.LENGTH_SHORT);
+                                    ToastUtil.showToast(getString(R.string.reset_password_failed));
                                 }
                             }
                         });
@@ -109,7 +109,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                 }
             });
         } else {
-            ToastUtil.showToast(R.string.verify_code_wrong, Toast.LENGTH_SHORT);
+            ToastUtil.showToast(getString(R.string.verify_code_wrong));
         }
     }
 }

@@ -1,12 +1,9 @@
 package com.example.onotes.utils;
 
 import android.content.SharedPreferences;
-import android.widget.Toast;
-
 import com.example.onotes.App;
-
 import static android.content.Context.MODE_PRIVATE;
-import static com.tencent.open.utils.Global.getSharedPreferences;
+
 
 /**
  * Created by cwj on 4/24/17.
@@ -18,6 +15,7 @@ public class SharedPreferenesUtil {
     private static String password;
     private static boolean remember_password_checkbox;
     private static boolean issignin;
+
 
     //qqcount
     private static String nickname;
@@ -60,6 +58,11 @@ public class SharedPreferenesUtil {
 
     private static String located_city;
 
+    private  static String personalizeSignature;
+
+    private static int themeMode;
+
+
     private static SharedPreferences.Editor qqaccount_editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
 
     private static SharedPreferences qqaccount_pref = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
@@ -80,6 +83,19 @@ public class SharedPreferenesUtil {
 
     private static SharedPreferences.Editor myUser_editor = App.getContext().getSharedPreferences("myUser", MODE_PRIVATE).edit();
 
+
+//0为日间模式 1为夜间模式
+    public static int getThemeMode() {
+        return app_pref.getInt("theme",0);
+    }
+
+    public static void setThemeMode(int themeMode) {
+        app_editor.putInt("theme",themeMode).apply();
+    }
+
+
+
+
     public static  String getPersonalizeSignature() {
         return myUser_pref.getString("personalizeSignature","");
     }
@@ -89,7 +105,6 @@ public class SharedPreferenesUtil {
         myUser_editor.apply();
     }
 
-    private String personalizeSignature;
 
 
    /* public static String getWeatherCity() {
@@ -270,6 +285,11 @@ public class SharedPreferenesUtil {
     public static String getNickname() {
         return qqaccount_pref.getString("nickname", "");
     }
+    public static void setNickname(String nickname) {
+        qqaccount_editor.putString("nickname",nickname);
+        qqaccount_editor.apply();
+    }
+
 
     public static String getGender() {
         return qqaccount_pref.getString("gender", "");

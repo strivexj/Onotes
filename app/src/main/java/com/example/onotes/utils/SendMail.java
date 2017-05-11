@@ -54,7 +54,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         progressDialog.dismiss();
 
         //Toast.makeText(context, , Toast.LENGTH_LONG).show();
-        ToastUtil.showToast(App.getContext().getString(R.string.sending_successfully),Toast.LENGTH_SHORT);
+        ToastUtil.showToast(App.getContext().getString(R.string.sending_successfully));
     }
 
     @Override
