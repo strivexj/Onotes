@@ -24,6 +24,12 @@
             android:layout_gravity="center"
             android:button="@drawable/custom_checkbox"
         />
+        <ImageView
+            android:id="@+id/note_thumbnail"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:layout_margin="5dp"/>
         <LinearLayout
             android:id="@+id/content_date"
             android:layout_width="match_parent"

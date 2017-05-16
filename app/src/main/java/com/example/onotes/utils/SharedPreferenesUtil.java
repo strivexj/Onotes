@@ -1,6 +1,8 @@
 package com.example.onotes.utils;
 
 import android.content.SharedPreferences;
+import android.preference.Preference;
+
 import com.example.onotes.App;
 import static android.content.Context.MODE_PRIVATE;
 
@@ -63,6 +65,26 @@ public class SharedPreferenesUtil {
     private static int themeMode;
 
 
+    private static String avatarUrl;
+
+
+
+    private static boolean isNeedUploadAvatar;
+
+
+    private static boolean isUpdateAvatar;
+
+
+    public static boolean isNeedBackGroud() {
+        return app_pref.getBoolean("isNeedBackGroud",false);
+    }
+
+    public static void setIsNeedBackGroud(boolean isNeedBackGroud) {
+        app_editor.putBoolean("isNeedBackGroud",isNeedBackGroud).apply();
+    }
+
+    private static boolean isNeedBackGroud;
+
     private static SharedPreferences.Editor qqaccount_editor = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE).edit();
 
     private static SharedPreferences qqaccount_pref = App.getContext().getSharedPreferences("qqaccount", MODE_PRIVATE);
@@ -84,6 +106,33 @@ public class SharedPreferenesUtil {
     private static SharedPreferences.Editor myUser_editor = App.getContext().getSharedPreferences("myUser", MODE_PRIVATE).edit();
 
 
+
+    public static boolean isNeedUploadAvatar() {
+        return app_pref.getBoolean("isNeedUploadAvatar",false);
+    }
+
+    public static void setIsNeedUploadAvatar(boolean isNeedUploadAvatar) {
+        app_editor.putBoolean("isNeedUploadAvatar",isNeedUploadAvatar);
+    }
+
+    public static boolean isUpdateAvatar() {
+        return app_pref.getBoolean("isUpdateAvatar",false);
+    }
+
+    public static void setIsUpdateAvatar(boolean isUpdateAvatar) {
+        app_editor.putBoolean("avatarUrl",isUpdateAvatar).apply();
+    }
+
+    public static String getAvatarUrl() {
+        return app_pref.getString("avatarUrl","");
+    }
+
+    public static void setAvatarUrl(String avatarUrl) {
+       app_editor.putString("avatarUrl",avatarUrl).apply();
+    }
+
+
+
 //0为日间模式 1为夜间模式
     public static int getThemeMode() {
         return app_pref.getInt("theme",0);
@@ -92,6 +141,7 @@ public class SharedPreferenesUtil {
     public static void setThemeMode(int themeMode) {
         app_editor.putInt("theme",themeMode).apply();
     }
+
 
 
 

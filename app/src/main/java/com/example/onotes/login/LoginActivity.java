@@ -89,11 +89,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
 
 
-        if (!SharedPreferenesUtil.isCityadd()) {
+      /*  if (!SharedPreferenesUtil.isCityadd()) {
             LogUtil.d("shared","cityadd ==false");
             Intent intentService = new Intent(this, CityDownloadSerivce.class);
             startService(intentService);
-        }
+        }*/
 
         if (SharedPreferenesUtil.issignin()) {
             MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         String pictureurl=SharedPreferenesUtil.getFigureurl_qq_2();
 
-        File file=new File(getAlbumStorageDir("cwj"), ".jpg");
+        File file=new File(getAlbumStorageDir("Onotes"), "avatar.jpg");
         if(file.exists()){
             Glide.with(this)
                     .load(file)

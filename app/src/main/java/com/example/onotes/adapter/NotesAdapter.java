@@ -4,23 +4,29 @@ package com.example.onotes.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.Notes;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.LogUtil;
+import com.example.onotes.utils.ScreenShot;
 import com.example.onotes.utils.TimeUtil;
 import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.view.EditTextActivity;
+
+import java.io.File;
 import java.util.List;
 
 
@@ -39,6 +45,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private static final int Type_with_checkbox = -3;
 
     private static final int Close_popupwindow = -4;
+
+    private static final String onotesPictureStoreDirectory="Onotes";
 
     public NotesAdapter(Context context, List<Notes> list) {
         mContext = context;
@@ -75,7 +83,43 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         //此处设置Item中view的数据
-        holder.contentTextView.setText(mList.get(position).getContent());
+
+
+        if(!mList.get(position).getThumbNail().equals("null")){
+
+            String temp=mList.get(position).getContent();
+
+            String []notation=mList.get(position).getPicture().split(",");
+            //0 1 2 3 4
+            for (int j = 1; j <notation.length; j=j+2) {
+                temp=temp.replace(notation[j],"");
+                LogUtil.d("mList",notation[j]);
+            }
+            holder.contentTextView.setText(temp);
+
+            LogUtil.d("mList",mList.get(position).getThumbNail());
+
+            holder.note_thumbnail.setVisibility(View.VISIBLE);
+            holder.note_thumbnail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gotoeditactivity(v, position);
+                }
+            });
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), onotesPictureStoreDirectory);
+            //path=getAlbumStorageDir()+"/"+picture[i].replace("null","");
+            Glide.with(App.getContext()).load(file+"/"+mList.get(position).getThumbNail().replace("null","")).into(holder.note_thumbnail);
+
+
+
+        }else {
+            holder.note_thumbnail.setVisibility(View.GONE);
+            holder.contentTextView.setText(mList.get(position).getContent());
+        }
+
+
+
         String timestamp= TimeUtil.getTime(false,TimeUtil.stringToDate(mList.get(position).getTime(),"yyyy-MM-dd HH:mm:ss").getTime());
        // holder.time.setText(mList.get(position).getTime());
         holder.time.setText(timestamp);
@@ -198,6 +242,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         intent.putExtra("linespace", mList.get(position).getLinespace());
         intent.putExtra("bgcolor",mList.get(position).getBgcolor());
         intent.putExtra("time",mList.get(position).getTime());
+
+        intent.putExtra("insertpicture",mList.get(position).getPicture());
+
         LogUtil.d("dbtextsize", mList.get(position).getTextsize() + "");
         LogUtil.d("dbtextspace", mList.get(position).getLinespace() + "");
         mList.remove(position);
@@ -238,6 +285,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         public CheckBox mCheckBox_delete;
 
+        public ImageView note_thumbnail;
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -252,6 +300,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             time = (TextView) itemView.findViewById(R.id.notetime);
 
             mCheckBox_delete=(CheckBox)itemView.findViewById(R.id.checkbox_note);
+            note_thumbnail=(ImageView)itemView.findViewById(R.id.note_thumbnail);
 
         }
 

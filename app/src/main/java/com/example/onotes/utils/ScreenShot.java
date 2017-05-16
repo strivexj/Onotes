@@ -42,7 +42,8 @@ public class ScreenShot {
 
     public static void sharePhoto(Activity activity, ScrollView scrollView) {
         try{
-            File image=createImageFile();
+
+           // File image=createImageFile();
 
            // path =  image.getAbsolutePath();
            // path=getAlbumStorageDir("cwj").getAbsolutePath();

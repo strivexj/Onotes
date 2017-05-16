@@ -1,9 +1,5 @@
 package com.example.onotes.adapter;
 
-/**
- * Created by cwj on 4/27/17.
- */
-
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;

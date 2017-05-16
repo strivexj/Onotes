@@ -144,7 +144,7 @@
     <string name="hint_username">请输入您的用户名</string>
     <string name="text_password">密码：</string>
     <string name="hint_password">请输入您的密码</string>
-    <string name="text_email">邮箱：   </string>
+    <string name="text_email">邮箱：</string>
     <string name="hint_email">请输入您的邮箱</string>
     <string name="send_verify_code">发送验证码</string>
     <string name="hint_verify_code">请在这里输入您的验证码</string>
@@ -157,7 +157,7 @@
     <string name="air_quality_index">空气质量指数</string>
     <string name="pm2_5_index">PM2.5指数</string>
     <string name="textsize">字体大小:</string>
-    <string name="linespace">行距:   </string>
+    <string name="linespace">行距:</string>
     <string name="forecast">天气预报</string>
     <string name="personalized_signatures">点击我设置个性签名吧～</string>
     <string name="life_suggestion">生活建议</string>

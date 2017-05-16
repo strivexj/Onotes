@@ -18,6 +18,15 @@ public class Notes {
     private String content;
     private String location;
 
+    public String getThumbNail() {
+        return thumbNail;
+    }
+
+    public void setThumbNail(String thumbNail) {
+        this.thumbNail = thumbNail;
+    }
+
+    private String thumbNail;
     private float textsize;
     private float linespace;
     private int bgcolor;

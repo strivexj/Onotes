@@ -129,8 +129,8 @@
         </activity>
         <activity
             android:name=".view.EditTextActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize">
         </activity>
 
         <service android:name=".service.CityDownloadSerivce"/>
@@ -141,8 +141,8 @@
         </activity>
         <activity
             android:name=".view.NotelistActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".view.ChatActivity"
@@ -183,12 +183,10 @@
             android:authorities="com.example.onotes.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
-
 
         <service android:name="com.amap.api.location.APSService"/>
 
@@ -197,9 +195,13 @@
             android:value="82debbf5c079d6006624ebf9616084cb">
         </meta-data>
 
-        <activity android:name=".view.UserDetailActivity"
-                  android:label="@string/private_information">
-
+        <activity
+            android:name=".view.UserDetailActivity"
+            android:label="@string/private_information">
+        </activity>
+        <activity android:name=".view.PickPictureActivity">
+        </activity>
+        <activity android:name=".view.TestActivity">
         </activity>
     </application>
 

@@ -3,12 +3,9 @@ package com.example.onotes.ui.onboarding;
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.graphics.Color;
 import android.os.Build;
-
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,13 +13,11 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 import com.example.onotes.App;
 import com.example.onotes.R;
-import com.example.onotes.anim.CircularAnim;
-import com.example.onotes.login.ForgetPasswordActivity;
 import com.example.onotes.login.LoginActivity;
-import com.example.onotes.utils.ActivityCollector;
+import com.example.onotes.service.CityDownloadSerivce;
+import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
 
 public class OnboardingActivity extends AppCompatActivity {
@@ -42,7 +37,13 @@ public class OnboardingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final SharedPreferences sp = App.getContext().getSharedPreferences("app", MODE_PRIVATE);
+
+        if (!SharedPreferenesUtil.isCityadd()) {
+            LogUtil.d("shared","cityadd ==false");
+            Intent intentService = new Intent(this, CityDownloadSerivce.class);
+            startService(intentService);
+        }
+        //final SharedPreferences sp = App.getContext().getSharedPreferences("app", MODE_PRIVATE);
 
         if (SharedPreferenesUtil.getIs_first_lanuch()) {
 

@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -125,6 +124,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
     private static final int Close_popupwindow = -4;
 
+    private static final String onotesPictureStoreDirectory="Onotes";
+    private static final String avatarName="avatar.jpg";
 
     //recyclerview_category
     private static final int Staggered_Grid_Layout = 1;
@@ -149,6 +150,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
             mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         } else {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+           // mRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         }
 
 
@@ -260,7 +262,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         initData();
         requestWeather();
 
-        File file = new File(getAlbumStorageDir("cwj"), "avatar.jpg");
+        File file = new File(getAlbumStorageDir(onotesPictureStoreDirectory), avatarName);
         if (file.exists()) {
             Glide.with(this)
                     .load(file)
@@ -384,6 +386,16 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                     }
                                 });
                         break;
+                    case R.id.text:
+                        CircularAnim.fullActivity(NotelistActivity.this, navigationView)
+                                .colorOrImageRes(R.color.primary)
+                                .go(new CircularAnim.OnAnimationEndListener() {
+                                    @Override
+                                    public void onAnimationEnd() {
+                                        startActivity(new Intent(NotelistActivity.this,TestActivity.class));
+                                    }
+                                });
+                        break;
 
                 }
                 return true;
@@ -466,14 +478,19 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 if (e == null) {
                     String avatarUrl = user.getAvatarUrl();
                     if (avatarUrl != null) {
-                        BmobFile download = new BmobFile("avatar.jpg", "", avatarUrl);
-                        final File file = new File(getAlbumStorageDir("cwj"), "avatar.jpg");
+                        BmobFile download = new BmobFile(avatarName, "", avatarUrl);
+                        final File file = new File(getAlbumStorageDir(onotesPictureStoreDirectory), avatarName);
                         if (!file.exists()) {
                             download.download(file, new DownloadFileListener() {
                                 @Override
                                 public void done(String s, BmobException e) {
                                     LogUtil.d("download", "successfully");
-                                    Glide.with(NotelistActivity.this).load(file.getAbsoluteFile()).into(icon_image);
+
+                                       Glide.with(NotelistActivity.this)
+                                            .load(file.getAbsoluteFile())
+                                            .skipMemoryCache(true)
+                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                            .into(icon_image);
                                 }
 
                                 @Override
@@ -530,6 +547,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 float textsize = cursor.getFloat(cursor.getColumnIndex("textsize"));
                 float linespace = cursor.getFloat(cursor.getColumnIndex("linespace"));
                 int bgcolor = cursor.getInt(cursor.getColumnIndex("bgcolor"));
+
+                String insertpicture=cursor.getString(cursor.getColumnIndex("insertpicture"));
                 //LogUtil.d("delete in",id+"");
                 LogUtil.d("delete in" + id, content);
                 Notes notes = new Notes();
@@ -540,12 +559,28 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                 notes.setLinespace(linespace);
                 notes.setBgcolor(bgcolor);
 
+                if(insertpicture!=null){
+                    String []path=insertpicture.split(",");
+
+                    LogUtil.d("thumbnail","insertpicture!=null");
+
+                    notes.setPicture(insertpicture);
+
+                    notes.setThumbNail(path[0]);
+
+
+
+                }else {
+                    LogUtil.d("thumbnail","insertpicture==null");
+                    notes.setThumbNail(null);
+                }
+
                 notes.setType(Type_without_checkbox);
                 notes.setCheckbox_delete(false);
 
                 list.add(notes);
 
-                LogUtil.d("aonsaveread " + i, content);
+                LogUtil.d("aonsaveread " + i, content+"    picture"+insertpicture);
                 i++;
             } while (cursor.moveToPrevious());
         }
@@ -1142,6 +1177,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                         } else if (result == PackageManager.PERMISSION_GRANTED) {
                             LocationUtil.startLocation();
                             weather_city.setText(R.string.locating);
+                            LocationUtil.startLocation();
                         }
                     }
                 } else {
