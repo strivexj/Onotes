@@ -4,11 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * @author :smile
- * @project:TimeUtil
- * @date :2016-01-26-17:27
- */
 public class TimeUtil {
 
     public final static String FORMAT_TIME = "HH:mm";

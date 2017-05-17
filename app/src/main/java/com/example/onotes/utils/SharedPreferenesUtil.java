@@ -9,6 +9,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by cwj on 4/24/17.
+ * 统一管理Sharedpreferenes
  */
 
 public class SharedPreferenesUtil {

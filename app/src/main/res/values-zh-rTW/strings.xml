@@ -1,0 +1,220 @@
+<resources>
+    <string name="app_name">Onotes</string>
+    <string name="double_click_exit">再點擊一次退出</string>
+    <string name="prompt_email">電子郵件</string>
+    <string name="prompt_password">密碼 （可選）</string>
+    <string name="action_sign_in">登錄或注冊</string>
+    <string name="action_sign_in_short">登錄</string>
+    <string name="error_invalid_email">此電子郵件地址無效</string>
+    <string name="error_invalid_password">密碼太短</string>
+    <string name="error_incorrect_password">此密碼不正確</string>
+    <string name="error_field_required">此字段是必需的</string>
+    <string name="permission_rationale">"聯系人權限需要提供電子郵件完成"。</string>
+    <string name="title_activity_on_boarding">OnBoardingActivity</string>
+    <string name="action_settings">設置</string>
+    <string name="section_format">你好世界從科: %1$ d</string>
+    <string name="onboarding_next_button_description">下一個</string>
+    <string name="onboarding_finish_button_description">完成</string>
+    <string name="onboarding_pre_button_description">上一個</string>
+    <string name="onboarding_section_1">歡迎來到 Onotes ~ ！</string>
+    <string name="onboarding_intro_1">此應用程序中有一些令人興奮的功能。</string>
+    <string name="onboarding_section_2">它為您設計了強大的編輯功能。如 balalalala。</string>
+
+    <string name="onboarding_intro_2">如 balalalala。</string>
+    <string name="onboarding_section_3">它還有一個智能機器人</string>
+    <string name="onboarding_intro_3">當您太無聊時，它不僅可以與您聊天，也可以幫助您查找一些東西，包括天氣，您的快遞，等等。</string>
+
+    <string name="about">關于</string>
+    <string name="version">版本︰ V1.0.0</string>
+    <string name="rate">評分</string>
+    <string name="rate_description">如果您喜歡 Onotes，評一下分吧</string>
+    <string name="feedback">反饋BUG</string>
+    <string name="feedback_description">幫助我改善 Onotes 吧</string>
+    <string name="author">作者</string>
+    <string name="author_name">成文傑</string>
+    <string name="author_description">中國 廣東省</string>
+    <string name="follow_me_on_github">在 GitHub 上關注我</string>
+    <string name="github_url">https://github.com/strivexj</string>
+    <string name="addqqgroup">加入 QQ 群</string>
+    <string name="qqgroupnumber">311357701</string>
+    <string name="support">支持</string>
+    <string name="sendto">mailto:strivexj@gmail.com</string>
+    <string name="mail_topic">Onotes 反饋 / 建議</string>
+    <string name="device_model">設備版本︰</string>
+    <string name="sdk_version">SDK 版本︰</string>
+    <string name="no_mail_app">沒有檢測到郵件程序</string>
+    <string name="no_app_store_found">沒有檢測到應用商店程序</string>
+    <string name="no_browser_found">沒有檢測到浏覽器</string>
+    <string name="follow_me_on_zhihu">在知乎上關注我</string>
+    <string name="zhihu_url">https://www.zhihu.com/people/cheng-wen-jie-37</string>
+    <string name="zhihu_account">成文傑</string>
+    <string name="contactme">與我聯系</string>
+    <string name="copied_to_clipboard">已經複制到剪貼板</string>
+    <string name="copied_to_clipboard_failed">複制失敗</string>
+    <string name="added_to_bookmarks">添加到書簽</string>
+    <string name="deleted_from_bookmarks">刪除書簽</string>
+    <string name="search_bookmarks">搜索書簽</string>
+    <string name="check_bookmarks">書簽</string>
+    <string name="action_add_to_bookmarks">添加到書簽</string>
+    <string name="action_delete_from_bookmarks">刪除書簽</string>
+    <string name="action_copy_text">複制文本</string>
+
+    <string name="action_share_as_text">純文字分享</string>
+
+    <string name="share_to">分享到</string>
+    <string name="share_extra">----- 分享于Onotes</string>
+    <string name="color_or_picture">選擇顔色或背景圖片</string>
+    <string name="reset_password_sussesfully">您的密碼已重置成功 ~ ！</string>
+    <string name="reset_password_failed">失敗</string>
+    <string name="verify_code_wrong">您輸入的驗證碼錯了</string>
+    <string name="sign_in_successfully">登錄成功</string>
+    <string name="username_or_password_wrong">您輸入的用戶名或密碼可能錯了</string>
+    <string name="authorize_successfully">授權成功</string>
+    <string name="authorize_failed">授權失敗</string>
+    <string name="authorize_canceled">授權取消</string>
+    <string name="sign_in_progress">請等待一段時間</string>
+
+    <string name="subject">驗證碼</string>
+    <string name="verify_email_hi">你好</string>
+    <string name="verify_email_welcome">/n 歡迎注冊 Onotes。您的驗證碼為︰</string>
+    <string name="verify_email_end">/n 如果不是您申請的，請您忽略它。/n 請不要回複此電子郵件。謝謝您的合作！
+    </string>
+
+    <string name="username_registered">您的用戶名已被注冊。</string>
+
+    <string name="signup_failed">注冊失敗</string>
+
+    <string name="myemail">strivexj@gmail.com</string>
+    <string name="mypassword">strivexj</string>
+    <string name="progressDialog1">發送電子郵件中</string>
+    <string name="progressDialog2">請稍候。。。</string>
+    <string name="sending_successfully">驗證碼已發送。</string>
+    <string name="writing_nothing">你還沒有寫東西喔 ！</string>
+    <string name="dialog_title">刪除</string>
+    <string name="dialog_content">是否刪除所有的筆記？</string>
+    <string name="dialog_positive_button">是的</string>
+    <string name="dialog_negative_button">取消</string>
+
+    <string name="click_me_select_city">點擊我選擇一個城市吧</string>
+
+    <string name="locate_city_failed">定位失敗</string>
+
+    <string name="loading_weather_failed">加載天氣信息失敗。</string>
+    <string name="comfort">舒適度︰</string>
+    <string name="carwash">洗車指數︰</string>
+    <string name="sport_suggestion">運動建議︰</string>
+    <string name="delete">刪除</string>
+
+
+    <!--forget_password_xml-->
+    <string name="your_email">您的電子郵箱:</string>
+    <string name="send_verfiy_code">發送驗證碼</string>
+    <string name="input_verify_code_hint">請在這裏輸入驗證碼
+    </string>
+    <string name="reset_password">您的密碼：</string>
+
+    <string name="confirm">確定</string>
+
+    <!--end-->
+
+    <!--login_xml-->
+    <string name="username">用戶名</string>
+    <string name="password">密碼</string>
+    <string name="recheck_box_rememeber_password">記住密碼</string>
+    <string name="forget_password">忘記密碼</string>
+    <string name="buttom_sign_in">登錄</string>
+    <string name="new_user_sign_up">如果您沒有注冊，那就注冊一個賬號吧</string>
+    <string name="other_account">其他登錄方式</string>
+    <string name="add_qq_group">加入QQ群</string>
+    <!--end-->
+
+    <!--main_xml-->
+    <string name="settings">設置</string>
+    <!--end-->
+
+
+    <!--chat_xml-->
+    <string name="edit_text_hint">在這裏寫東西吧</string>
+    <string name="buttom_send">發送</string>
+    <!--end-->
+
+
+    <string name="log_out">退出登錄</string>
+    <string name="text_username">用戶名：</string>
+    <string name="hint_username">請輸入您的用戶名</string>
+    <string name="text_password">密碼：</string>
+    <string name="hint_password">請輸入您的密碼</string>
+    <string name="text_email">郵箱：</string>
+    <string name="hint_email">請輸入您的郵箱</string>
+    <string name="send_verify_code">發送驗證碼</string>
+    <string name="hint_verify_code">請在這裏輸入您的驗證碼</string>
+    <string name="username_existed">您的用戶名已經存在了。</string>
+    <string name="email_registered">您的郵箱已經被注冊了</string>
+    <string name="email_invaild">您填寫的郵箱無效。</string>
+    <string name="confirmPassword">請再次輸入您的密碼</string>
+
+    <string name="air_quality">空氣質量</string>
+    <string name="air_quality_index">空氣質量指數</string>
+    <string name="pm2_5_index">PM2.5指數</string>
+    <string name="textsize">字體大小:</string>
+    <string name="linespace">行距:</string>
+    <string name="forecast">天氣預報</string>
+    <string name="personalized_signatures">點擊我設置個性簽名吧～</string>
+    <string name="life_suggestion">生活建議</string>
+
+    <string name="weather">天氣</string>
+    <string name="chat">聊天</string>
+    <string name="file">文件</string>
+    <string name="exercise">練習測試</string>
+
+    <string name="chinese">簡體中文</string>
+    <string name="english">英語</string>
+    <string name="traditional_chinese">繁體中文</string>
+
+
+    <string name="send_as_pic">生成圖片分享</string>
+
+    <string name="top_to_authorise_locate">點擊我設置定位權限吧</string>
+
+    <string name="select_all">全選</string>
+    <string name="cancel">取消</string>
+    <string name="unselected_all">全不選</string>
+    <string name="checked_hint">已選擇0項</string>
+
+    <string name="locating">定位中...</string>
+
+
+
+    <string name="passwordCantMatch">您輸入的兩次密碼不一樣。</string>
+    <string name="usernameOrPasswordNull">您還沒有填寫用戶名或者密碼</string>
+
+    <string name="registerSuccessfully">注冊成功</string>
+
+    <string name="takepicture">拍照</string>
+    <string name="choosepicture">從相冊選取照片</string>
+    <string name="setavatar">設置頭像</string>
+    <string name="private_information">個人信息</string>
+    <string name="save_information">保存信息中...</string>
+
+    <string name="voice_up_tips">手指上滑,取消發送</string>
+    <string name="longclick_speak">長按說話</string>
+    <string name="picture">照片</string>
+    <string name="camera">拍攝</string>
+    <string name="location">位置</string>
+    <string name="voice_cancel_tips">松開手指，取消發送</string>
+    <string name="voice_seconds_tips">還可以說%1$s秒</string>
+    <string name="voice_short_tips">錄音時間太短</string>
+    <string name="sendingfailed">發送失敗!</string>
+    <string name="authorizefailed">必須同意所有權限才能使用本程序</string>
+    <string name="unknownerror">unknownerror</string>
+    <string name="camerapermissionrefuse">拍照權限被拒絕</string>
+    <string name="SDpermissionrefused">讀寫內存卡內容權限被拒絕</string>
+    <string name="withoutpicture">找不到照片</string>
+    <string name="locationPermissionRequest">必須同意該權限才能定位喔</string>
+    <string name="day_mode">日間模式</string>
+    <string name="night_mode">夜間模式</string>
+    <string name="pickbgpicture">設置背景圖片</string>
+
+    <string name="reboot_revoke_hint">在您說的話前加上@便可呼喚機器人喔</string>
+
+</resources>

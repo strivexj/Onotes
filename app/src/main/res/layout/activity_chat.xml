@@ -28,6 +28,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chat_recyclerview"
             android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
             android:layout_height="0dp"
             android:layout_weight="1">
         </android.support.v7.widget.RecyclerView>
@@ -43,36 +44,34 @@
             android:id="@+id/writelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
+
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/sendpicture"
                 android:layout_marginTop="5dp"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:background="@drawable/picture"
-                android:layout_height="wrap_content"/>
+                android:layout_gravity="center_vertical"
+                android:layout_height="50dp"/>
             <EditText
                 android:id="@+id/write"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="center_vertical"
                 android:focusable="true"
                 android:layout_marginTop="5dp"
-                android:hint="@string/edit_text_hint"/>
+                android:hint="@string/reboot_revoke_hint"/>
             <Button
                 android:id="@+id/request"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
                 android:layout_marginRight="5dp"
-
+                android:layout_gravity="center_vertical"
                 android:background="@drawable/roundedrectangle"
                 android:text="@string/buttom_send"
                 android:textAllCaps="false"/>
-
-
 
         </LinearLayout>
         </android.support.v7.widget.CardView>

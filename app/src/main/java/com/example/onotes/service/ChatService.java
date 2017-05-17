@@ -28,9 +28,9 @@ import java.util.List;
 import cn.bmob.v3.BmobRealTimeData;
 import cn.bmob.v3.listener.ValueEventListener;
 
-import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
-
-
+/**
+ * 聊天通知栏服务。。
+ */
 public class ChatService extends Service {
 
     private static final int NOTIFICATION_ID =2148;

@@ -22,6 +22,7 @@ import com.example.onotes.R;
 
 /**
  * Created by cwj on 4/27/17.
+ * 自定义recyclerview 实现侧滑删除菜单。。。好像事件分发有问题，强行try catch..。。。
  */
 
 
@@ -110,7 +111,7 @@ public class MyRecyclerView extends RecyclerView {
                             state = 0;
 
 
-                            return true;   //加上这一句会好一些，
+                            return true;
                         }
 
                   //  } catch (NullPointerException a) {
@@ -158,7 +159,7 @@ public class MyRecyclerView extends RecyclerView {
 
         lastX = x;
         lastY = y;
-        return super.onTouchEvent(e);//返回调用父类的方法，来处理我们没有处理的操作，比如上下滑动操作
+        return super.onTouchEvent(e);//返回调用父类的方法，来处理没有处理的操作，比如上下滑动操作
     }
 
     @Override

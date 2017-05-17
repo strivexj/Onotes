@@ -7,7 +7,9 @@ import android.view.MenuItem;
 
 import com.example.onotes.R;
 
-
+/**
+ * 关于界面，显示应用和作者信息，以及BUG反馈
+ */
 
 public class AboutActivity extends AppCompatActivity {
 

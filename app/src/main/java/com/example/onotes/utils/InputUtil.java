@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 /**
  * Created by cwj Apr.06.2017 9:53 PM
+ * 过滤空格。。
  */
 
 public class InputUtil {

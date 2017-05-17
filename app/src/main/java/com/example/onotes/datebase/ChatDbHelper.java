@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by cwj Apr.13.2017 12:27 PM
+ * 聊天信息的数据库helper
  */
 
 public class ChatDbHelper extends SQLiteOpenHelper {

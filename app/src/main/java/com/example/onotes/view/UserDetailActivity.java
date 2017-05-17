@@ -4,7 +4,6 @@ package com.example.onotes.view;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -30,12 +29,10 @@ import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * 用户个人信息
+ */
 public class UserDetailActivity extends PickPictureActivity implements View.OnClickListener {
-
-
-
-    private static final int TAKE_PHOTO_PERMISSION_REQUEST_CODE = 0; // 拍照的权限处理返回码
-    private static final int WRITE_SDCARD_PERMISSION_REQUEST_CODE = 1; // 读储存卡内容的权限处理返回码
 
     private static final int TAKE_PHOTO_REQUEST_CODE = 3; // 拍照返回的 requestCode
     private static final int CHOICE_FROM_ALBUM_REQUEST_CODE = 4; // 相册选取返回的 requestCode
@@ -54,16 +51,14 @@ public class UserDetailActivity extends PickPictureActivity implements View.OnCl
     private String avatarUrl;
 
     private static final int PICK_PICTURE_FOR_AVATOR=6;
-    private static final int PICK_PICTURE_FOR_BG=7;
-
     private static final String avatarName="avatar.jpg";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_detail);
-
         initView();
-        setType(PICK_PICTURE_FOR_AVATOR);
+        setType(PICK_PICTURE_FOR_AVATOR);//设置选取图片类型
 
     }
 
@@ -246,8 +241,6 @@ public class UserDetailActivity extends PickPictureActivity implements View.OnCl
 
         SharedPreferenesUtil.setPersonalizeSignature(personalizedSignaturesString);
         SharedPreferenesUtil.setNickname(nicknameString);
-        //myUser.save(bmobUser.getObjectId(),)
-
         myUser.update(bmobUser.getObjectId(), new UpdateListener() {
             @Override
             public void done(BmobException e) {

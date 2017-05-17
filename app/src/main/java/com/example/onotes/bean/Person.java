@@ -5,6 +5,7 @@ import cn.bmob.v3.BmobObject;
 
 /**
  * Created by cwj Mar.30.2017 6:26 PM
+ * 开始使用的这个做的登录，后来。。改成bmobuser了
  */
 
 public class Person extends BmobObject {

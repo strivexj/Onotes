@@ -182,10 +182,13 @@
     <string name="checked_hint">已选择0项</string>
 
     <string name="locating">定位中...</string>
+
+
+
     <string name="passwordCantMatch">您输入的两次密码不一样。</string>
     <string name="usernameOrPasswordNull">您还没有填写用户名或者密码</string>
 
-    <string name="registerSuccessfully">Register successfully</string>
+    <string name="registerSuccessfully">注册成功</string>
 
     <string name="takepicture">拍照</string>
     <string name="choosepicture">从相册选取照片</string>
@@ -201,7 +204,7 @@
     <string name="voice_cancel_tips">松开手指，取消发送</string>
     <string name="voice_seconds_tips">还可以说%1$s秒</string>
     <string name="voice_short_tips">录音时间太短</string>
-    <string name="sendingfailed">sending failed!</string>
+    <string name="sendingfailed">发送失败!</string>
     <string name="authorizefailed">必须同意所有权限才能使用本程序</string>
     <string name="unknownerror">unknownerror</string>
     <string name="camerapermissionrefuse">拍照权限被拒绝</string>
@@ -211,4 +214,7 @@
     <string name="day_mode">日间模式</string>
     <string name="night_mode">夜间模式</string>
     <string name="pickbgpicture">设置背景图片</string>
+
+    <string name="reboot_revoke_hint">在您说的话前加上@便可呼唤机器人喔</string>
+
 </resources>

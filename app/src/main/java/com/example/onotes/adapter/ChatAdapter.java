@@ -20,6 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by cwj Apr.13.2017 10:14 AM
+ * 聊天适配器，这个还没写好。。。
  */
 
 
@@ -40,6 +41,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = null;
+
         if (viewType == TYPE_MSG_RIGHT) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_right, parent, false);
             holder = new ViewHolder(view);

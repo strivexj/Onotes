@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by cwj Apr.08.2017 6:32 PM
+ * 天气适配器，没用上。。。。
  */
 
 public class WeatherAdapter extends BaseAdapter implements SectionIndexer {

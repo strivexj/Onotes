@@ -1,5 +1,7 @@
 package com.example.onotes.view;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,6 +12,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -59,8 +62,11 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -99,6 +105,8 @@ public class EditTextActivity extends PickPictureActivity implements View.OnClic
     private StringBuilder notePhotoPath=new StringBuilder();
 
     private int insertPitureNumber=0;
+
+    private List<Bitmap> collect=new ArrayList<>();;
 
     public void showTextCopied(View v) {
         //Snackbar.make(imageView, R.string.copied_to_clipboard, Snackbar.LENGTH_SHORT).show();
@@ -242,6 +250,7 @@ public class EditTextActivity extends PickPictureActivity implements View.OnClic
                 LogUtil.d("pathcwj",picture[i]);
 
                 LogUtil.d("aaa",notePhotoPath.toString()+"   "+path+"  "+content.indexOf(picture[i+1]));
+
                 if(content.indexOf(picture[i+1])!=-1){
                     insertPhoto(content.indexOf(picture[i+1]),path,picture[i+1].length());
                 }
@@ -534,13 +543,30 @@ public class EditTextActivity extends PickPictureActivity implements View.OnClic
       /*  0  1  2 3
         啊 啊 啊 啊*/
         //ToastUtil.showToast("position :"+position+" start :"+start.toString()+" end :"+end +" length :"+edittext.getText().length());
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        LogUtil.d("path","insert"+path);
+            Bitmap bitmap=null;
+       try {
+            bitmap = BitmapFactory.decodeFile(path);
+        } catch (OutOfMemoryError e) {
+           ToastUtil.showToast("内存溢出");
+
+           System.gc();
+
+           android.os.Process.killProcess(android.os.Process.myPid());
+
+           return;
+       }
+           // ImageLoader imageLoader =ImageLoader.getInstance();
+           // bitmap = imageLoader.loadImageSync(path);
+
+       //   Bitmap  bitmap = BitmapFactory.decodeFile(path);
+            LogUtil.d("path","insert"+path);
         LogUtil.d("bitmap", " height " + bitmap.getHeight() + " width " + bitmap.getWidth());
         Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
         drawable.setBounds(10, 10, 1420, 1420 * bitmap.getHeight() / bitmap.getWidth());
         SpannableStringBuilder spannableStringBuilder=new SpannableStringBuilder(edittext.getText().insert(position,pictureNotation));
+
         ImageSpan imageSpan = new ImageSpan(drawable);
+         //   ImageSpan imageSpan = new ImageSpan(this ,resizeImage(bitmap,1420,1420));
         spannableStringBuilder.setSpan(imageSpan, position, position + pictureNotation.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         int selectend=edittext.getSelectionEnd();
         spannableStringBuilder.append("\n");
@@ -548,20 +574,42 @@ public class EditTextActivity extends PickPictureActivity implements View.OnClic
         edittext.setSelection(selectend);
         String []name=path.split("/");
         notePhotoPath.append(name[name.length-1]).append(","+pictureNotation+",");
+           // collect.add(bitmap);
         }else{
             edittext.requestFocus();
-            Bitmap bitmap = BitmapFactory.decodeFile(path);
+
+            Bitmap bitmap=null;
+            try {
+                bitmap = BitmapFactory.decodeFile(path);
+            } catch (OutOfMemoryError e) {
+                ToastUtil.showToast("内存溢出");
+                System.gc();
+                android.os.Process.killProcess(android.os.Process.myPid());
+                return;
+            }
+           // ImageLoader imageLoader =ImageLoader.getInstance();
+           // bitmap = imageLoader.loadImageSync(path);
+
             Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
+
             drawable.setBounds(10, 10, 1420, 1420 * bitmap.getHeight() / bitmap.getWidth());
+
             SpannableStringBuilder spannableStringBuilder=new SpannableStringBuilder(edittext.getText());
+
             ImageSpan imageSpan = new ImageSpan(drawable);
+
+           // Bitmap bitmap = BitmapFactory.decodeFile(path);
+
+           // ImageSpan imageSpan = new ImageSpan(this,resizeImage(bitmap,1420,1420));
+
             spannableStringBuilder.setSpan(imageSpan, position, position +length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             int selectend=edittext.getSelectionEnd();
            // spannableStringBuilder.append("\n");
             edittext.setText(spannableStringBuilder);
             edittext.setSelection(selectend);
-
+           // collect.add(bitmap);
         }
+
        /* SpannableStringBuilder spannableString_I = new SpannableStringBuilder(edittext.getText().subSequence(0,edittext.getSelectionEnd()));
 
         Bitmap bitmap = BitmapFactory.decodeFile(getPhotoOutputUri().getPath());
@@ -597,6 +645,26 @@ public class EditTextActivity extends PickPictureActivity implements View.OnClic
 
     }
 
+    //缩放图片的函数
+    private Bitmap resizeImage(Bitmap originalBitmap,int newWidth,int newHeigth){
+
+        int width=originalBitmap.getWidth();
+        int heith=originalBitmap.getHeight();
+        //获取原来的Bitmap的宽和高；
+
+        float scanleWidth=(float)newWidth/width;
+        float scanleHeight=(float)newHeigth/heith;
+        //缩放的比例；
+
+        Matrix matrix=new Matrix();
+        //创建一个能够操作图片的matrix对象；
+        matrix.postScale(scanleWidth,scanleHeight);
+
+        Bitmap resizedBitmap=Bitmap.createBitmap(originalBitmap,0,0,width,heith,matrix,true);
+        //创建新的缩放了的Bitmap；
+
+        return resizedBitmap;
+    }
 
     public String load() {
 
@@ -740,6 +808,23 @@ public class EditTextActivity extends PickPictureActivity implements View.OnClic
         super.onDestroy();
         LogUtil.d("cwj", "edondestory");
         save(edittext.getText().toString());
+
+       /* for (int i = 0; i < collect.size(); i++) {
+
+
+            collect.get(i)=null;
+
+            collect.get(i).recycle();*/
+        for(Bitmap bitmap:collect) {
+            bitmap.recycle();
+            bitmap=null;
+            LogUtil.d("edondestory", "recycle");
+        }
+        //   final VMRuntime runtime = VMRuntime.getRuntime();
+
+        // runtime.runFinalizationSync();
+        System.gc();
+      finish();
     }
 
     @Override

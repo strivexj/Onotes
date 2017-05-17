@@ -35,6 +35,7 @@ import java.util.Date;
 
 /**
  * Created by cwj on 4/26/17.
+ * 截屏分享，好像有很多bug
  */
 
 public class ScreenShot {

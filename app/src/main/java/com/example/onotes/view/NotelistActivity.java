@@ -139,6 +139,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        System.gc();
+
         initView();
 
         // String url=DebugDB.getAddressLog();
@@ -355,7 +357,8 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                     }
                                 });
                         break;
-                    case R.id.file:
+
+                   /* case R.id.file:
                         CircularAnim.fullActivity(NotelistActivity.this, navigationView)
                                 .colorOrImageRes(R.color.primary)
                                 .go(new CircularAnim.OnAnimationEndListener() {
@@ -374,7 +377,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
                                         startActivity(new Intent(NotelistActivity.this, PopUpActivity.class));
                                     }
                                 });
-                        break;
+                        break;*/
 
                     case R.id.about:
                         CircularAnim.fullActivity(NotelistActivity.this, navigationView)

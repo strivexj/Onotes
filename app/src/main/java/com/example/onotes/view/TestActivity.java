@@ -16,6 +16,9 @@ import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UploadFileListener;
 
+/**
+ * 测试。。。。
+ */
 public class TestActivity extends AppCompatActivity {
 
     @Override

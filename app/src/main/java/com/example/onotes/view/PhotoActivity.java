@@ -21,18 +21,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.example.onotes.R;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.ToastUtil;
-
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 这个也是测试用的。
+ */
 public class PhotoActivity extends AppCompatActivity {
 
     public static final int TAKE_PHOTO = 1;
@@ -44,8 +42,6 @@ public class PhotoActivity extends AppCompatActivity {
     private ImageView picture;
 
     private Uri imageUri;
-
-
 
     private String mCurrentPhotoPath;
 

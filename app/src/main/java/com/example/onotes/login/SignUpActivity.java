@@ -2,12 +2,10 @@ package com.example.onotes.login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -15,12 +13,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.MyUser;
-import com.example.onotes.bean.Person;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.LogUtil;
@@ -28,12 +23,7 @@ import com.example.onotes.utils.SendMail;
 import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.view.NotelistActivity;
-import com.example.onotes.weather.WeatherActivity;
-
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
@@ -67,13 +57,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         signupbutton = (Button) findViewById(R.id.signupbutton);
         confirmPassword=(EditText)findViewById(R.id.confirmPassword);
 
+        //过滤空格
         signupusername.setFilters(new InputFilter[]{InputUtil.filterspace()});
         signupemail.setFilters(new InputFilter[]{InputUtil.filterspace()});
         signuppassword.setFilters(new InputFilter[]{InputUtil.filterspace()});
         confirmPassword.setFilters(new InputFilter[]{InputUtil.filterspace()});
-
         verifycode.setFilters(new InputFilter[]{InputUtil.filterspace()});
-
         sendverifycode.setOnClickListener(this);
         signupbutton.setOnClickListener(this);
 
@@ -92,13 +81,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
-
-                    /* 打开输入法
-                        InputMethodManagerinputMethodManager=(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(editText,0);
-                     */
                     signupbutton.callOnClick();
-                    LogUtil.d("register","aaa");
                 }
                 return true;
             }
@@ -110,6 +93,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sendverifycode:
+                //刚开始做了邮箱验证功能。。。然后发现bmob也有。。割了。。
                 //获得一个六位随机数
                 verfiycode = 100000 + (int) (Math.random() * 800000);
 
@@ -133,6 +117,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 ToastUtil.showToast(getString(R.string.passwordCantMatch));
                 return;
             }
+
             signupbutton.setClickable(false);
 
             final MyUser user = new MyUser();
@@ -156,6 +141,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                 }
                             });
                         }
+
                         ToastUtil.showToast(getString(R.string.registerSuccessfully));
 
                         SharedPreferenesUtil.setUsername(signupusername.getText().toString());
@@ -201,87 +187,4 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             });
     }
 }
-
-
-   /* private boolean isexist() {
-
-        BmobQuery<Person> query = new BmobQuery<Person>();
-        query.addWhereEqualTo("username", signupusername.getText().toString());
-        query.count(Person.class, new CountListener() {
-            @Override
-            public void done(Integer count, BmobException e) {
-                if (e == null) {
-                    if (count != 0) {
-                        // Toast.makeText(SignUpActivity.this, ).show();
-                        ToastUtil.showToast(R.string.username_registered);
-                        isexist = true;
-                    } else isexist = false;
-
-                } else {
-                    Log.d("cwj", "失败：" + e.getMessage() + "," + e.getErrorCode());
-                }
-            }
-        });
-        return isexist;
-    }
-
-    private void register() {
-        if (verifycode.getText().toString().equals("" + verfiycode)) {
-            signupbutton.setClickable(false);
-            Person person = new Person();
-            person.setUsername(signupusername.getText().toString());
-            person.setPassword(signuppassword.getText().toString());
-            person.setEmail(signupemail.getText().toString());
-            if (isexist()) {
-                ToastUtil.showToast(R.string.username_registered);
-                signupbutton.setClickable(true);
-            } else {
-                person.save(new SaveListener<String>() {
-                    @Override
-                    public void done(String s, BmobException e) {
-                        if (e == null) {
-                            Toast.makeText(SignUpActivity.this, "succeed").show();
-
-                            SharedPreferenesUtil.setUsername(signupusername.getText().toString());
-                            SharedPreferenesUtil.setPassword(signuppassword.getText().toString());
-
-                            CircularAnim.fullActivity(SignUpActivity.this, signupbutton)
-                                    .colorOrImageRes(R.color.accent)
-                                    .go(new CircularAnim.OnAnimationEndListener() {
-                                        @Override
-                                        public void onAnimationEnd() {
-                                            startActivity(new Intent(SignUpActivity.this, WeatherActivity.class));
-                                        }
-                                    });
-                            finish();
-                        } else {
-                            ToastUtil.showToast(R.string.signup_failed);
-                        }
-                    }
-                });
-            }*/
-
-             /*_User user = new _User();
-             user.setUsername(signupusername.getText().toString());
-             user.setPassword(signuppassword.getText().toString());
-             user.setEmail(signupemail.getText().toString());
-             user.save(new SaveListener<String>() {
-                 @Override
-                 public void done(String s, BmobException e) {
-                     if (e == null) {
-                         Toast.makeText(SignUpActivity.this, "succeed").show();
-                         finish();
-                     } else {
-                         Toast.makeText(SignUpActivity.this, "failed").show();
-                     }
-                 }
-             });*/
-
-         /*   sendverifycode.setClickable(false);
-
-        } else {
-            ToastUtil.showToast(R.string.verify_code_wrong);
-        }
-    }
-}*/
 

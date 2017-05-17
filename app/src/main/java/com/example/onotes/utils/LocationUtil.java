@@ -15,6 +15,7 @@ import com.example.onotes.view.EditTextActivity;
 
 /**
  * Created by cwj on 4/29/17.
+ * GPS定位城市。
  */
 
 public class LocationUtil {

@@ -7,7 +7,6 @@ import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import com.example.onotes.R;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.SendMail;
@@ -23,6 +22,10 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
+/**
+ * 这个功能之前用bmobobject做的。改成bmobuser后没改了。。
+ *
+ */
 public class ForgetPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText forgetpasswordemail;

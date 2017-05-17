@@ -3,8 +3,6 @@ package com.example.onotes.utils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
-
 import com.example.onotes.App;
 import com.example.onotes.R;
 
@@ -18,6 +16,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * 发送邮箱。。。
+ */
 public class SendMail extends AsyncTask<Void, Void, Void> {
 
 

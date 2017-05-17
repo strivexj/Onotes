@@ -1,6 +1,5 @@
 package com.example.onotes.adapter;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,19 +12,14 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.Notes;
 import com.example.onotes.datebase.NotesDbHelper;
 import com.example.onotes.utils.LogUtil;
-import com.example.onotes.utils.ScreenShot;
 import com.example.onotes.utils.TimeUtil;
-import com.example.onotes.utils.ToastUtil;
 import com.example.onotes.view.EditTextActivity;
-
 import java.io.File;
 import java.util.List;
 
@@ -33,6 +27,7 @@ import java.util.List;
 
 /**
  * Created by cwj Apr.04.2017 11:13 AM
+ * 笔记列表适配器
  */
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
@@ -62,6 +57,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //此处动态加载ViewHolder的布局文件并返回holder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleview_item, parent, false);
+
+       //判断是否需要显示checkbox
         if(viewType==Type_with_checkbox){
             ViewHolder viewHolder = new ViewHolder(view);
             viewHolder.mCheckBox_delete.setVisibility(View.VISIBLE);
@@ -82,15 +79,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        //此处设置Item中view的数据
 
 
+        //判断是否需要显示缩略图
         if(!mList.get(position).getThumbNail().equals("null")){
 
             String temp=mList.get(position).getContent();
 
             String []notation=mList.get(position).getPicture().split(",");
-            //0 1 2 3 4
+
+            //替代文本中的图片标记
             for (int j = 1; j <notation.length; j=j+2) {
                 temp=temp.replace(notation[j],"");
                 LogUtil.d("mList",notation[j]);
@@ -100,28 +98,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             LogUtil.d("mList",mList.get(position).getThumbNail());
 
             holder.note_thumbnail.setVisibility(View.VISIBLE);
-            holder.note_thumbnail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gotoeditactivity(v, position);
-                }
-            });
             File file = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES), onotesPictureStoreDirectory);
-            //path=getAlbumStorageDir()+"/"+picture[i].replace("null","");
             Glide.with(App.getContext()).load(file+"/"+mList.get(position).getThumbNail().replace("null","")).into(holder.note_thumbnail);
-
-
 
         }else {
             holder.note_thumbnail.setVisibility(View.GONE);
             holder.contentTextView.setText(mList.get(position).getContent());
         }
 
-
-
         String timestamp= TimeUtil.getTime(false,TimeUtil.stringToDate(mList.get(position).getTime(),"yyyy-MM-dd HH:mm:ss").getTime());
-       // holder.time.setText(mList.get(position).getTime());
+
         holder.time.setText(timestamp);
         // ViewGroup.LayoutParams lp = holder.mTextView.getLayoutParams();
         // lp.height = mHeight.get(position);
@@ -132,9 +119,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.content_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //如果没有checkbox单击为进入笔记详情页，否则选中该item
                 if(mList.get(position).getType()==Type_without_checkbox){
                     LogUtil.d("click","without_");
-                    gotoeditactivity(v, position);
+                    gotoEditActivity(v, position);
                 }
                 else {
                     if( mList.get(position).isCheckbox_delete()){
@@ -142,12 +131,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                     }else {
                         mList.get(position).setCheckbox_delete(true);
                     }
-                    LogUtil.d("click","with_");
 
                     sendBroadcastToNotesActivity();
-
                     notifyItemChanged(position);
-                    //notifyDataSetChanged();
                 }
 
             }
@@ -156,8 +142,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.content_date.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+
+                //长按item时选中该item 并改变类型
                 mList.get(position).setCheckbox_delete(true);
                 switch_type(mList.get(position).getType());
+
 
                 sendBroadcastToNotesActivity();
 
@@ -182,7 +171,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.deleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   ToastUtil.showToast("delete", Toast.LENGTH_LONG);
+
+                //侧滑删除菜单删除note
                 NotesDbHelper notesDbHelper = new NotesDbHelper(App.getContext());
                 SQLiteDatabase db = notesDbHelper.getWritableDatabase();
                 db.delete("Notes", "id=?", new String[]{mList.get(position).getId()+""});
@@ -191,6 +181,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 db.close();
 
                 if(mList.size()==0){
+                    //通知关闭popupWindow
                     Intent intent = new Intent(EditTextActivity.REFRESH);
                     intent.putExtra("from_adapter",Close_popupwindow);
                     App.getContext().sendBroadcast(intent);
@@ -199,13 +190,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         });
     }
 
+    /**
+     * 更改最下方的已选中*项
+     */
     private void sendBroadcastToNotesActivity() {
         Intent intent = new Intent(EditTextActivity.REFRESH);
         intent.putExtra("from_adapter",getSelectedSize());
         App.getContext().sendBroadcast(intent);
     }
 
-
+    /**
+     * 更改item类型，是否包含checkbox
+     * @param type_now
+     */
     public void switch_type(int type_now){
         int switchto;
         if(type_now==Type_with_checkbox){
@@ -224,6 +221,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     }
 
+    /**
+     * 得到总共选中的item数量
+     * @return
+     */
     public int getSelectedSize(){
         int j=0;
         for(int i=0;i<mList.size();i++){
@@ -233,7 +234,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         }
         return j;
     }
-    private void gotoeditactivity(View view, int position) {
+
+    /**
+     * 将所需note的信息存进intent并启动EditTextActivity
+     * @param view
+     * @param position
+     */
+    private void gotoEditActivity(View view, int position) {
         Intent intent = new Intent(view.getContext(), EditTextActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("content", mList.get(position).getContent());
@@ -242,9 +249,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         intent.putExtra("linespace", mList.get(position).getLinespace());
         intent.putExtra("bgcolor",mList.get(position).getBgcolor());
         intent.putExtra("time",mList.get(position).getTime());
-
         intent.putExtra("insertpicture",mList.get(position).getPicture());
-
         LogUtil.d("dbtextsize", mList.get(position).getTextsize() + "");
         LogUtil.d("dbtextspace", mList.get(position).getLinespace() + "");
         mList.remove(position);
@@ -257,6 +262,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         return mList.size();
     }
 
+    /**
+     * 原先写的删除全部选中的item的，好像后来写在Activity里了
+     */
     public void checkbox_delete(){
         for(int i=0;i<mList.size();i++){
             if(mList.get(i).isCheckbox_delete()){

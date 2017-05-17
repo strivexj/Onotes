@@ -17,7 +17,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import com.example.onotes.R;
 import com.example.onotes.bean.MyUser;
@@ -30,13 +29,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
+/**
+ * 选取图片的父类
+ */
 public class PickPictureActivity extends AppCompatActivity {
     private static final int TAKE_PHOTO_PERMISSION_REQUEST_CODE = 0; // 拍照的权限处理返回码
     private static final int WRITE_SDCARD_PERMISSION_REQUEST_CODE = 1; // 读储存卡内容的权限处理返回码
@@ -68,9 +69,14 @@ public class PickPictureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * 得到输出图片路径Uri
+     * @return
+     */
     public Uri getPhotoOutputUri(){
         return photoOutputUri;
     }
+
 
     public Uri getPhotoUri(){
         return photoUri;
@@ -167,17 +173,12 @@ public class PickPictureActivity extends AppCompatActivity {
             file = new File(getAlbumStorageDir(),"notesPhoto_"+timeStamp+".jpg");
         }
 
-      //  try {
             if (file.exists()) {
                 file.delete();
             }
-            //file.createNewFile();
-       /* } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
 
-        /** * 因 Android 7.0 开始，不能使用 file:// 类型的 Uri 访问跨应用文件，否则报异常， * 因此我们这里需要使用内容提供器，FileProvider 是 ContentProvider 的一个子类， * 我们可以轻松的使用 FileProvider 来在不同程序之间分享数据(相对于 ContentProvider 来说) */
+        /** * 因 Android 7.0 开始，不能使用 file:// 类型的 Uri 访问跨应用文件，否则报异常， * 因此这里需要使用内容提供器，FileProvider 是 ContentProvider 的一个子类， * 我们可以轻松的使用 FileProvider 来在不同程序之间分享数据(相对于 ContentProvider 来说) */
         if (Build.VERSION.SDK_INT >= 24) {
             photoUri = FileProvider.getUriForFile(this, "com.example.onotes.provider", file);
         } else {
@@ -215,8 +216,6 @@ public class PickPictureActivity extends AppCompatActivity {
            // 授权应用读取 Uri，这一步要有，不然裁剪程序会崩溃
            cropPhotoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-     /*  cropPhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-               photoOutputUri = Uri.fromFile(new File(getAlbumStorageDir(), avatarName)));*/
            // 设置图片的最终输出目录
            if(type==PICK_PICTURE_FOR_AVATOR){
                cropPhotoIntent.putExtra("aspectX", 1);
@@ -232,15 +231,11 @@ public class PickPictureActivity extends AppCompatActivity {
                        photoOutputUri = Uri.fromFile(new File(getAlbumStorageDir(), backGroundName)));
                LogUtil.d("crop","bg");
            }else if(type==PICK_PICTURE_FOR_NOTES){
-               //String timeStamp = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                cropPhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                        photoOutputUri = Uri.fromFile(new File(getAlbumStorageDir(), "notesPhoto_"+timeStamp+".jpg")));
                LogUtil.d("crop","notes");
            }
-
-
-           //  cropPhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoOutputUri = Uri.fromFile(file));
 
            startActivityForResult(cropPhotoIntent, CROP_PHOTO_REQUEST_CODE);
 
@@ -276,62 +271,9 @@ public class PickPictureActivity extends AppCompatActivity {
     }
 
     /**
-     * 通过这个 activity 启动的其他 Activity 返回的结果在这个方法进行处理 * 我们在这里对拍照、相册选择图片、裁剪图片的返回结果进行处理 * @param requestCode 返回码，用于确定是哪个 Activity 返回的数据 * @param resultCode 返回结果，一般如果操作成功返回的是 RESULT_OK * @param data 返回对应 activity 返回的数据
+     * 上传用户头像
      */
-   /* @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            // 通过返回码判断是哪个应用返回的数据
-            switch (requestCode) {
-                // 拍照
-                case TAKE_PHOTO_REQUEST_CODE:
-                    cropPhoto(photoUri);
-                    break;
-                // 相册选择
-                case CHOICE_FROM_ALBUM_REQUEST_CODE:
-                    //cropPhoto(data.getData());
-                    LogUtil.d("path",data.getData().toString());
-
-                    ContentResolver resolver = getContentResolver();
-                    //照片的原始资源地址
-                    Uri originalUri = data.getData();
-                    try {
-                        //使用ContentProvider通过URI获取原始图片
-                        Bitmap photo = MediaStore.Images.Media.getBitmap(resolver, originalUri);
-
-                        savePhotoToSDCard("ablum4.jpg",photo);
-                       // setuserpicture.setImageBitmap(photo);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    break;
-                // 裁剪图片
-                case CROP_PHOTO_REQUEST_CODE:
-                    final File file = new File(photoOutputUri.getPath());
-
-                    if (file.exists()) {
-                        LogUtil.d("path output", photoOutputUri.getPath());
-                        Bitmap bitmap = BitmapFactory.decodeFile(photoOutputUri.getPath());
-
-                        //pictureImageView.setImageBitmap(bitmap);
-                        //setuserpicture.setImageBitmap(bitmap);
-                        upLoadAvatar();
-
-                    } else {
-                        //Toast.makeText(this, "找不到照片").show();
-                        ToastUtil.showToast(getString(R.string.withoutpicture));
-                    }
-                    break;
-            }
-        }
-    }
-*/
-
     public void upLoadAvatar() {
-
-                //final BmobFile bmobFile = new BmobFile(new File(getAlbumStorageDir("cwj"), "avatar.jpg"));
                 final BmobFile bmobFile=new BmobFile(new File(getAlbumStorageDir(),avatarName));
 
                 bmobFile.upload(new UploadFileListener() {

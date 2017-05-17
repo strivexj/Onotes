@@ -22,8 +22,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.adapter.ChatAdapter;
@@ -34,19 +32,18 @@ import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.ToastUtil;
 import com.turing.androidsdk.HttpRequestListener;
 import com.turing.androidsdk.TuringManager;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import cn.bmob.v3.BmobRealTimeData;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.ValueEventListener;
 
-
+/**
+ * 接入了图灵机器人的聊天的activity。。
+ */
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TuringManager mTuringManager;
@@ -101,14 +98,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     String text = jsonObject.get("text").toString();
-                   // adddata(TYPE_MSG_LEFT, text);
                     sendMsg("robot",text,true);
-                    // tv.setText(text);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFail(int i, String s) {
                 adddata(TYPE_MSG_LEFT, "sending failed","");
@@ -118,7 +112,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         write = (EditText) findViewById(R.id.write);
         write.setOnClickListener(this);
         write.requestFocus();
-
         request = (Button) findViewById(R.id.request);
         request.setOnClickListener(this);
 
@@ -139,7 +132,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void run() {
                             mRecyclerView.scrollToPosition(data.size() - 1);
-                            // mRecyclerView.smoothScrollToPosition(adapter.getItemCount());
                         }
                     }, 100);
                 }
@@ -234,11 +226,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.request:
                 String send=write.getText().toString();
-                //adddata(TYPE_MSG_RIGHT, write.getText().toString());
-                //mTuringManager.requestTuring(write.getText().toString());
                 if(!TextUtils.isEmpty(send)) {
                     if (send.charAt(0) == '@') {
-                       // Toast.makeText(this, send.replaceFirst("@", "")).show();
                         mTuringManager.requestTuring(send.replaceFirst("@", ""));
                     }
                     sendMsg(name, send, false);
@@ -327,14 +316,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 if (grantResults.length > 0) {
                     for (int result : grantResults) {
                         if (result != PackageManager.PERMISSION_GRANTED) {
-                            //Toast.makeText(this, "必须同意所有权限才能使用本程序").show();
                             ToastUtil.showToast(getString(R.string.authorizefailed));
                             finish();
                             return;
                         }
                     }
                 } else {
-                    //Toast.makeText(this, "发生未知错误").show();
                     ToastUtil.showToast(getString(R.string.unknownerror));
                     finish();
                 }

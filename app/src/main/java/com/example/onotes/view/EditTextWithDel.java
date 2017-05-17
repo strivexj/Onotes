@@ -1,9 +1,5 @@
 package com.example.onotes.view;
 
-/**
- * Created by cwj Apr.05.2017 4:47 PM
- */
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -14,7 +10,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.EditText;
 
+
 import com.example.onotes.R;
+
+/**
+ * Created by cwj Apr.05.2017 4:47 PM
+ * 自定义edittext，实现删除全部
+ */
 
 public class EditTextWithDel extends EditText {
     private final static String TAG = "EditTextWithDel";

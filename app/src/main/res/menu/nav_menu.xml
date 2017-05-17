@@ -12,6 +12,13 @@
         android:id="@+id/chat"
         android:icon="@drawable/chat"
         android:title="@string/chat"/>
+
+
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/about"
+        android:title="@string/about"/>
+<!--
     <item
         android:id="@+id/file"
         android:icon="@drawable/filefolder"
@@ -20,15 +27,10 @@
         android:id="@+id/popupexercise"
         android:icon="@drawable/icon"
         android:title="@string/exercise"/>
-
-    <item
-        android:id="@+id/about"
-        android:icon="@drawable/about"
-        android:title="@string/about"/>
     <item
         android:id="@+id/text"
         android:icon="@drawable/icon"
-        android:title="test"/>
+        android:title="test"/>-->
 
 </group>
 </menu>

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by cwj Apr.12.2017 1:19 PM
+ * 笔记helper
  */
 
 public class NotesDbHelper extends SQLiteOpenHelper {
@@ -15,7 +16,7 @@ public class NotesDbHelper extends SQLiteOpenHelper {
             "create table Notes (" + "id integer primary key autoincrement,"
                     + "cityid text," + "cityEn text,"+ "cityZh text," +"lat text," + "lon text,"
                     + "data text," + "time text," + "title text," + "bgpicture text,"+"bgcolor integer,"+"textsize real,"
-                    +"linespace real,"+ "insertpicture text,"+"insertpictureindex text,"+"content text," + "location text)";
+                    +"linespace real,"+ "insertpicture text,"+" text,"+"content text," + "location text)";
 
     public NotesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

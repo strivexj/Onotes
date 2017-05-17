@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -52,10 +53,9 @@
         android:layout_gravity="start"
         app:menu="@menu/nav_menu">
         <!-- app:headerLayout="@layout/nav_header"-->
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:layout_marginBottom="15dp"
             android:layout_marginLeft="15dp"
@@ -78,13 +78,13 @@
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 
-          <!--  <ImageView
-                android:id="@+id/mode_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/day"/>-->
+            <!--  <ImageView
+            android:id="@+id/mode_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/day"/>-->
 
             <ImageView
                 android:id="@+id/mode_image"
@@ -92,7 +92,7 @@
                 android:layout_height="25dp"
                 android:layout_alignLeft="@+id/setting"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="45dp"
+                android:layout_marginLeft="65dp"
                 android:src="@drawable/day"/>
             <TextView
                 android:id="@+id/mode_text"
@@ -115,17 +115,20 @@
                     android:id="@+id/weather_degree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:layout_toStartOf="@+id/weather_city"
+                    android:text=""
+                    android:gravity="end"
+                    android:layout_gravity="end|bottom"
                     android:textColor="@color/light_blue_500"
                     android:textSize="30dp"
                 />
 
                 <TextView
                     android:id="@+id/weather_city"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_gravity="end|bottom"
+                    android:gravity="end"
                     android:text=""
                     android:textColor="@color/light_blue_500"
                     android:textSize="15dp"

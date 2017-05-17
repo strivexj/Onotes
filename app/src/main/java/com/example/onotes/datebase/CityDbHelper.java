@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 /**
  * Created by cwj Apr.02.2017 9:14 PM
+ * 天气所需的城市数据库helper
  */
 
 public class CityDbHelper extends SQLiteOpenHelper {

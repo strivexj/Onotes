@@ -5,6 +5,7 @@ import cn.bmob.v3.BmobUser;
 
 /**
  * Created by cwj Apr.03.2017 11:08 AM
+ * Bmob 用户实体类
  */
 
 public class MyUser extends BmobUser {

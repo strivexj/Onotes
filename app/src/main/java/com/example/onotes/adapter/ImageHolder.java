@@ -8,6 +8,7 @@ import com.example.onotes.R;
 
 /**
  * Created by cwj on 4/27/17.
+ * 还没写。。
  */
 
 public class ImageHolder  extends RecyclerView.ViewHolder{

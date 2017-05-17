@@ -11,6 +11,7 @@ import com.example.onotes.utils.WeatherUtil;
 
 /**
  * Created by cwj Apr.08.2017 8:09 PM
+ * 当数据库中无城市信息的时候启动该服务。。下载城市信息。
  */
 
 

@@ -14,6 +14,7 @@ import java.util.Locale;
 
 /**
  * Created by cwj on 4/28/17.
+ * 切换语言工具类
  */
 
 public class LanguageUtil {

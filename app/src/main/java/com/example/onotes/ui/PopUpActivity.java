@@ -33,7 +33,9 @@ import com.example.onotes.utils.ToastUtil;
 import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.core.BmobRecordManager;
 import cn.bmob.newim.listener.OnRecordChangeListener;
-
+/*
+这个是测试功能写的。。。
+ */
 public class PopUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button popup;

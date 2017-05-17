@@ -116,26 +116,14 @@ public class WeatherUtil {
      */
     public static void queryFromServer(String address) {
         Log.d("db", "queryFromServer");
-        // showProgressDialog();
-
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //return main thread to handle logic through runOnUiThread()
-               /* activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // closeProgressDialog();
-                        //Toast.makeText(activity, "loading failed").show();
-                    }
-                });*/
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
-              //  boolean result;
-               // result = WeatherUtil.handleCityResponse(responseText, App.getContext());
                 WeatherUtil.handleCityResponse(responseText, App.getContext());
                 LogUtil.d("cwj", "queryFromServer succeed");
             }

@@ -3,41 +3,26 @@ package com.example.onotes.weather;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-
-import com.example.onotes.App;
 import com.example.onotes.R;
 import com.example.onotes.bean.City;
 import com.example.onotes.datebase.CityDbHelper;
 import com.example.onotes.utils.LogUtil;
 import com.example.onotes.utils.SharedPreferenesUtil;
 import com.example.onotes.view.SideBar;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * Created by cwj on 2017/3/9 13:52
  */
@@ -67,14 +52,11 @@ public class ChooseAreaFragment extends Fragment{
 
     private TextView dialog;
 
-
     private List<City> cityList = new ArrayList<>();
 
     private boolean isfilter=false;
 
     private List<City> filcityList = new ArrayList<>();
-
-
 
     private ArrayAdapter<String> filadapter;
 
@@ -101,17 +83,16 @@ public class ChooseAreaFragment extends Fragment{
         SQLiteDatabase db = cityDbHelper.getWritableDatabase();
         Log.d("bbb", "search");
         Cursor cursor = db.query("City", null, null, null, null, null, "CityEn ASC");
-       // Cursor cursor = db.query("City", null, null, null, null, null, "CityEn DESC");
 
         int j = 0;
         int i=0;
 
         int index=0;
+
         String language=SharedPreferenesUtil.getLanguage();
 
         if (cursor.moveToFirst()) {
             do {
-
                 City city = new City();
                 String cityId = cursor.getString(cursor.getColumnIndex("cityid"));
                 String CityEn = cursor.getString(cursor.getColumnIndex("cityEn"));
@@ -144,15 +125,11 @@ public class ChooseAreaFragment extends Fragment{
                     type.setSortLetters(cityList.get(0).getSortLetters());
                     dataList.add(type.getSortLetters());
 
-
                     indexposition[index++]=dataList.size()-1;
-
-                    //realIndex[i]=dataList.size()-1;
 
                     LogUtil.d("whynot","indexposition "+ type.getSortLetters()+indexposition[index-1]);
 
                 }else if(!cityList.get(i-1).getSortLetters().equals(cityList.get(i).getSortLetters())){
-
 
                     while(index<=24&& !cityList.get(i).getSortLetters().equals(INDEX_STRING[index])){
 
@@ -170,14 +147,10 @@ public class ChooseAreaFragment extends Fragment{
 
                     indexposition[index++]=dataList.size()-1;
 
-                   // realIndex[i]=dataList.size()-1;
-
                     LogUtil.d("whynot","indexposition "+ type.getSortLetters()+indexposition[index-1]);
                 }
 
-
                 i++;
-
                 LogUtil.d("sortletter",city.getSortLetters());
 
                 if(language.equals("en"))

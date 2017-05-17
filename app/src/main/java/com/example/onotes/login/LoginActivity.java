@@ -12,22 +12,19 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.onotes.R;
 import com.example.onotes.anim.CircularAnim;
 import com.example.onotes.bean.MyUser;
-import com.example.onotes.bean.Person;
 import com.example.onotes.bean.QqUser;
-import com.example.onotes.service.CityDownloadSerivce;
 import com.example.onotes.utils.ActivityCollector;
 import com.example.onotes.utils.InputUtil;
 import com.example.onotes.utils.KeyboardUtil;
@@ -41,15 +38,16 @@ import com.tencent.connect.common.Constants;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
-import java.util.List;
+
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.SaveListener;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -73,7 +71,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private BaseUiListener mIUiListener;
     private UserInfo mUserInfo;
     private TextView qq;
-    private TextView addgroup;
     private ProgressBar progressBar;
     private ImageView backgroud;
     private CircleImageView userpicture;
@@ -87,22 +84,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //传入参数APPID和全局Context上下文
         mTencent = Tencent.createInstance(APP_ID, LoginActivity.this.getApplicationContext());
-
-
-      /*  if (!SharedPreferenesUtil.isCityadd()) {
-            LogUtil.d("shared","cityadd ==false");
-            Intent intentService = new Intent(this, CityDownloadSerivce.class);
-            startService(intentService);
-        }*/
-
+        //如果已经登录，就直接跳转至notelistActivity
         if (SharedPreferenesUtil.issignin()) {
             MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
-            if(userInfo!=null){
+            if (userInfo != null) {
                 startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
             }
 
         }
-
         setContentView(R.layout.activity_login);
 
         initView();
@@ -123,7 +112,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         userpicture = (CircleImageView) findViewById(R.id.userpicture);
+        signup.setOnClickListener(this);
+        sign_in_button.setOnClickListener(this);
+        forgetpassword.setOnClickListener(this);
+        qq.setOnClickListener(this);
+        userpicture.setOnClickListener(this);
+        qqpicture = (CircleImageView) findViewById(R.id.qqpicture);
+        qqpicture.setOnClickListener(this);
 
+        //过滤空格
         username.setFilters(new InputFilter[]{InputUtil.filterspace()});
         password.setFilters(new InputFilter[]{InputUtil.filterspace()});
 
@@ -131,7 +128,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         username.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
 
         password.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
 
 
         /**
@@ -149,16 +145,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
 
-                    View view =  LoginActivity.this.getCurrentFocus();
+                    View view = LoginActivity.this.getCurrentFocus();
                     if (view != null) {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
-
-                    /* 打开输入法
-                        InputMethodManagerinputMethodManager=(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(editText,0);
-                     */
                     sign_in_button.callOnClick();
                 }
                 return true;
@@ -166,20 +157,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
 
-        String pictureurl=SharedPreferenesUtil.getFigureurl_qq_2();
+        String pictureurl = SharedPreferenesUtil.getFigureurl_qq_2();
 
-        File file=new File(getAlbumStorageDir("Onotes"), "avatar.jpg");
-        if(file.exists()){
+        File file = new File(getAlbumStorageDir("Onotes"), "avatar.jpg");
+        if (file.exists()) {
             Glide.with(this)
                     .load(file)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .load(file).into(userpicture);
-        }else if (!TextUtils.isEmpty(pictureurl)) {
+        } else if (!TextUtils.isEmpty(pictureurl)) {
             Glide.with(this).load(pictureurl).into(userpicture);
         }
 
-        String susername=SharedPreferenesUtil.getUsername();
+        String susername = SharedPreferenesUtil.getUsername();
         final String spassword = SharedPreferenesUtil.getPassword();
 
         if (!TextUtils.isEmpty(susername)) {
@@ -200,21 +191,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     password.setSelection(spassword.length());
                 }
             });
-    //password.setSelection(password.getSelectionEnd());
+
         }
 
+        //检查记住密码是够勾选
         if (SharedPreferenesUtil.isRemember_password_checkbox()) {
             rememeberpassword.setChecked(true);
         }
 
-        signup.setOnClickListener(this);
-        sign_in_button.setOnClickListener(this);
-        forgetpassword.setOnClickListener(this);
-        qq.setOnClickListener(this);
 
-        userpicture.setOnClickListener(this);
-        qqpicture = (CircleImageView) findViewById(R.id.qqpicture);
-        qqpicture.setOnClickListener(this);
     }
 
     @Override
@@ -223,7 +208,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.sign_in_button: {
 
                 KeyboardUtil.hideSoftInput(this);
-
 
                 progressBar.setVisibility(View.VISIBLE);
 
@@ -234,24 +218,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void done(MyUser user, BmobException e) {
-                        if(user!=null){
-                            ToastUtil.showToast(getString( R.string.sign_in_successfully));
+                        if (user != null) {
+                            ToastUtil.showToast(getString(R.string.sign_in_successfully));
                             Log.d("cwj", "Sign in succeed");
 
                             SharedPreferenesUtil.setUsername(username.getText().toString());
 
                             if (rememeberpassword.isChecked()) {
-
                                 SharedPreferenesUtil.setPassword(password.getText().toString());
                                 SharedPreferenesUtil.setRemember_password_checkbox(true);
-
                             } else {
-
                                 SharedPreferenesUtil.setRemember_password_checkbox(false);
                                 SharedPreferenesUtil.setPassword("");
-
                             }
-
                             CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
                                     .colorOrImageRes(R.color.primary)
                                     .go(new CircularAnim.OnAnimationEndListener() {
@@ -262,77 +241,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     });
                             SharedPreferenesUtil.setIssignin(true);
                         } else {
-
                             progressBar.setVisibility(View.GONE);
                             CircularAnim.show(sign_in_button).go();
-
                             KeyboardUtil.showSoftInput(password);
-                            ToastUtil.showToast(getString(R.string.username_or_password_wrong) );
+                            ToastUtil.showToast(getString(R.string.username_or_password_wrong));
                         }
                     }
 
                 });
-
-            /*    BmobQuery<Person> query = new BmobQuery<Person>();
-                query.addWhereEqualTo("username", username.getText().toString());
-                query.findObjects(new FindListener<Person>() {
-
-                    @Override
-                    public void done(List<Person> object, BmobException e) {
-                        if (e == null) {
-                            Person person = object.get(0);
-                            if (password.getText().toString().equals(person.getPassword())) {
-                                ToastUtil.showToast( R.string.sign_in_successfully);
-
-                                Log.d("cwj", "Sign in succeed");
-
-                                SharedPreferenesUtil.setUsername(username.getText().toString());
-                                if (rememeberpassword.isChecked()) {
-                                    SharedPreferenesUtil.setPassword(password.getText().toString());
-                                    SharedPreferenesUtil.setRemember_password_checkbox(true);
-
-                                } else {
-
-                                    SharedPreferenesUtil.setRemember_password_checkbox(false);
-                                    SharedPreferenesUtil.setPassword("");
-
-                                }
-                                CircularAnim.show(sign_in_button).go();
-                                CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
-                                        .colorOrImageRes(R.color.primary)
-                                        .go(new CircularAnim.OnAnimationEndListener() {
-                                            @Override
-                                            public void onAnimationEnd() {
-                                                startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
-                                            }
-                                        });
-                                SharedPreferenesUtil.setIssignin(true);
-                            } else {
-
-                                progressBar.setVisibility(View.GONE);
-                                CircularAnim.show(sign_in_button).go();
-
-                                KeyboardUtil.showSoftInput(password);
-                                ToastUtil.showToast(R.string.username_or_password_wrong);
-                                //Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.").show();
-                            }
-
-                        } else {
-                            progressBar.setVisibility(View.GONE);
-                            CircularAnim.show(sign_in_button).go();
-                            ToastUtil.showToast(R.string.username_or_password_wrong);
-                            KeyboardUtil.showSoftInput(password);
-                          //  Toast.makeText(LoginActivity.this, "Your username or password maybe wrong.").show();
-                            Log.d("cwj", "query failed");
-                        }
-                    }
-                });
-
-
-
-                */
             }
-
             break;
             case R.id.signup:
                 CircularAnim.fullActivity(LoginActivity.this, signup)
@@ -363,21 +280,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                  官方文档中的说明：应用需要获得哪些API的权限，由“，”分隔。例如：SCOPE = “get_user_info,add_t”；所有权限用“all”
                  第三个参数，是一个事件监听器，IUiListener接口的实例，这里用的是该接口的实现类 */
                 showProgressDialog();
-
                 mIUiListener = new BaseUiListener();
-
                 //all表示获取所有权限
                 mTencent.login(LoginActivity.this, "all", mIUiListener);
-                //Intent intent=new Intent(LoginActivity.this,ForgetPasswordActivity.class);
-                // startActivity(intent);
-                //closeProgressDialog();
-
                 break;
             }
 
         }
     }
-
 
 
     /**
@@ -387,18 +297,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private class BaseUiListener implements IUiListener {
         @Override
         public void onComplete(Object response) {
-           ToastUtil.showToast(getString(R.string.authorize_successfully));
+            ToastUtil.showToast(getString(R.string.authorize_successfully));
+
             Log.e(TAG, "response:" + response);
 
             JSONObject obj = (JSONObject) response;
             try {
 
-
                 final String openID = obj.getString("openid");
                 final String accessToken = obj.getString("access_token");
                 final String expires = obj.getString("expires_in");
-
-
 
                 mTencent.setOpenId(openID);
                 mTencent.setAccessToken(accessToken, expires);
@@ -423,9 +331,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             final String figureurl_qq_1 = jo.getString("figureurl_qq_1");
                             final String figureurl_qq_2 = jo.getString("figureurl_qq_2");
 
-                            SharedPreferenesUtil.setQqInfo(nickname,gender,province,city,figureurl,
-                                    figureurl_1,figureurl_2,figureurl_qq_1,figureurl_qq_2,openID,
-                                    accessToken,expires);
+                            SharedPreferenesUtil.setQqInfo(nickname, gender, province, city, figureurl,
+                                    figureurl_1, figureurl_2, figureurl_qq_1, figureurl_qq_2, openID,
+                                    accessToken, expires);
 
                             BmobQuery<QqUser> query = new BmobQuery<QqUser>();
                             query.addWhereEqualTo("accessToken", accessToken);
@@ -471,24 +379,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             e.printStackTrace();
                         }
 
-                        BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth("qq",accessToken, expires,openID);
+                        BmobUser.BmobThirdUserAuth authInfo = new BmobUser.BmobThirdUserAuth("qq", accessToken, expires, openID);
                         BmobUser.loginWithAuthData(authInfo, new LogInListener<JSONObject>() {
 
                             @Override
-                            public void done(JSONObject userAuth,BmobException e) {
-                            if(e==null){
+                            public void done(JSONObject userAuth, BmobException e) {
+                                if (e == null) {
 
-                                CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
-                                        .colorOrImageRes(R.color.colorAccent)
-                                        .go(new CircularAnim.OnAnimationEndListener() {
-                                            @Override
-                                            public void onAnimationEnd() {
-                                                startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
-                                            }
-                                        });
+                                    CircularAnim.fullActivity(LoginActivity.this, sign_in_button)
+                                            .colorOrImageRes(R.color.colorAccent)
+                                            .go(new CircularAnim.OnAnimationEndListener() {
+                                                @Override
+                                                public void onAnimationEnd() {
+                                                    startActivity(new Intent(LoginActivity.this, NotelistActivity.class));
+                                                }
+                                            });
 
-                                SharedPreferenesUtil.setIssignin(true);
-                            }
+                                    SharedPreferenesUtil.setIssignin(true);
+                                }
                             }
                         });
                         Log.e(TAG, "登录成功" + response.toString());
@@ -505,9 +413,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     }
                 });
-                
-
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -519,14 +424,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onError(UiError uiError) {
-           // Toast.makeText(LoginActivity.this, "授权失败").show();
             ToastUtil.showToast(getString((R.string.authorize_failed)));
             closeProgressDialog();
         }
 
         @Override
         public void onCancel() {
-            //Toast.makeText(LoginActivity.this, "授权取消").show();
             ToastUtil.showToast(getString(R.string.authorize_canceled));
             closeProgressDialog();
         }
@@ -551,9 +454,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onPause() {
-        if ( SharedPreferenesUtil.issignin())
+        if (SharedPreferenesUtil.issignin())
             finish();
-
         Log.d("cwja", "onPause");
         super.onPause();
     }
@@ -563,7 +465,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.d("cwja", "onresume");
 
         final String susername = SharedPreferenesUtil.getUsername();
-        final String spassword =SharedPreferenesUtil.getPassword();
+        final String spassword = SharedPreferenesUtil.getPassword();
 
         if (!TextUtils.isEmpty(susername)) {
             username.setText(susername);
