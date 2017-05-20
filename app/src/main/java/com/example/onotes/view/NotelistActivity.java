@@ -829,6 +829,13 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
         final View check_view = LayoutInflater.from(NotelistActivity.this).inflate(R.layout.check_sheet, null);
 
+        if(SharedPreferenesUtil.getThemeMode()==1){
+            check_view.findViewById(R.id.confirm).setBackgroundResource(R.drawable.roundedrectangle);
+            check_view.findViewById(R.id.select_all).setBackgroundResource(R.drawable.roundedrectangle);
+        }else{
+            check_view.findViewById(R.id.confirm).setBackgroundResource(R.drawable.check_round_button);
+            check_view.findViewById(R.id.select_all).setBackgroundResource(R.drawable.check_round_button);
+        }
         popupWindow = new PopupWindow(check_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
         popupWindow.setFocusable(false);
@@ -938,6 +945,7 @@ public class NotelistActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
+
 
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
