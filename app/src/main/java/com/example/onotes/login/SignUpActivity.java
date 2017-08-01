@@ -103,7 +103,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                 SendMail sm = new SendMail(this, signupemail.getText().toString(), message);
                 sm.execute();
-
                 break;
             case R.id.signupbutton:
                 register();

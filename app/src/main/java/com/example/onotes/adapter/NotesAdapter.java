@@ -80,7 +80,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-
         //判断是否需要显示缩略图
         if(!mList.get(position).getThumbNail().equals("null")){
 

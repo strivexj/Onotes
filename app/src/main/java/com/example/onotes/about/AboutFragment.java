@@ -1,4 +1,3 @@
-
 package com.example.onotes.about;
 import android.content.Intent;
 import android.net.Uri;

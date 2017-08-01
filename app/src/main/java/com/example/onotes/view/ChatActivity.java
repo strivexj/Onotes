@@ -119,7 +119,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView = (RecyclerView) findViewById(R.id.chat_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
         //实例化并传输数据给adapter
         adapter = new ChatAdapter(getApplicationContext(), data);
         mRecyclerView.setAdapter(adapter);

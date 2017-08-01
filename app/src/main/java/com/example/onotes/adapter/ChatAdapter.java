@@ -103,9 +103,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return mList.get(position).getType();
     }
 
-
-
-
     public class  ViewHolder extends RecyclerView.ViewHolder{
 
         TextView mTextView;

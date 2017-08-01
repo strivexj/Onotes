@@ -4,9 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
 import com.example.onotes.R;
-
 /**
  * 关于界面，显示应用和作者信息，以及BUG反馈
  */
@@ -26,7 +24,6 @@ public class AboutActivity extends AppCompatActivity {
                 .beginTransaction()
                 .add(R.id.about_container,fragment)
                 .commit();
-
     }
 
     @Override

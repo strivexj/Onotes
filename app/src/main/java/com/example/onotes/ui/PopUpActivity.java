@@ -146,6 +146,7 @@ public class PopUpActivity extends AppCompatActivity implements View.OnClickList
         tv_camera = (TextView) findViewById(R.id.tv_camera);
         tv_location = (TextView) findViewById(R.id.tv_location);
 
+
         layout_more = (LinearLayout) findViewById(R.id.layout_more);
 
         ll_chat = (LinearLayout) findViewById(R.id.ll_chat);

@@ -57,8 +57,7 @@
                     android:cacheColorHint="@null"
                     android:fillViewport="true"
                     android:overScrollMode="never"
-                    android:scrollbars="none"
-                >
+                    android:scrollbars="none">
 
                     <EditText
                         android:id="@+id/edittext"

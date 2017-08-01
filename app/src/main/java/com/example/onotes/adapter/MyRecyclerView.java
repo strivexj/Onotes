@@ -109,8 +109,6 @@ public class MyRecyclerView extends RecyclerView {
                             scroller.startScroll(itemLayout.getScrollX(), 0, -deleteWidth, 0, 100);//弹性滑动
                             invalidate();
                             state = 0;
-
-
                             return true;
                         }
 

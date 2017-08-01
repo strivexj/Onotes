@@ -30,10 +30,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private ImageView[] indicators;
 
     private int bgColors[];
-
     private int currentPosition;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +134,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 ContextCompat.getColor(this, R.color.viewpager3)};
     }
 
+
     private void updateIndicators(int position) {
         for (int i = 0; i < indicators.length; i++) {
             indicators[i].setBackgroundResource(
@@ -144,7 +142,6 @@ public class OnboardingActivity extends AppCompatActivity {
             );
         }
     }
-
 
 
     private void navigateToMainActivity() {

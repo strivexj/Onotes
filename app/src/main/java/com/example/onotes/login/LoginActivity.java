@@ -95,8 +95,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         initView();
-
-
     }
 
     private void initView() {
@@ -155,7 +153,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return true;
             }
         });
-
 
         String pictureurl = SharedPreferenesUtil.getFigureurl_qq_2();
 
